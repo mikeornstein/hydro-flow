@@ -12,3 +12,5 @@ export * from "./examples/mf09HeatSinkBypass";
 export * from "./examples/mf08BypassBalance";
 export * from "./examples/mf03OrificeBalance";
 export * from "./examples/mf11Composite";
+export * from "./examples/mf13CardCabinet";
+export * from "./examples/mf04Microchannel";
