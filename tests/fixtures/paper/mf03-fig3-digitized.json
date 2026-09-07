@@ -2,17 +2,17 @@
   "paper": "MF03",
   "figure": "Figure 3",
   "source": "MF03-Design_of_Liquid_Cooling_Systems.pdf",
-  "note": "Bar values digitized from the published figure; uncertainty about ±0.03 gpm per bar.",
+  "note": "Bar tops measured on the 613x341 raster embedded in page 3 (pdfimages). Gridlines: 1.2 gpm at rows 25-26, 0.8 at row 110, axis at rows 277-278, so 210 px/gpm; value = (278.5 - top border row) / 210. Each header's bars sum to 5.01 gpm against the imposed 5 gpm. Fig 3 is MacroFlow's own FNM prediction, not a measurement.",
   "Q_total_gpm": 5,
-  "digitizationUncertaintyGpm": 0.03,
+  "digitizationUncertaintyGpm": 0.01,
   "cases": {
     "7/16": {
       "header_in": 0.4375,
-      "branch_Q_gpm": [1.12, 0.92, 0.78, 0.66, 0.58, 0.54, 0.54]
+      "branch_Q_gpm": [1.117, 0.898, 0.745, 0.631, 0.555, 0.526, 0.536]
     },
     "7/8": {
       "header_in": 0.875,
-      "branch_Q_gpm": [0.76, 0.73, 0.71, 0.70, 0.70, 0.70, 0.70]
+      "branch_Q_gpm": [0.764, 0.736, 0.717, 0.707, 0.698, 0.698, 0.698]
     }
   }
 }
