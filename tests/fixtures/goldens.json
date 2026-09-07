@@ -90,12 +90,17 @@
     },
     {
       "id": "D-emitter",
-      "file": null,
+      "file": "examples/emitter.hydroflow.json",
       "expected": {
         "calibration": "2.0 L/h at 100 kPa, x=0.5",
         "k_SI": 1.756820922316e-9,
-        "Q_m3s_at_150kPa": 6.804138174398e-7,
-        "Q_Lph_at_150kPa": 2.449489742783
+        "Q_m3s_at_150kPa": 6.804138174399e-7,
+        "Q_Lph_at_150kPa": 2.449489742784,
+        "links": {
+          "emitter": {
+            "Q": 6.804138174399e-7
+          }
+        }
       }
     },
     {

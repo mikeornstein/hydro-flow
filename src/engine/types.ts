@@ -16,6 +16,7 @@ export type LinkType =
   | "generic-resistance"
   | "cold-plate"
   | "hex-stream"
+  | "emitter"
   | "logical";
 
 export type LossModel = "darcy-weisbach" | "k-factor" | "quadratic" | "linear";
@@ -110,6 +111,13 @@ export interface FanCurve {
   dpMin?: number;
 }
 
+export interface EmitterLaw {
+  /** Q = k ΔP^x with Q in m³/s and ΔP = P_from − P_to in Pa. */
+  k: number;
+  /** 0.5 for an orifice-type dripper; approaches 0 when pressure-compensating. */
+  x: number;
+}
+
 export interface LinkComponent {
   type: LinkType;
   lossModel: LossModel;
@@ -130,6 +138,7 @@ export interface LinkComponent {
   opening?: number;
   pump?: PumpCurve;
   fan?: FanCurve;
+  emitter?: EmitterLaw;
   /** Heat into the fluid, W (cold plates, heaters). */
   q?: number;
   /** Case-to-coolant thermal resistance, K/W. */

@@ -25,7 +25,7 @@ npm run dev
 - Reimplement the published FNM method. Do not copy MacroFlow's name, artwork, vendor catalogs, or unpublished binaries.
 - Do not invent a native MacroFlow file format. Validate `.hydroflow.json` files against the schema.
 - Store SI internally.
-- Runtime model: `version`, `fluids` map, per-node/per-link `fluid`, polynomial pump/fan `coeffs`, HEX `couplings`, Churchill Darcy friction, hydrostatic from node `z` with `pFixed` as absolute pressure (Patm on free surfaces).
+- Runtime model: `version`, `fluids` map, per-node/per-link `fluid`, polynomial pump/fan `coeffs`, emitter `Q = k ΔP^x` via `component.emitter`, HEX `couplings`, Churchill Darcy friction, hydrostatic from node `z` with `pFixed` as absolute pressure (Patm on free surfaces).
 - P0 acceptance is `tests/fixtures/goldens.json` within 1% on flow, enforced by `tests/goldens.test.ts`.
 
 ## Layout
