@@ -1,0 +1,40 @@
+{
+  "paper": "MF13",
+  "source": "MF13-Design-process.pdf",
+  "figures": {
+    "fig3_design_I": {
+      "units": "CFM",
+      "axis_max": 60,
+      "digitization": "pixel measure of embedded MacroFlow bar chart (mf13img-000); bars hang from 0 CFM axis; span calibrated to 60 CFM floor",
+      "uncertainty_CFM": 1.5,
+      "passage_Q_CFM": [5.12, 5.12, 5.12, 5.12, 5.35, 7.44, 17.21, 37.67, 48.84, 54.19],
+      "sum_CFM": 191.18,
+      "note": "Far-passage bias: majority of flow in passages 8–10"
+    },
+    "fig4_design_II": {
+      "units": "CFM",
+      "axis_max": 60,
+      "digitization": "same chart template as Fig 3 (mf13img-002); identical 0–60 px span",
+      "uncertainty_CFM": 1.5,
+      "passage_Q_CFM": [12.79, 18.14, 17.91, 17.91, 17.91, 18.14, 18.6, 19.53, 19.07, 31.4],
+      "sum_CFM": 191.4,
+      "note": "18° taper flattens mid-passages; residual spike at Pass-10"
+    }
+  },
+  "fan_published": {
+    "name_in_paper": "Rotron-MajorAC-MR2B3",
+    "dp_max_inH2O": 0.8,
+    "Q_max_CFM": 240,
+    "curve_shape": "synthetic ΔP = dpMax*(1-(Q/Qmax)^2); endpoints only, not a vendor catalog scrape"
+  },
+  "geometry_cm": {
+    "card_height": 25,
+    "bottom_height_inlet": 4,
+    "card_array_width": 10,
+    "taper_deg_design_II": 18,
+    "n_passages": 10,
+    "screen_open_fraction": 0.5,
+    "depth_into_page_assumed_cm": 16,
+    "depth_note": "Board depth is not labeled in Fig 1; 16 cm is a documented VME-like assumption for A and Dh"
+  }
+}

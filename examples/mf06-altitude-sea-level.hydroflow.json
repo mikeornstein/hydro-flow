@@ -1,0 +1,120 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF06 density sea-level",
+    "description": "MF06 published section R as rQuad + synthetic fans at Table 4 MacroFlow CFM. Density lever at 5000 ft.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "air-sl": {
+      "id": "air-sl",
+      "name": "air-sl",
+      "phase": "gas",
+      "rho": 1.146,
+      "mu": 0.0000186,
+      "cp": 1007,
+      "k": 0.027,
+      "beta": 0.0032451728054518907,
+      "Tref": 308.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-9,
+      "energyResidual": 1e-8,
+      "maxIter": 200,
+      "relaxationP": 0.7,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "ambient",
+      "kind": "boundary",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-sl",
+      "pFixed": 101325,
+      "tFixed": 308.15
+    },
+    {
+      "id": "exit",
+      "kind": "boundary",
+      "x": 200,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-sl",
+      "pFixed": 101325,
+      "tFixed": 308.15
+    }
+  ],
+  "links": [
+    {
+      "id": "cpu-power",
+      "name": "CPU/Power section",
+      "from": "ambient",
+      "to": "exit",
+      "fluid": "air-sl",
+      "component": {
+        "type": "fan",
+        "lossModel": "quadratic",
+        "geometry": {
+          "L": 0,
+          "D": 0.12,
+          "eps": 0
+        },
+        "K": 0,
+        "rQuad": 1465.0026156822519,
+        "fan": {
+          "coeffs": [
+            103.37650081305682,
+            0,
+            -1465.0026156822519
+          ],
+          "dpMin": 0
+        }
+      }
+    },
+    {
+      "id": "pci-memory",
+      "name": "PCI/Memory section",
+      "from": "ambient",
+      "to": "exit",
+      "fluid": "air-sl",
+      "component": {
+        "type": "fan",
+        "lossModel": "quadratic",
+        "geometry": {
+          "L": 0,
+          "D": 0.1,
+          "eps": 0
+        },
+        "K": 0,
+        "rQuad": 7459.211791298182,
+        "fan": {
+          "coeffs": [
+            88.28469695219859,
+            0,
+            -7459.211791298182
+          ],
+          "dpMin": 0
+        }
+      }
+    }
+  ],
+  "couplings": []
+}

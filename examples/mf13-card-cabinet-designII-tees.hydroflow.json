@@ -1,0 +1,1107 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF13 Design II idelchik tees",
+    "description": "MF13 card cabinet. Fig 1 geometry + synthetic fan from published endpoints. Depth 16 cm assumed.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "air-27C": {
+      "id": "air-27C",
+      "name": "Air 27 °C",
+      "phase": "gas",
+      "rho": 1.177,
+      "mu": 0.0000185,
+      "cp": 1007,
+      "k": 0.026,
+      "beta": 0.0033,
+      "Tref": 300.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-9,
+      "energyResidual": 1e-8,
+      "maxIter": 250,
+      "relaxationP": 0.65,
+      "relaxationQ": 0.65
+    }
+  },
+  "nodes": [
+    {
+      "id": "ambient-in",
+      "kind": "boundary",
+      "name": "Ambient inlet",
+      "x": -80,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "pFixed": 101325,
+      "tFixed": 300.15
+    },
+    {
+      "id": "fan-out",
+      "kind": "junction",
+      "name": "After fan",
+      "x": -40,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "exit",
+      "kind": "boundary",
+      "name": "Screened exit",
+      "x": 200,
+      "y": 120,
+      "z": 0,
+      "fluid": "air-27C",
+      "pFixed": 101325,
+      "tFixed": 300.15
+    },
+    {
+      "id": "T0",
+      "kind": "junction",
+      "name": "Tee 1",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-1",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P0",
+      "kind": "junction",
+      "name": "Plenum 1",
+      "x": 0,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M0",
+      "kind": "junction",
+      "name": "Header mid 1",
+      "x": 20,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T1",
+      "kind": "junction",
+      "name": "Tee 2",
+      "x": 40,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-2",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P1",
+      "kind": "junction",
+      "name": "Plenum 2",
+      "x": 40,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M1",
+      "kind": "junction",
+      "name": "Header mid 2",
+      "x": 60,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T2",
+      "kind": "junction",
+      "name": "Tee 3",
+      "x": 80,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-3",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P2",
+      "kind": "junction",
+      "name": "Plenum 3",
+      "x": 80,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M2",
+      "kind": "junction",
+      "name": "Header mid 3",
+      "x": 100,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T3",
+      "kind": "junction",
+      "name": "Tee 4",
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-4",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P3",
+      "kind": "junction",
+      "name": "Plenum 4",
+      "x": 120,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M3",
+      "kind": "junction",
+      "name": "Header mid 4",
+      "x": 140,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T4",
+      "kind": "junction",
+      "name": "Tee 5",
+      "x": 160,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-5",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P4",
+      "kind": "junction",
+      "name": "Plenum 5",
+      "x": 160,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M4",
+      "kind": "junction",
+      "name": "Header mid 5",
+      "x": 180,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T5",
+      "kind": "junction",
+      "name": "Tee 6",
+      "x": 200,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-6",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P5",
+      "kind": "junction",
+      "name": "Plenum 6",
+      "x": 200,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M5",
+      "kind": "junction",
+      "name": "Header mid 6",
+      "x": 220,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T6",
+      "kind": "junction",
+      "name": "Tee 7",
+      "x": 240,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-7",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P6",
+      "kind": "junction",
+      "name": "Plenum 7",
+      "x": 240,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M6",
+      "kind": "junction",
+      "name": "Header mid 7",
+      "x": 260,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T7",
+      "kind": "junction",
+      "name": "Tee 8",
+      "x": 280,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-8",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P7",
+      "kind": "junction",
+      "name": "Plenum 8",
+      "x": 280,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M7",
+      "kind": "junction",
+      "name": "Header mid 8",
+      "x": 300,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T8",
+      "kind": "junction",
+      "name": "Tee 9",
+      "x": 320,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-9",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P8",
+      "kind": "junction",
+      "name": "Plenum 9",
+      "x": 320,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "M8",
+      "kind": "junction",
+      "name": "Header mid 9",
+      "x": 340,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C"
+    },
+    {
+      "id": "T9",
+      "kind": "junction",
+      "name": "Tee 10",
+      "x": 360,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-27C",
+      "tee": {
+        "branch": "pass-10",
+        "correlation": "idelchik"
+      }
+    },
+    {
+      "id": "P9",
+      "kind": "junction",
+      "name": "Plenum 10",
+      "x": 360,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-27C"
+    }
+  ],
+  "links": [
+    {
+      "id": "inlet-fan",
+      "name": "Inlet screen + fan",
+      "from": "ambient-in",
+      "to": "fan-out",
+      "fluid": "air-27C",
+      "component": {
+        "type": "fan",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.12,
+          "eps": 0
+        },
+        "K": 3,
+        "fan": {
+          "coeffs": [
+            199.271128,
+            0,
+            -15532.258435986556
+          ],
+          "dpMin": 0
+        }
+      }
+    },
+    {
+      "id": "to-T0",
+      "name": "Header approach",
+      "from": "fan-out",
+      "to": "T0",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.061903483960239744,
+          "eps": 0.00015,
+          "A": 0.006140064243013676
+        },
+        "K": 0.5
+      }
+    },
+    {
+      "id": "hdr-0a",
+      "name": "Header 1a",
+      "from": "T0",
+      "to": "M0",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.061903483960239744,
+          "eps": 0.00015,
+          "A": 0.006140064243013676
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-0b",
+      "name": "Header 1b",
+      "from": "M0",
+      "to": "T1",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.0576057197629084,
+          "eps": 0.00015,
+          "A": 0.005620192729041025
+        },
+        "K": 0.007168795836492374
+      }
+    },
+    {
+      "id": "hdr-1a",
+      "name": "Header 2a",
+      "from": "T1",
+      "to": "M1",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.0576057197629084,
+          "eps": 0.00015,
+          "A": 0.005620192729041025
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-1b",
+      "name": "Header 2b",
+      "from": "M1",
+      "to": "T2",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.05316240105073588,
+          "eps": 0.00015,
+          "A": 0.005100321215068375
+        },
+        "K": 0.008556371350223491
+      }
+    },
+    {
+      "id": "hdr-2a",
+      "name": "Header 3a",
+      "from": "T2",
+      "to": "M2",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.05316240105073588,
+          "eps": 0.00015,
+          "A": 0.005100321215068375
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-2b",
+      "name": "Header 3b",
+      "from": "M2",
+      "to": "T3",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.04856600610220254,
+          "eps": 0.00015,
+          "A": 0.004580449701095724
+        },
+        "K": 0.010389555928207166
+      }
+    },
+    {
+      "id": "hdr-3a",
+      "name": "Header 4a",
+      "from": "T3",
+      "to": "M3",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.04856600610220254,
+          "eps": 0.00015,
+          "A": 0.004580449701095724
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-3b",
+      "name": "Header 4b",
+      "from": "M3",
+      "to": "T4",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.043808485852224646,
+          "eps": 0.00015,
+          "A": 0.004060578187123075
+        },
+        "K": 0.012881777855906164
+      }
+    },
+    {
+      "id": "hdr-4a",
+      "name": "Header 5a",
+      "from": "T4",
+      "to": "M4",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.043808485852224646,
+          "eps": 0.00015,
+          "A": 0.004060578187123075
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-4b",
+      "name": "Header 5b",
+      "from": "M4",
+      "to": "T5",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.03888121685299005,
+          "eps": 0.00015,
+          "A": 0.003540706673150425
+        },
+        "K": 0.016391409029054865
+      }
+    },
+    {
+      "id": "hdr-5a",
+      "name": "Header 6a",
+      "from": "T5",
+      "to": "M5",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.03888121685299005,
+          "eps": 0.00015,
+          "A": 0.003540706673150425
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-5b",
+      "name": "Header 6b",
+      "from": "M5",
+      "to": "T6",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.03377494910825162,
+          "eps": 0.00015,
+          "A": 0.003020835159177775
+        },
+        "K": 0.021558182465622897
+      }
+    },
+    {
+      "id": "hdr-6a",
+      "name": "Header 7a",
+      "from": "T6",
+      "to": "M6",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.03377494910825162,
+          "eps": 0.00015,
+          "A": 0.003020835159177775
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-6b",
+      "name": "Header 7b",
+      "from": "M6",
+      "to": "T7",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.028479748117185892,
+          "eps": 0.00015,
+          "A": 0.0025009636452051247
+        },
+        "K": 0.029616790117638896
+      }
+    },
+    {
+      "id": "hdr-7a",
+      "name": "Header 8a",
+      "from": "T7",
+      "to": "M7",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.028479748117185892,
+          "eps": 0.00015,
+          "A": 0.0025009636452051247
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-7b",
+      "name": "Header 8b",
+      "from": "M7",
+      "to": "T8",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.02298493036381672,
+          "eps": 0.00015,
+          "A": 0.0019810921312324744
+        },
+        "K": 0.04320930539451711
+      }
+    },
+    {
+      "id": "hdr-8a",
+      "name": "Header 9a",
+      "from": "T8",
+      "to": "M8",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.02298493036381672,
+          "eps": 0.00015,
+          "A": 0.0019810921312324744
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-8b",
+      "name": "Header 9b",
+      "from": "M8",
+      "to": "T9",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.005,
+          "D": 0.017278991370585535,
+          "eps": 0.00015,
+          "A": 0.0014612206172598247
+        },
+        "K": 0.06886248589249792
+      }
+    },
+    {
+      "id": "pass-1",
+      "name": "Pass-1",
+      "from": "T0",
+      "to": "P0",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-1",
+      "name": "Plenum to exit 1",
+      "from": "P0",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-2",
+      "name": "Pass-2",
+      "from": "T1",
+      "to": "P1",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-2",
+      "name": "Plenum to exit 2",
+      "from": "P1",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-3",
+      "name": "Pass-3",
+      "from": "T2",
+      "to": "P2",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-3",
+      "name": "Plenum to exit 3",
+      "from": "P2",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-4",
+      "name": "Pass-4",
+      "from": "T3",
+      "to": "P3",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-4",
+      "name": "Plenum to exit 4",
+      "from": "P3",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-5",
+      "name": "Pass-5",
+      "from": "T4",
+      "to": "P4",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-5",
+      "name": "Plenum to exit 5",
+      "from": "P4",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-6",
+      "name": "Pass-6",
+      "from": "T5",
+      "to": "P5",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-6",
+      "name": "Plenum to exit 6",
+      "from": "P5",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-7",
+      "name": "Pass-7",
+      "from": "T6",
+      "to": "P6",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-7",
+      "name": "Plenum to exit 7",
+      "from": "P6",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-8",
+      "name": "Pass-8",
+      "from": "T7",
+      "to": "P7",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-8",
+      "name": "Plenum to exit 8",
+      "from": "P7",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-9",
+      "name": "Pass-9",
+      "from": "T8",
+      "to": "P8",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-9",
+      "name": "Plenum to exit 9",
+      "from": "P8",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "pass-10",
+      "name": "Pass-10",
+      "from": "T9",
+      "to": "P9",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "to-exit-10",
+      "name": "Plenum to exit 10",
+      "from": "P9",
+      "to": "exit",
+      "fluid": "air-27C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.015961995249406176,
+          "eps": 0.00015,
+          "A": 0.001344
+        },
+        "K": 0.8
+      }
+    }
+  ],
+  "couplings": []
+}

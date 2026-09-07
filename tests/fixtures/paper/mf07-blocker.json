@@ -1,0 +1,12 @@
+{
+  "paper": "MF07",
+  "status": "blocked",
+  "reason": "Outdoor BTS with dual FNM networks (external + internal) coupled through an integrated heat exchanger.",
+  "missing": [
+    "Vendor fan curves (explicitly used, not published numerically)",
+    "HX UA / effectiveness and core geometry",
+    "PCB / RF amplifier heat loads as a complete table",
+    "Perforated-plate open fractions used in balancing"
+  ],
+  "product_gap": "Dual-network + HX handoff is P3+ (couplings exist for hex streams but full BTS packaging is out of P0 scope)."
+}

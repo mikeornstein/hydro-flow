@@ -1,0 +1,161 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF01 multiplicity chassis pattern",
+    "description": "MF01 Table 2 fans + parallelCount=4 card stack. Table 1 OCR B decades physically inconsistent with fan head — placeholders only.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "air-25C": {
+      "id": "air-25C",
+      "name": "Air 25 °C",
+      "phase": "gas",
+      "rho": 1.2,
+      "mu": 0.0000185,
+      "cp": 1007,
+      "k": 0.026,
+      "beta": 0.0033,
+      "Tref": 298.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-9,
+      "energyResidual": 1e-8,
+      "maxIter": 200,
+      "relaxationP": 0.7,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "ambient",
+      "kind": "boundary",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    },
+    {
+      "id": "plenum",
+      "kind": "junction",
+      "x": 100,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "exit",
+      "kind": "boundary",
+      "x": 200,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    }
+  ],
+  "links": [
+    {
+      "id": "dasd",
+      "name": "DASD path (placeholder K)",
+      "from": "ambient",
+      "to": "plenum",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.1,
+          "D": 0.08,
+          "eps": 0
+        },
+        "K": 12
+      }
+    },
+    {
+      "id": "main-fan",
+      "name": "Main fan",
+      "from": "plenum",
+      "to": "exit",
+      "fluid": "air-25C",
+      "component": {
+        "type": "fan",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.1,
+          "eps": 0
+        },
+        "K": 1,
+        "fan": {
+          "coeffs": [
+            37.363336499999996,
+            0,
+            -38509.73165947079
+          ],
+          "dpMin": 0
+        }
+      }
+    },
+    {
+      "id": "card-stack",
+      "name": "Memory/Processor cards ×4",
+      "from": "plenum",
+      "to": "exit",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.2,
+          "D": 0.03,
+          "eps": 0.0001
+        },
+        "K": 4,
+        "parallelCount": 4
+      }
+    },
+    {
+      "id": "psu-fan",
+      "name": "Power supply fan",
+      "from": "ambient",
+      "to": "exit",
+      "fluid": "air-25C",
+      "component": {
+        "type": "fan",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.08,
+          "D": 0.08,
+          "eps": 0
+        },
+        "K": 6,
+        "fan": {
+          "coeffs": [
+            69.74489480000001,
+            0,
+            -57182.31009304036
+          ],
+          "dpMin": 0
+        }
+      }
+    }
+  ],
+  "couplings": []
+}

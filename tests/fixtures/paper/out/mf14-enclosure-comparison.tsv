@@ -1,0 +1,15 @@
+metric	hydroflow	paper_FNM	paper_test	rel_err
+total_CFM	74.39	65.8	66.6	13.1%
+pass_1_CFM	5.78			
+pass_2_CFM	5.78			
+pass_3_CFM	5.78			
+pass_4_CFM	5.78			
+pass_5_CFM	5.78			
+pass_6_CFM	5.78			
+pass_7_CFM	5.78			
+pass_8_CFM	5.78			
+pass_9_CFM	5.78			
+pass_10_CFM	5.78			
+pass_11_CFM	5.78			
+pass_12_CFM	5.78			
+bypass_CFM	5.01			

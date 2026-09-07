@@ -1,0 +1,6 @@
+{
+  "paper": "MF15",
+  "status": "blocked",
+  "reason": "Power-supply internals; sparse tabulated Q in the text extract.",
+  "missing": ["component dimensions", "fan/filter ratings", "absolute passage flow table"]
+}

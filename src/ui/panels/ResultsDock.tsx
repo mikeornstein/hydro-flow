@@ -96,11 +96,19 @@ export function ResultsDock() {
   const result = useStore((s) => s.result);
   const report = useStore((s) => s.report);
   const project = useStore((s) => s.project);
+  const exampleId = useStore((s) => s.exampleId);
 
   const hx = result?.couplings["hex.hx"];
   const pump = result?.links["pump.core"];
   const fan = result?.links["fan.core"];
   const gpu = result?.links["gpu0.core"];
+  const isDlc = exampleId === "dlc-pumped-cooling" && hx && pump && fan;
+
+  const linkCount = project?.links.length ?? 0;
+  const maxQ = result
+    ? Math.max(...Object.values(result.links).map((l) => Math.abs(l.Q)), 0)
+    : 0;
+  const airish = project?.links.some((l) => l.fluid.includes("air")) ?? false;
 
   return (
     <section className="dock">
@@ -117,7 +125,7 @@ export function ResultsDock() {
         ))}
       </div>
       <div className="dock-body">
-        {tab === "summary" && result && hx && pump && fan && (
+        {tab === "summary" && result && isDlc && (
           <div className="kpi-grid">
             <Kpi label="Heat rejected" value={formatPower(hx.q)} hint={`target ${formatPower(DLC_TOTAL_HEAT_W)}`} />
             <Kpi label="Coolant flow" value={formatFlowLiquid(pump.Q)} hint="CDU pump" />
@@ -130,7 +138,23 @@ export function ResultsDock() {
             <Kpi label="GPU case" value={gpu?.T_surface ? formatTempC(gpu.T_surface) : "—"} hint="case-to-coolant Rth" />
           </div>
         )}
-        {tab === "charts" && (
+        {tab === "summary" && result && !isDlc && (
+          <div className="kpi-grid">
+            <Kpi label="Status" value={result.status} hint={`${result.iterations} iterations`} />
+            <Kpi label="Links" value={String(linkCount)} hint="solved branches" />
+            <Kpi
+              label="Peak |Q|"
+              value={airish ? formatFlowAir(maxQ) : formatFlowLiquid(maxQ)}
+              hint="largest link magnitude"
+            />
+            <Kpi
+              label="Elapsed"
+              value={`${result.elapsedMs.toFixed(0)} ms`}
+              hint={`${result.iterations} iterations`}
+            />
+          </div>
+        )}
+        {tab === "charts" && isDlc && (
           <div className="charts-row">
             <div>
               <div className="panel-kicker">Pump vs system</div>
@@ -141,6 +165,9 @@ export function ResultsDock() {
               <GpuBars />
             </div>
           </div>
+        )}
+        {tab === "charts" && !isDlc && (
+          <p className="muted">Curve charts are available on the GPU rack liquid-cooling example. Use Table for link flows.</p>
         )}
         {tab === "table" && result && project && (
           <div className="table-wrap">

@@ -1,0 +1,18 @@
+{
+  "paper": "MF04",
+  "status": "partial",
+  "have": [
+    "fRe 57/62 (aspect 1/2)",
+    "loads 70/120/200 W",
+    "unbalanced bases 33.1/42.3/49.8 C",
+    "engine energy path with rTh/q",
+    "orifice rebalance direction"
+  ],
+  "missing": [
+    "system FNM channel count / header lengths",
+    "Nu values for system energy (text cut off; CFD part cites aspect Nu)",
+    "inlet coolant T for the three-sink FNM",
+    "balanced orifice openings / resulting Q table"
+  ],
+  "note": "rTh pinned from published unbalanced bases under equal-share assumption; not a claim of full geometric reconstruction."
+}
