@@ -1,4 +1,5 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from "@xyflow/react";
+import { offsetQuadPath } from "../../diagram/bundleOffset";
 import type { DiagramEdge } from "../../diagram/types";
 import type { SolveResult } from "../../engine/types";
 import { tempColor } from "../color";
@@ -8,6 +9,7 @@ export type FlowEdgeData = {
   edge: DiagramEdge;
   result: SolveResult | null;
   selected: boolean;
+  bundleOffset: number;
 };
 
 export function FlowEdge({
@@ -21,15 +23,28 @@ export function FlowEdge({
   data,
   markerEnd,
 }: EdgeProps) {
-  const { edge, result, selected } = (data ?? {}) as FlowEdgeData;
-  const [path, labelX, labelY] = getBezierPath({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
-  });
+  const { edge, result, selected, bundleOffset = 0 } = (data ?? {}) as FlowEdgeData;
+  let path: string;
+  let labelX: number;
+  let labelY: number;
+  if (bundleOffset === 0) {
+    [path, labelX, labelY] = getBezierPath({
+      sourceX,
+      sourceY,
+      targetX,
+      targetY,
+      sourcePosition,
+      targetPosition,
+    });
+  } else {
+    ({ path, labelX, labelY } = offsetQuadPath(
+      sourceX,
+      sourceY,
+      targetX,
+      targetY,
+      bundleOffset,
+    ));
+  }
   const link = result?.links[edge?.id];
   const air = edge?.fluid?.includes("air");
   const stroke = link?.T_out ? tempColor(link.T_out) : air ? "#7eb3ff" : "#3ad7b7";

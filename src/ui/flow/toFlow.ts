@@ -1,4 +1,5 @@
 import type { Edge, Node } from "@xyflow/react";
+import { bundleSlots } from "../../diagram/bundleOffset";
 import type { Diagram } from "../../diagram/types";
 import type { SolveResult } from "../../engine/types";
 import type { EquipData } from "./EquipmentNode";
@@ -12,6 +13,9 @@ export function toFlow(diagram: Diagram, result: SolveResult | null, selectedId:
     data: { node: n, result, selected: selectedId === n.id },
     selected: selectedId === n.id,
   }));
+  const slots = bundleSlots(
+    diagram.edges.map((e) => ({ id: e.id, from: e.from.node, to: e.to.node })),
+  );
   const edges: Edge<FlowEdgeData>[] = diagram.edges.map((e) => ({
     id: e.id,
     source: e.from.node,
@@ -20,7 +24,12 @@ export function toFlow(diagram: Diagram, result: SolveResult | null, selectedId:
     targetHandle: e.to.port,
     type: "flow",
     animated: Boolean(result),
-    data: { edge: e, result, selected: selectedId === e.id },
+    data: {
+      edge: e,
+      result,
+      selected: selectedId === e.id,
+      bundleOffset: slots.get(e.id)?.offset ?? 0,
+    },
     selected: selectedId === e.id,
   }));
   return { nodes, edges };
