@@ -393,6 +393,9 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   min-width: 0;
 }
 
+:root {
+  --chrome-ctl-h: 28px;
+}
 [data-layout="sheet"] {
   --chrome-ctl-h: 28px;
 }
@@ -489,11 +492,16 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   width: min(100%, 100vw);
   max-width: none;
   margin: 0;
-  inset: auto 0 0;
+  left: 0;
+  right: 0;
+  top: auto;
+  /* bottom is set from visualViewport in SheetHost so iOS Safari chrome does not cover the sheet */
+  bottom: 0;
   color: var(--text);
   background: var(--bg-2);
   border-radius: 16px 16px 0 0;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 .sheet-dialog[open] {
   display: flex;
@@ -506,9 +514,19 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   background: rgba(4, 7, 10, 0.55);
   animation: fade-in 160ms ease-out;
 }
-.sheet-dialog.detent-compact { max-height: 40dvh; }
-.sheet-dialog.detent-medium { max-height: 56dvh; }
-.sheet-dialog.detent-large { max-height: 78dvh; }
+/* svh tracks the visible viewport when mobile browser chrome is expanded */
+.sheet-dialog.detent-compact {
+  height: auto;
+  max-height: 40svh;
+}
+.sheet-dialog.detent-medium {
+  height: 56svh;
+  max-height: 56svh;
+}
+.sheet-dialog.detent-large {
+  height: 78svh;
+  max-height: 78svh;
+}
 .sheet-header {
   display: flex;
   align-items: center;
@@ -635,9 +653,13 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
     border-radius: 12px;
     background: rgba(16, 23, 30, 0.94);
   }
-  .sheet-dialog.detent-medium,
+  .sheet-dialog.detent-medium {
+    height: min(56svh, calc(100svh - var(--sat) - 8px));
+    max-height: min(56svh, calc(100svh - var(--sat) - 8px));
+  }
   .sheet-dialog.detent-large {
-    max-height: calc(100dvh - var(--sat) - 8px);
+    height: min(78svh, calc(100svh - var(--sat) - 8px));
+    max-height: min(78svh, calc(100svh - var(--sat) - 8px));
   }
 }
 

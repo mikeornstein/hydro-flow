@@ -22,6 +22,17 @@ export interface SheetHostProps {
   render(id: SheetId): ReactNode;
 }
 
+/** iOS Safari's bottom chrome sits over layout-viewport bottom:0; lift the sheet into the visual viewport. */
+function syncDialogToVisualViewport(dialog: HTMLDialogElement) {
+  const vv = window.visualViewport;
+  if (!vv) {
+    dialog.style.bottom = "0px";
+    return;
+  }
+  const obscured = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+  dialog.style.bottom = `${obscured}px`;
+}
+
 export function SheetHost({ state, onDismiss, render }: SheetHostProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const open = state.status === "open";
@@ -33,12 +44,22 @@ export function SheetHost({ state, onDismiss, render }: SheetHostProps) {
     if (!dialog) return;
     if (open) {
       if (!dialog.open) dialog.showModal();
-    } else if (dialog.open) {
-      dialog.close();
+      syncDialogToVisualViewport(dialog);
+      const vv = window.visualViewport;
+      const onViewport = () => syncDialogToVisualViewport(dialog);
+      vv?.addEventListener("resize", onViewport);
+      vv?.addEventListener("scroll", onViewport);
+      window.addEventListener("resize", onViewport);
+      return () => {
+        vv?.removeEventListener("resize", onViewport);
+        vv?.removeEventListener("scroll", onViewport);
+        window.removeEventListener("resize", onViewport);
+        if (dialog.open) dialog.close();
+        dialog.style.bottom = "";
+      };
     }
-    return () => {
-      if (dialog.open) dialog.close();
-    };
+    if (dialog.open) dialog.close();
+    dialog.style.bottom = "";
   }, [open]);
 
   return (
