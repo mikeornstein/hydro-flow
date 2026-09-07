@@ -6,6 +6,7 @@ import {
   Controls,
   MiniMap,
   ReactFlowProvider,
+  useReactFlow,
   type Connection,
   type NodeChange,
 } from "@xyflow/react";
@@ -24,6 +25,7 @@ const edgeTypes = { flow: FlowEdge };
 
 function Canvas() {
   const diagram = useStore((s) => s.diagram);
+  const exampleId = useStore((s) => s.exampleId);
   const result = useStore((s) => s.result);
   const selectedId = useStore((s) => s.selectedId);
   const moveNode = useStore((s) => s.moveNode);
@@ -32,11 +34,19 @@ function Canvas() {
   const pendingKind = useStore((s) => s.pendingKind);
   const addEquipment = useStore((s) => s.addEquipment);
   const removeSelected = useStore((s) => s.removeSelected);
+  const { fitView } = useReactFlow();
 
   const { nodes, edges } = useMemo(
     () => toFlow(diagram, result, selectedId),
     [diagram, result, selectedId],
   );
+
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      void fitView({ padding: 0.18, duration: 220 });
+    }, 30);
+    return () => window.clearTimeout(t);
+  }, [exampleId, diagram.id, fitView]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {

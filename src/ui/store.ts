@@ -2,15 +2,18 @@ import { create } from "zustand";
 import type { Connection } from "@xyflow/react";
 import type { Diagram, DiagramEdge, DiagramNode, EquipmentKind, PortId } from "../diagram/types";
 import { compileDiagram } from "../diagram/compile";
-import { dlcPumpedCoolingDiagram } from "../engine/examples/dlcPumpedCooling";
 import { solveSteady } from "../engine/solve";
 import { verifySolution, type VerificationReport } from "../engine/verify";
 import type { Project, SolveResult } from "../engine/types";
 import { AIR_25C, WATER_30C } from "../engine/fluids";
+import { EXAMPLE_CATALOG, loadExamplePayload } from "./examples/catalog";
 
 export type DockTab = "summary" | "charts" | "table" | "proof";
 
 interface AppState {
+  exampleId: string;
+  /** When set, Solve uses this Project instead of compiling the canvas. */
+  pinnedProject: Project | null;
   diagram: Diagram;
   project: Project | null;
   result: SolveResult | null;
@@ -21,7 +24,7 @@ interface AppState {
   error: string | null;
   tab: DockTab;
   pendingKind: EquipmentKind | null;
-  loadExample: () => void;
+  loadExample: (id: string) => void;
   solve: () => void;
   select: (id: string | null, kind: "node" | "edge" | null) => void;
   moveNode: (id: string, x: number, y: number) => void;
@@ -34,6 +37,21 @@ interface AppState {
   setPendingKind: (kind: EquipmentKind | null) => void;
   importJson: (text: string) => void;
   exportJson: () => string;
+}
+
+function runPinned(project: Project): Pick<AppState, "project" | "result" | "report" | "error"> {
+  try {
+    const result = solveSteady(project);
+    const report = verifySolution(project, result);
+    return { project, result, report, error: null };
+  } catch (e) {
+    return {
+      project,
+      result: null,
+      report: null,
+      error: e instanceof Error ? e.message : String(e),
+    };
+  }
 }
 
 function runSolve(diagram: Diagram): Pick<AppState, "project" | "result" | "report" | "error"> {
@@ -99,11 +117,21 @@ function defaults(kind: EquipmentKind): Pick<DiagramNode, "name" | "fluid" | "pa
   }
 }
 
-const initialDiagram = dlcPumpedCoolingDiagram();
-const initialSolve = runSolve(initialDiagram);
+function clearPin() {
+  return { pinnedProject: null as Project | null, exampleId: "custom" };
+}
+
+const DEFAULT_EXAMPLE =
+  EXAMPLE_CATALOG.find((e) => e.id === "dlc-pumped-cooling")?.id ?? EXAMPLE_CATALOG[0].id;
+const initialPayload = loadExamplePayload(DEFAULT_EXAMPLE);
+const initialSolve = initialPayload.pinnedProject
+  ? runPinned(initialPayload.pinnedProject)
+  : runSolve(initialPayload.diagram);
 
 export const useStore = create<AppState>((set, get) => ({
-  diagram: initialDiagram,
+  exampleId: DEFAULT_EXAMPLE,
+  pinnedProject: initialPayload.pinnedProject,
+  diagram: initialPayload.diagram,
   project: initialSolve.project,
   result: initialSolve.result,
   report: initialSolve.report,
@@ -114,14 +142,25 @@ export const useStore = create<AppState>((set, get) => ({
   tab: "summary",
   pendingKind: null,
 
-  loadExample: () => {
-    const diagram = dlcPumpedCoolingDiagram();
-    set({ diagram, selectedId: null, selectedKind: null, ...runSolve(diagram) });
+  loadExample: (id) => {
+    const payload = loadExamplePayload(id);
+    const solved = payload.pinnedProject
+      ? runPinned(payload.pinnedProject)
+      : runSolve(payload.diagram);
+    set({
+      exampleId: id,
+      pinnedProject: payload.pinnedProject,
+      diagram: payload.diagram,
+      selectedId: null,
+      selectedKind: null,
+      ...solved,
+    });
   },
 
   solve: () => {
     set({ solving: true });
-    const out = runSolve(get().diagram);
+    const { pinnedProject, diagram } = get();
+    const out = pinnedProject ? runPinned(pinnedProject) : runSolve(diagram);
     set({ ...out, solving: false });
   },
 
@@ -129,6 +168,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   moveNode: (id, x, y) =>
     set((s) => ({
+      ...clearPin(),
       diagram: {
         ...s.diagram,
         nodes: s.diagram.nodes.map((n) => (n.id === id ? { ...n, x, y } : n)),
@@ -137,6 +177,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   patchNode: (id, patch) =>
     set((s) => ({
+      ...clearPin(),
       diagram: {
         ...s.diagram,
         nodes: s.diagram.nodes.map((n) =>
@@ -149,6 +190,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   patchEdge: (id, patch) =>
     set((s) => ({
+      ...clearPin(),
       diagram: {
         ...s.diagram,
         edges: s.diagram.edges.map((e) =>
@@ -176,6 +218,7 @@ export const useStore = create<AppState>((set, get) => ({
       geometry: { L: 1, D: air ? 0.12 : 0.02, eps: air ? 0 : 1.5e-6, K: 0.4 },
     };
     set((s) => ({
+      ...clearPin(),
       diagram: { ...s.diagram, edges: [...s.diagram.edges, edge] },
       result: null,
       report: null,
@@ -195,6 +238,7 @@ export const useStore = create<AppState>((set, get) => ({
       params: d.params,
     };
     set((s) => ({
+      ...clearPin(),
       diagram: { ...s.diagram, nodes: [...s.diagram.nodes, node] },
       pendingKind: null,
       selectedId: node.id,
@@ -209,6 +253,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (!selectedId) return;
     if (selectedKind === "edge") {
       set({
+        ...clearPin(),
         diagram: { ...diagram, edges: diagram.edges.filter((e) => e.id !== selectedId) },
         selectedId: null,
         selectedKind: null,
@@ -218,6 +263,7 @@ export const useStore = create<AppState>((set, get) => ({
       return;
     }
     set({
+      ...clearPin(),
       diagram: {
         ...diagram,
         nodes: diagram.nodes.filter((n) => n.id !== selectedId),
@@ -236,7 +282,13 @@ export const useStore = create<AppState>((set, get) => ({
   importJson: (text) => {
     const parsed = JSON.parse(text) as Diagram;
     if (!parsed.nodes || !parsed.edges) throw new Error("Not a hydro-flow diagram");
-    set({ diagram: parsed, selectedId: null, selectedKind: null, ...runSolve(parsed) });
+    set({
+      ...clearPin(),
+      diagram: parsed,
+      selectedId: null,
+      selectedKind: null,
+      ...runSolve(parsed),
+    });
   },
 
   exportJson: () => JSON.stringify(get().diagram, null, 2),

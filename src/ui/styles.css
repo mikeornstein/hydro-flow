@@ -71,6 +71,46 @@ body {
 .project-name { font-weight: 600; }
 .project-desc { color: var(--muted); max-width: 720px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .toolbar-actions { display: flex; gap: 8px; align-items: center; }
+.example-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(420px, 42vw);
+}
+.example-picker-label {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.example-select {
+  appearance: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-3)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a7d70' d='M1 1l5 5 5-5'/%3E%3C/svg%3E")
+    no-repeat right 12px center;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 8px 32px 8px 14px;
+  min-width: 220px;
+  max-width: 100%;
+  cursor: pointer;
+}
+.example-select:hover { border-color: var(--brass); }
+.example-select:focus {
+  outline: none;
+  border-color: var(--coolant);
+  box-shadow: 0 0 0 2px rgba(58, 215, 183, 0.18);
+}
+.example-select option,
+.example-select optgroup {
+  background: var(--bg-2);
+  color: var(--text);
+}
 
 .btn {
   font-family: var(--sans);
