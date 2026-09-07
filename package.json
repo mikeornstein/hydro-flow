@@ -1,0 +1,24 @@
+{
+  "name": "hydro-flow",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Web clone of MacroFlow core functionality — Flow Network Modeling in the browser.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @hydro-flow/solver && npm run build --workspace @hydro-flow/web",
+    "dev": "npm run dev --workspace @hydro-flow/web",
+    "test": "npm run test --workspace @hydro-flow/solver",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

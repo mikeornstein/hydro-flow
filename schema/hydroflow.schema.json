@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/mikeornstein/hydro-flow/schema/hydroflow.schema.json",
+  "title": "hydro-flow project",
+  "description": "Versioned Flow Network Modeling project document (v0.1). All quantities are SI.",
+  "type": "object",
+  "required": ["fluid", "nodes", "links"],
+  "properties": {
+    "version": { "type": "string" },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "fluid": {
+      "type": "object",
+      "required": ["id", "rho", "mu"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "model": { "type": "string", "enum": ["constant"] },
+        "rho": { "type": "number", "description": "Density, kg/m^3" },
+        "mu": { "type": "number", "description": "Dynamic viscosity, Pa·s" },
+        "cp": { "type": "number" },
+        "k": { "type": "number" }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["steady"] },
+        "flowRegime": { "type": "string", "enum": ["incompressible"] },
+        "energy": { "type": "boolean" },
+        "gravity": { "type": "boolean" },
+        "convergence": {
+          "type": "object",
+          "properties": {
+            "massResidual": { "type": "number" },
+            "maxIter": { "type": "integer" },
+            "relaxationP": { "type": "number" }
+          }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["junction", "boundary", "tank", "plenum"] },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "z": { "type": "number", "description": "Elevation, m" },
+          "pFixed": { "type": "number", "description": "Fixed static pressure, Pa" },
+          "tFixed": { "type": "number", "description": "Fixed temperature, K" },
+          "demand": { "type": "number", "description": "External outflow, m^3/s" }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "from", "to", "component"],
+        "properties": {
+          "id": { "type": "string" },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "component": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "pipe", "duct", "elbow", "tee", "orifice", "valve", "pump",
+                  "fan", "filter", "generic-resistance", "emitter", "sprinkler", "lateral"
+                ]
+              },
+              "lossModel": {
+                "type": "string",
+                "enum": ["darcy-weisbach", "hazen-williams", "k-factor", "curve"]
+              },
+              "K": { "type": "number" },
+              "geometry": {
+                "type": "object",
+                "properties": {
+                  "L": { "type": "number" },
+                  "D": { "type": "number" },
+                  "eps": { "type": "number" },
+                  "C": { "type": "number" }
+                }
+              },
+              "pump": {
+                "type": "object",
+                "required": ["a"],
+                "properties": {
+                  "a": { "type": "number" },
+                  "b": { "type": "number" },
+                  "c": { "type": "number" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

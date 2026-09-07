@@ -1,0 +1,11 @@
+{
+  "name": "hydro-flow",
+  "install": "npm ci && npm run build --workspace @hydro-flow/solver",
+  "terminals": [
+    {
+      "name": "web",
+      "command": "npm run dev --workspace @hydro-flow/web"
+    }
+  ],
+  "ports": [5173]
+}
