@@ -60,13 +60,16 @@ Power-law form used in MF13:
 Re-dependent `K` (MF08) — required once electronics/air packs land:
 
 - `Re ≤ Re_lam` — laminar branch (`K` or `f` from 64/Re)
-- `Re ≥ Re_turb` — constant `K` or Swamee–Jain / Colebrook `f`
+- `Re ≥ Re_turb` — constant `K` or Churchill / Swamee–Jain / Colebrook `f`
 - between — interpolate
 
 Friction factor for P0 goldens:
 
 - `Re < 2300` → `f = 64/Re`
-- else Swamee–Jain: `f = 0.25 / [log10(ε/D / 3.7 + 5.74 / Re^0.9)]²`
+This engine ships **Churchill (1977)** for Darcy `f` at all Re (Hagen–Poiseuille recovered in laminar). P0 goldens in `tests/fixtures/goldens.json` are this solver's results, not a Swamee–Jain spreadsheet. Substituting Swamee–Jain is allowed as an optional loss model later; do not treat U2 below as a requirement to replace Churchill.
+
+- `Re < Re_lam` — Hagen–Poiseuille / `f = 64/Re` (Churchill matches this)
+- else Churchill (default) or Swamee–Jain: `f = 0.25 / [log10(ε/D / 3.7 + 5.74 / Re^0.9)]²`
 
 Fluid for current goldens: water 20 °C, `ρ = 998.2 kg/m³`, `μ = 1.002×10⁻³ Pa·s`, `g = 9.80665 m/s²`, `Patm = 101325 Pa`, `ε = 4.5×10⁻⁵ m`.
 
@@ -113,9 +116,9 @@ These are the tests that catch a wrong engine. They do not need a canvas.
 
 Pipe `Re < 2300`. Compare `Δp` to `f = 64/Re` Darcy–Weisbach closed form. Tolerance 1e-6 relative (analytic identity if the same `f` is used).
 
-### U2. Turbulent friction (Swamee–Jain)
+### U2. Turbulent friction (Churchill; Swamee–Jain optional)
 
-Pipe `Re ~ 1e5`, `ε/D` from Golden A (`D = 0.05 m`, `ε = 4.5e-5 m`). Compare `Δp` to an independent evaluation of Swamee–Jain + Darcy. Tolerance 1e-6 if the implementation is the same formula; 0.5% if Colebrook is substituted (document the substitution).
+Pipe `Re ~ 1e5`, `ε/D` from Golden A (`D = 0.05 m`, `ε = 4.5e-5 m`). Compare `f` to Golden A (`tests/fixtures/goldens.json`). Tolerance 1% on `f` and `Q`.
 
 ### U3. Minor loss only
 
@@ -170,7 +173,7 @@ Store SI. Display IP. Editing a length in inches must write meters. Pressure psi
 
 ### U13. Schema
 
-Accept `examples/*.hydroflow.json`. Reject: missing `from`/`to`, unknown node id, `schemaVersion` other than `0.1.0`, pipe without `geometry.D`, pump without `curve`.
+Accept `examples/*.hydroflow.json`. Reject: missing `from`/`to`, unknown node id, `version` other than `0.1.0`, pipe without `geometry.D`, pump without `pump.coeffs`.
 
 ### U14. Solver status
 
@@ -255,7 +258,7 @@ Open `examples/series-pipes.hydroflow.json` → Solve → values match Golden A 
 
 ### E3. Save / load bit-identical project
 
-Save JSON, reload, `schemaVersion` and graph unchanged. Results may be omitted (`results: null`) or stored; either way a reload + solve reproduces `Q`.
+Save JSON, reload, `version` and graph unchanged. A reload + solve reproduces `Q`.
 
 ### E4. Compare designs
 

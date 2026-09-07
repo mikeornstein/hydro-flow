@@ -1,20 +1,45 @@
 # hydro-flow
 
-Web clone of the core functionality of [MacroFlow](https://inresllc.com/macroflow-overview.html) — a Flow Network Modeling (FNM) tool for rapid flow and thermal design of engineering systems.
+Browser **flow-network modeling** for thermal-hydraulic systems. A physical plant is a graph: junctions hold pressure and temperature, components hold a constitutive ΔP(Q) and optional heat transfer. The engine solves discrete mass, momentum, and energy — not 3-D CFD.
 
-## Research
+## Docs
 
-See [docs/MACROFLOW_RESEARCH.md](docs/MACROFLOW_RESEARCH.md) for the product-research report. See [docs/WORKFLOWS_AND_ACCEPTANCE.md](docs/WORKFLOWS_AND_ACCEPTANCE.md) for the user workflows and [docs/VERIFICATION_CASES.md](docs/VERIFICATION_CASES.md) for the test catalog.
+- [docs/MACROFLOW_RESEARCH.md](docs/MACROFLOW_RESEARCH.md) — product research
+- [docs/WORKFLOWS_AND_ACCEPTANCE.md](docs/WORKFLOWS_AND_ACCEPTANCE.md) — user workflows
+- [docs/VERIFICATION_CASES.md](docs/VERIFICATION_CASES.md) — test catalog
+- [docs/schema/hydroflow.project.schema.json](docs/schema/hydroflow.project.schema.json) — `.hydroflow.json` schema
+- [AGENTS.md](AGENTS.md) — agent contract
+- [CONTRIBUTING.md](CONTRIBUTING.md) — branching and pull-request rules
 
-## Status
+## Worked example
 
-Research and the project schema are in. Example networks and P0 golden fixtures are in `examples/` and `tests/fixtures/`. The solver and web UI are not started.
+The default canvas project is a **DLC compute rack**: a closed water loop with a CDU pump, strainer, four GPU cold plates in parallel, and a forced-convection **air–liquid heat exchanger** with fans.
 
-## Checks
+Steady-state identities the solver tests prove:
+
+- HEX heat rejection = Σ GPU heat (2800 W)
+- Loop ΔT = Q / (ṁ cp)
+- Parallel branches split equally
+- ε-NTU (crossflow, both unmixed) matches an independent evaluation
+- Pump operating point lies on its catalog curve
+- GPU case T = T_coolant,mean + q R_th
+
+P0 golden fixtures (series, pump-loop, parallel) live in `examples/` and `tests/fixtures/goldens.json`.
+
+## Run
 
 ```bash
 npm install
 npm run check
+npm test
+npm run dev
 ```
 
-GitHub Actions runs the same check on every pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for branching and pull-request rules. Agents start at [AGENTS.md](AGENTS.md).
+`npm run check` validates project JSON against the schema and confirms repo contract files. GitHub Actions runs it on every pull request. `npm test` runs the Vitest hydraulics and energy suite.
+
+## Stack
+
+- Engine: TypeScript Newton hydraulics + linear ε-NTU energy
+- UI: Vite, React 19, XYFlow
+- Tests: Vitest (hydraulics, energy, HEX, DLC example) plus schema goldens
+- Internal units are SI. The canvas is schematic; elevation is a node property.

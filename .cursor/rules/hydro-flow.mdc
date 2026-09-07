@@ -10,14 +10,14 @@ This repo is a 1-D flow-network modeling (FNM) web app. It is not 3-D CFD.
 ## Product
 
 - Reimplement the published FNM method. Do not copy MacroFlow's name, artwork, vendor catalogs, or unpublished binary artifacts.
-- Do not invent a native MacroFlow file format. The project file is `docs/schema/hydroflow.project.schema.json`.
+- Project files are `.hydroflow.json` validated by `docs/schema/hydroflow.project.schema.json`. That schema matches `src/engine/types.ts` (`version`, `fluids`, `couplings`).
 - Store SI internally. Convert at the UI boundary.
-- Treat `tests/fixtures/goldens.json` as the P0 acceptance source. Solver flow must land within 1% of those Q values.
-- Do not trust the canvas until `tests/solver` exists and those goldens pass.
+- Treat `tests/fixtures/goldens.json` as the P0 acceptance source. Solver flow must land within 1% of those Q values (`tests/goldens.test.ts`).
+- The canvas is `src/ui`. The solver is `src/engine`. Do not reintroduce a "solver not started" plan.
 
 ## Process
 
 - Use `/poteto-mode` (pstack) for nontrivial work.
 - Branch from `main`. Open a pull request. Fill `.github/PULL_REQUEST_TEMPLATE.md`.
-- Run `npm run check` before you push. CI runs the same command.
+- Run `npm run check` and `npm test` before you push. CI runs `npm run check`.
 - Keep one concern per PR. Use Conventional Commits.

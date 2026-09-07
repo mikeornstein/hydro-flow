@@ -1,0 +1,730 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "DLC compute — pumped CDU + air-liquid HEX",
+    "description": "Four GPU cold plates on a closed water loop, circulated by a CDU pump through a forced-convection air–liquid heat exchanger.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "kPa",
+    "flow": "L/min",
+    "temperature": "C",
+    "power": "W"
+  },
+  "fluids": {
+    "water-30C": {
+      "id": "water-30C",
+      "name": "Water (30 °C)",
+      "phase": "liquid",
+      "rho": 995.65,
+      "mu": 0.0007977,
+      "cp": 4178,
+      "k": 0.6155,
+      "beta": 0.000303,
+      "Tref": 303.15
+    },
+    "air-25C": {
+      "id": "air-25C",
+      "name": "Dry air (25 °C)",
+      "phase": "gas",
+      "rho": 1.184,
+      "mu": 0.00001849,
+      "cp": 1007,
+      "k": 0.0263,
+      "beta": 0.0033540164346805303,
+      "Tref": 298.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": true,
+    "gravity": true,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 80,
+      "relaxationP": 0.85,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "tank",
+      "kind": "tank",
+      "name": "Expansion tank",
+      "x": 40,
+      "y": 470,
+      "z": 0.6,
+      "fluid": "water-30C",
+      "pFixed": 151325
+    },
+    {
+      "id": "pump.in",
+      "kind": "junction",
+      "name": "CDU pump in",
+      "x": 250,
+      "y": 470,
+      "z": 0.2,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "pump.out",
+      "kind": "junction",
+      "name": "CDU pump out",
+      "x": 250,
+      "y": 470,
+      "z": 0.2,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "filter.in",
+      "kind": "junction",
+      "name": "Y-strainer in",
+      "x": 460,
+      "y": 470,
+      "z": 0.25,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "filter.out",
+      "kind": "junction",
+      "name": "Y-strainer out",
+      "x": 460,
+      "y": 470,
+      "z": 0.25,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "supplyManifold",
+      "kind": "junction",
+      "name": "Supply manifold",
+      "x": 700,
+      "y": 300,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu0.in",
+      "kind": "junction",
+      "name": "GPU 0 cold plate in",
+      "x": 940,
+      "y": 160,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu0.out",
+      "kind": "junction",
+      "name": "GPU 0 cold plate out",
+      "x": 940,
+      "y": 160,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu1.in",
+      "kind": "junction",
+      "name": "GPU 1 cold plate in",
+      "x": 940,
+      "y": 250,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu1.out",
+      "kind": "junction",
+      "name": "GPU 1 cold plate out",
+      "x": 940,
+      "y": 250,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu2.in",
+      "kind": "junction",
+      "name": "GPU 2 cold plate in",
+      "x": 940,
+      "y": 340,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu2.out",
+      "kind": "junction",
+      "name": "GPU 2 cold plate out",
+      "x": 940,
+      "y": 340,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu3.in",
+      "kind": "junction",
+      "name": "GPU 3 cold plate in",
+      "x": 940,
+      "y": 430,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "gpu3.out",
+      "kind": "junction",
+      "name": "GPU 3 cold plate out",
+      "x": 940,
+      "y": 430,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "returnManifold",
+      "kind": "junction",
+      "name": "Return manifold",
+      "x": 1160,
+      "y": 300,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "hex.liqIn",
+      "kind": "junction",
+      "name": "Air–liquid HEX liqIn",
+      "x": 540,
+      "y": 110,
+      "z": 0.4,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "hex.liqOut",
+      "kind": "junction",
+      "name": "Air–liquid HEX liqOut",
+      "x": 540,
+      "y": 110,
+      "z": 0.4,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "hex.airIn",
+      "kind": "junction",
+      "name": "Air–liquid HEX airIn",
+      "x": 540,
+      "y": 110,
+      "z": 0.4,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "hex.airOut",
+      "kind": "junction",
+      "name": "Air–liquid HEX airOut",
+      "x": 540,
+      "y": 110,
+      "z": 0.4,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "airIn",
+      "kind": "boundary",
+      "name": "Ambient in",
+      "x": 40,
+      "y": 36,
+      "z": 0.4,
+      "fluid": "air-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    },
+    {
+      "id": "fan.in",
+      "kind": "junction",
+      "name": "HEX fans in",
+      "x": 250,
+      "y": 36,
+      "z": 0.4,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "fan.out",
+      "kind": "junction",
+      "name": "HEX fans out",
+      "x": 250,
+      "y": 36,
+      "z": 0.4,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "airOut",
+      "kind": "boundary",
+      "name": "Exhaust",
+      "x": 820,
+      "y": 36,
+      "z": 0.4,
+      "fluid": "air-25C",
+      "pFixed": 101325
+    }
+  ],
+  "links": [
+    {
+      "id": "pump.core",
+      "name": "CDU pump",
+      "from": "pump.in",
+      "to": "pump.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pump",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1.5,
+        "pump": {
+          "coeffs": [
+            20,
+            0,
+            -125000000
+          ],
+          "hMin": 0
+        }
+      }
+    },
+    {
+      "id": "filter.core",
+      "name": "Y-strainer",
+      "from": "filter.in",
+      "to": "filter.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "filter",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.12,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 3.5
+      }
+    },
+    {
+      "id": "gpu0.core",
+      "name": "GPU 0 cold plate",
+      "from": "gpu0.in",
+      "to": "gpu0.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.22,
+          "D": 0.006,
+          "eps": 0.0000015
+        },
+        "K": 5,
+        "q": 700,
+        "rTh": 0.045
+      }
+    },
+    {
+      "id": "gpu1.core",
+      "name": "GPU 1 cold plate",
+      "from": "gpu1.in",
+      "to": "gpu1.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.22,
+          "D": 0.006,
+          "eps": 0.0000015
+        },
+        "K": 5,
+        "q": 700,
+        "rTh": 0.045
+      }
+    },
+    {
+      "id": "gpu2.core",
+      "name": "GPU 2 cold plate",
+      "from": "gpu2.in",
+      "to": "gpu2.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.22,
+          "D": 0.006,
+          "eps": 0.0000015
+        },
+        "K": 5,
+        "q": 700,
+        "rTh": 0.045
+      }
+    },
+    {
+      "id": "gpu3.core",
+      "name": "GPU 3 cold plate",
+      "from": "gpu3.in",
+      "to": "gpu3.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.22,
+          "D": 0.006,
+          "eps": 0.0000015
+        },
+        "K": 5,
+        "q": 700,
+        "rTh": 0.045
+      }
+    },
+    {
+      "id": "hex.liquid",
+      "name": "Air–liquid HEX liquid",
+      "from": "hex.liqIn",
+      "to": "hex.liqOut",
+      "fluid": "water-30C",
+      "component": {
+        "type": "hex-stream",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1.1,
+          "D": 0.014,
+          "eps": 0.0000015
+        },
+        "K": 8
+      }
+    },
+    {
+      "id": "hex.air",
+      "name": "Air–liquid HEX air",
+      "from": "hex.airIn",
+      "to": "hex.airOut",
+      "fluid": "air-25C",
+      "component": {
+        "type": "hex-stream",
+        "lossModel": "quadratic",
+        "geometry": {
+          "L": 0,
+          "D": 0.2,
+          "eps": 0
+        },
+        "K": 0,
+        "rQuad": 4200
+      }
+    },
+    {
+      "id": "fan.core",
+      "name": "HEX fans",
+      "from": "fan.in",
+      "to": "fan.out",
+      "fluid": "air-25C",
+      "component": {
+        "type": "fan",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.12,
+          "eps": 0.0000015
+        },
+        "K": 0.8,
+        "fan": {
+          "coeffs": [
+            280,
+            0,
+            -5200
+          ],
+          "dpMin": 0
+        }
+      }
+    },
+    {
+      "id": "e-tank-pump",
+      "name": "Suction",
+      "from": "tank",
+      "to": "pump.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.8,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 0.5
+      }
+    },
+    {
+      "id": "e-pump-filter",
+      "name": "Discharge",
+      "from": "pump.out",
+      "to": "filter.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.6,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 0.3
+      }
+    },
+    {
+      "id": "e-filter-supply",
+      "name": "Supply header",
+      "from": "filter.out",
+      "to": "supplyManifold",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 4.5,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 1.2
+      }
+    },
+    {
+      "id": "e-sup-gpu0",
+      "name": "Branch 0 supply",
+      "from": "supplyManifold",
+      "to": "gpu0.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-gpu0-ret",
+      "name": "Branch 0 return",
+      "from": "gpu0.out",
+      "to": "returnManifold",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-sup-gpu1",
+      "name": "Branch 1 supply",
+      "from": "supplyManifold",
+      "to": "gpu1.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-gpu1-ret",
+      "name": "Branch 1 return",
+      "from": "gpu1.out",
+      "to": "returnManifold",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-sup-gpu2",
+      "name": "Branch 2 supply",
+      "from": "supplyManifold",
+      "to": "gpu2.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-gpu2-ret",
+      "name": "Branch 2 return",
+      "from": "gpu2.out",
+      "to": "returnManifold",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-sup-gpu3",
+      "name": "Branch 3 supply",
+      "from": "supplyManifold",
+      "to": "gpu3.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-gpu3-ret",
+      "name": "Branch 3 return",
+      "from": "gpu3.out",
+      "to": "returnManifold",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.45,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-ret-hex",
+      "name": "Return header",
+      "from": "returnManifold",
+      "to": "hex.liqIn",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 3.8,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "e-hex-tank",
+      "name": "Cooled return",
+      "from": "hex.liqOut",
+      "to": "tank",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 2.2,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-air-fan",
+      "name": "Fan inlet",
+      "from": "airIn",
+      "to": "fan.in",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.16,
+          "eps": 0
+        },
+        "K": 0.4
+      }
+    },
+    {
+      "id": "e-fan-hex",
+      "name": "Fan to HEX",
+      "from": "fan.out",
+      "to": "hex.airIn",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.2,
+          "D": 0.16,
+          "eps": 0
+        },
+        "K": 0.3
+      }
+    },
+    {
+      "id": "e-hex-exh",
+      "name": "HEX exhaust",
+      "from": "hex.airOut",
+      "to": "airOut",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.35,
+          "D": 0.16,
+          "eps": 0
+        },
+        "K": 0.5
+      }
+    }
+  ],
+  "couplings": [
+    {
+      "id": "hex.hx",
+      "name": "Air–liquid HEX",
+      "type": "hex",
+      "hotLinkId": "hex.liquid",
+      "coldLinkId": "hex.air",
+      "ua": 520,
+      "arrangement": "crossflow-unmixed"
+    }
+  ]
+}

@@ -35,7 +35,7 @@ These are the workflows the original GUI was built around. A web clone that only
 | W5 | Read $P$ on nodes and $Q,\Delta p,V,\mathrm{Re}$ on links **on the canvas** | “On-screen display of results” |
 | W6 | Bar chart of branch flows; pump curve vs system curve | Primary design plot in liquid-cooling papers |
 | W7 | Table + CSV export in the current display units | Advertised export |
-| W8 | Save / load versioned JSON (`schemaVersion` 0.1.0) | Original format is unpublished; this is ours |
+| W8 | Save / load versioned JSON (`version` 0.1.0) | Original format is unpublished; this is ours |
 | W9 | Duplicate project, change one parameter, compare $Q$/$P$ side by side | “What-if” / contingency, every paper |
 | W10 | Size a component to a target $Q$ or $\Delta p$ (orifice diameter, pump speed) | MF03 orifice balancing; advertised “size individual components” |
 
@@ -170,7 +170,7 @@ These tests have no canvas. They protect the engine. If any fail, do not ship a 
 | Test | Input | Expect |
 |---|---|---|
 | U1 laminar $f$ | $\mathrm{Re}=1000$ | $f = 0.064$ |
-| U2 Swamee–Jain | $\mathrm{Re}=88060$, $\varepsilon/D=4.5\mathrm{e}{-5}/0.05$ | $f \approx 0.022278$ (golden A pipe-1) |
+| U2 Churchill f | $\mathrm{Re}=88060$, $\varepsilon/D=4.5\mathrm{e}{-5}/0.05$ | $f \approx 0.022280$ (golden A pipe-1) |
 | U3 Re definition | $Q=3.471278803556\mathrm{e}{-3}$, $D=0.05$ | $\mathrm{Re}\approx 88060$ |
 | U4 area | $D=0.05$ | $A=\pi D^2/4$ |
 | U5 water constants | — | $\rho=998.2$, $\mu=1.002\mathrm{e}{-3}$ |
@@ -216,7 +216,7 @@ Load the real example files. No UI.
 | I1 | `examples/series-pipes.hydroflow.json` | Case A $Q$, $P_\mathrm{mid}$, both pipe $\Delta p$ |
 | I2 | `examples/pump-loop.hydroflow.json` | Case B $Q$ and pump $H$ |
 | I3 | `examples/parallel-pipes.hydroflow.json` | Case C each branch and total $Q$ |
-| I4 | schema required fields | file without `schemaVersion` / `nodes` / `links` rejected |
+| I4 | schema required fields | file without `version` / `fluids` / `nodes` / `links` rejected |
 | I5 | round-trip | parse → serialize → parse equals original on semantic fields |
 | I6 | units are display-only | changing display units does not change stored SI $Q$ |
 

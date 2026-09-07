@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/mikeornstein/hydro-flow/docs/schema/hydroflow.project.schema.json",
   "title": "HydroFlowProject",
-  "description": "Versioned project file for the Hydro-Flow web FNM app. SI internally. See docs/MACROFLOW_RESEARCH.md.",
+  "description": "Versioned project file for hydro-flow. Matches src/engine/types.ts. SI internally.",
   "type": "object",
-  "required": ["schemaVersion", "meta", "units", "fluid", "analysis", "nodes", "links"],
+  "required": ["version", "meta", "units", "fluids", "analysis", "nodes", "links", "couplings"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "type": "string", "const": "0.1.0" },
+    "version": { "type": "string", "const": "0.1.0" },
     "meta": {
       "type": "object",
-      "required": ["name"],
+      "required": ["name", "description", "createdAt", "updatedAt"],
       "additionalProperties": false,
       "properties": {
         "name": { "type": "string" },
@@ -21,47 +21,56 @@
     },
     "units": {
       "type": "object",
-      "required": ["system"],
+      "required": ["system", "length", "pressure", "flow", "temperature", "power"],
       "additionalProperties": false,
       "properties": {
         "system": { "enum": ["SI", "IP"] },
-        "length": { "type": "string", "default": "m" },
-        "pressure": { "type": "string", "default": "Pa" },
-        "flow": { "type": "string", "default": "m3/s" },
-        "temperature": { "type": "string", "default": "K" },
-        "power": { "type": "string", "default": "W" }
+        "length": { "enum": ["m", "mm", "in", "ft"] },
+        "pressure": { "enum": ["Pa", "kPa", "bar", "psi"] },
+        "flow": { "enum": ["m3/s", "L/min", "gpm", "cfm"] },
+        "temperature": { "enum": ["K", "C", "F"] },
+        "power": { "enum": ["W", "kW"] }
       }
     },
-    "fluid": {
+    "fluids": {
       "type": "object",
-      "required": ["id", "model"],
-      "properties": {
-        "id": { "type": "string" },
-        "name": { "type": "string" },
-        "model": { "enum": ["constant", "ideal-gas", "polynomial", "table", "coolprop"] },
-        "rho": { "type": "number" },
-        "mu": { "type": "number" },
-        "cp": { "type": "number" },
-        "k": { "type": "number" },
-        "beta": { "type": "number" }
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "name", "phase", "rho", "mu", "cp", "k", "beta", "Tref"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "phase": { "enum": ["liquid", "gas"] },
+          "rho": { "type": "number" },
+          "mu": { "type": "number" },
+          "cp": { "type": "number" },
+          "k": { "type": "number" },
+          "beta": { "type": "number" },
+          "Tref": { "type": "number" }
+        }
       }
     },
     "analysis": {
       "type": "object",
-      "required": ["type", "flowRegime"],
+      "required": ["type", "flowRegime", "energy", "gravity", "convergence"],
+      "additionalProperties": false,
       "properties": {
-        "type": { "enum": ["steady", "transient"] },
-        "flowRegime": { "enum": ["incompressible", "compressible"] },
-        "energy": { "type": "boolean", "default": false },
-        "gravity": { "type": "boolean", "default": true },
+        "type": { "const": "steady" },
+        "flowRegime": { "const": "incompressible" },
+        "energy": { "type": "boolean" },
+        "gravity": { "type": "boolean" },
         "convergence": {
           "type": "object",
+          "required": ["massResidual", "energyResidual", "maxIter", "relaxationP", "relaxationQ"],
+          "additionalProperties": false,
           "properties": {
-            "massResidual": { "type": "number", "default": 1e-8 },
-            "energyResidual": { "type": "number", "default": 1e-6 },
-            "maxIter": { "type": "integer", "default": 200 },
-            "relaxationP": { "type": "number", "default": 0.7 },
-            "relaxationQ": { "type": "number", "default": 0.8 }
+            "massResidual": { "type": "number" },
+            "energyResidual": { "type": "number" },
+            "maxIter": { "type": "integer" },
+            "relaxationP": { "type": "number" },
+            "relaxationQ": { "type": "number" }
           }
         }
       }
@@ -71,17 +80,20 @@
       "minItems": 2,
       "items": {
         "type": "object",
-        "required": ["id", "kind"],
+        "required": ["id", "kind", "x", "y", "z", "fluid"],
+        "additionalProperties": false,
         "properties": {
           "id": { "type": "string" },
-          "kind": { "enum": ["junction", "boundary", "tank", "plenum"] },
+          "kind": { "enum": ["junction", "boundary", "tank"] },
+          "name": { "type": "string" },
           "x": { "type": "number" },
           "y": { "type": "number" },
           "z": { "type": "number" },
-          "elevation": { "type": "number" },
-          "pFixed": { "type": ["number", "null"] },
-          "tFixed": { "type": ["number", "null"] },
-          "volume": { "type": "number" }
+          "fluid": { "type": "string" },
+          "pFixed": { "type": "number" },
+          "tFixed": { "type": "number" },
+          "mdotSource": { "type": "number" },
+          "qSource": { "type": "number" }
         }
       }
     },
@@ -90,68 +102,93 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "from", "to", "component"],
+        "required": ["id", "from", "to", "fluid", "component"],
+        "additionalProperties": false,
         "properties": {
           "id": { "type": "string" },
+          "name": { "type": "string" },
           "from": { "type": "string" },
           "to": { "type": "string" },
+          "fluid": { "type": "string" },
           "component": {
             "type": "object",
-            "required": ["type"],
+            "required": ["type", "lossModel", "geometry", "K"],
+            "additionalProperties": false,
             "properties": {
               "type": {
                 "enum": [
-                  "pipe", "duct", "elbow", "tee", "wye", "cross",
-                  "orifice", "screen", "nozzle", "diffuser",
-                  "valve", "filter", "generic-resistance",
-                  "fan", "pump", "blower",
-                  "heat-sink", "cold-plate", "heat-exchanger",
-                  "emitter", "sprinkler", "lateral"
+                  "pipe", "duct", "orifice", "valve", "pump", "fan",
+                  "filter", "generic-resistance", "cold-plate", "hex-stream", "logical"
                 ]
               },
-              "geometry": { "type": "object" },
               "lossModel": {
-                "enum": [
-                  "darcy-weisbach", "hazen-williams", "k-factor",
-                  "idelchik", "curve", "table"
-                ]
+                "enum": ["darcy-weisbach", "k-factor", "quadratic", "linear"]
+              },
+              "geometry": {
+                "type": "object",
+                "required": ["L", "D", "eps"],
+                "additionalProperties": false,
+                "properties": {
+                  "L": { "type": "number" },
+                  "D": { "type": "number" },
+                  "eps": { "type": "number" },
+                  "dZ": { "type": "number" }
+                }
               },
               "K": { "type": "number" },
-              "curve": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["Q"],
-                  "properties": {
-                    "Q": { "type": "number" },
-                    "dP": { "type": "number" },
-                    "H": { "type": "number" }
+              "rQuad": { "type": "number" },
+              "rLin": { "type": "number" },
+              "opening": { "type": "number" },
+              "pump": {
+                "type": "object",
+                "required": ["coeffs"],
+                "additionalProperties": false,
+                "properties": {
+                  "coeffs": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 1
                   },
-                  "anyOf": [
-                    { "required": ["dP"] },
-                    { "required": ["H"] }
-                  ]
+                  "hMin": { "type": "number" }
                 }
               },
-              "emitter": {
+              "fan": {
                 "type": "object",
+                "required": ["coeffs"],
+                "additionalProperties": false,
                 "properties": {
-                  "k": { "type": "number" },
-                  "x": { "type": "number" }
+                  "coeffs": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 1
+                  },
+                  "dpMin": { "type": "number" }
                 }
               },
-              "heat": {
-                "type": "object",
-                "properties": {
-                  "dissipationW": { "type": "number" },
-                  "htcModel": { "enum": ["none", "nusselt", "ua", "effectiveness-ntu"] }
-                }
-              }
+              "q": { "type": "number" },
+              "rTh": { "type": "number" },
+              "parallelCount": { "type": "integer", "minimum": 1 }
             }
           }
         }
       }
     },
-    "results": { "type": ["object", "null"] }
+    "couplings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "hotLinkId", "coldLinkId", "ua", "arrangement"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "const": "hex" },
+          "hotLinkId": { "type": "string" },
+          "coldLinkId": { "type": "string" },
+          "ua": { "type": "number" },
+          "arrangement": { "enum": ["counterflow", "parallel", "crossflow-unmixed"] }
+        }
+      }
+    }
   }
 }

@@ -28,15 +28,16 @@ Fill `.github/PULL_REQUEST_TEMPLATE.md`. Keep Why, Scope, Tradeoffs, Blast Radiu
 
 One concern per pull request. Five small pull requests beat one large one.
 
-CI must pass. The check is `npm run check`.
+CI must pass. The gates are `npm run check` and `npm test`.
 
 ## Run checks locally
 
 ```bash
 npm install
 npm run check
+npm test
 ```
 
-The check validates project JSON against `docs/schema/hydroflow.project.schema.json`, walks example graphs, and confirms the agent and pull-request files this repo needs.
+`npm run check` validates project JSON against `docs/schema/hydroflow.project.schema.json`, walks example graphs, and confirms the agent and pull-request files this repo needs.
 
-When the solver exists, CI will also run the golden fixtures in `tests/fixtures/goldens.json`. Until then, do not claim a solve is verified.
+`npm test` runs Vitest, including `tests/goldens.test.ts` against `tests/fixtures/goldens.json` (1% on flow).

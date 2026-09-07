@@ -1,62 +1,64 @@
 ---
 name: verify-hydro-flow
-description: Prove hydro-flow behavior. Today that is npm run check against the project schema, example graphs, and goldens file refs. Use when asked to verify, before a PR, or after changing schema, examples, fixtures, or repo process files.
+description: Prove hydro-flow behavior. Run npm run check (schema, examples, goldens ids) and npm test (solver goldens, DLC, hydraulics). Use when asked to verify, before a PR, or after changing schema, examples, fixtures, engine, or UI.
 ---
 
 # Verify hydro-flow
 
-There is no running app yet. The real artifact is `npm run check`. When `apps/web` exists, add a Launch/Drive path that opens the canvas. Do not fake a UI proof.
+The contract gate is `npm run check`. Solver proof is `npm test`. The canvas is `npm run dev`.
 
 ## Launch
 
-No server. Install once from the repo root:
-
 ```bash
 npm install
+npm run check
+npm test
 ```
 
-Ready when `npm run check` prints `all checks passed`.
+Ready when check prints `all checks passed` and Vitest reports all tests passed. For the UI:
+
+```bash
+npm run dev
+```
+
+Open the printed local URL. The default project is the DLC pumped CDU + air-liquid HEX.
 
 ## Doctor
 
-Run this first whenever anything looks off:
-
 ```bash
 npm run check
+npm test
 ```
 
-Pass is exit 0 and the line `all checks passed`. Fail is a `FAIL` line and a nonzero exit. If `ajv` is missing, run `npm install` and retry.
+Check pass is exit 0 and `all checks passed`. Test pass is Vitest exit 0. If `ajv` is missing, run `npm install` and retry.
 
 ## Drive
 
-The harness is the check script, not a browser.
+1. `npm run check` — schema + example graph ids + golden file refs.
+2. `npm test` — Newton/energy solver including `tests/goldens.test.ts` (1% on Q) and `tests/dlcExample.test.ts`.
+3. Optional: `npm run dev`, load the worked example, Solve, open the Proof tab.
 
-1. From the repo root, run `npm run check`.
-2. To prove a single example, keep that file under `examples/*.hydroflow.json` and re-run the check. The script validates every file in that directory against `docs/schema/hydroflow.project.schema.json` and walks node/link ids.
-3. To prove a golden still points at a real graph, edit `tests/fixtures/goldens.json` only with the example. The check fails if a named link or node is missing.
-
-Do not call internal setters or invent a solver run. Solver proof waits for `tests/solver`.
+Do not treat schema-only success as a solver proof.
 
 ## Evidence
-
-Save the check transcript. It is the proof.
 
 ```bash
 mkdir -p /tmp/verify-hydro-flow
 npm run check | tee /tmp/verify-hydro-flow/check.txt
+npm test | tee /tmp/verify-hydro-flow/test.txt
 ```
 
 Proof standards:
 
-- Exercise the committed files, not a rewritten fixture in `/tmp` that never lands.
-- Capture the command output, including every `ok` / `FAIL` line.
-- After a schema or example change, the transcript must include `matches schema` for each touched `examples/*.hydroflow.json` file.
+- Exercise committed files.
+- After a schema or example change, the check transcript must include `matches schema` for each touched `examples/*.hydroflow.json`.
+- After an engine change, `tests/goldens.test.ts` must pass.
 - Cleanup must not delete `/tmp/verify-hydro-flow/`.
 
 ## Cleanup
 
-Nothing to kill. Leave `/tmp/verify-hydro-flow/` in place.
+Leave `/tmp/verify-hydro-flow/` in place. Do not kill the Vite server if you started it.
 
 ## Helpers
 
-`scripts/check.mjs` is the helper. Invoke it only through `npm run check` so the same command CI uses is the one you ran.
+`scripts/check.mjs` only through `npm run check`. Vitest only through `npm test`.

@@ -1,8 +1,10 @@
 {
-  "schemaVersion": "0.1.0",
+  "version": "0.1.0",
   "meta": {
     "name": "Two parallel identical pipes",
-    "description": "Two equal pipes sharing 15 m static head. Golden Case C. Each branch should carry the same Q as a single-pipe model."
+    "description": "Two equal pipes sharing 15 m static head. Golden Case C. Branches must split equally.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
   },
   "units": {
     "system": "SI",
@@ -12,15 +14,18 @@
     "temperature": "K",
     "power": "W"
   },
-  "fluid": {
-    "id": "water-20C",
-    "name": "Water 20 C",
-    "model": "constant",
-    "rho": 998.2,
-    "mu": 0.001002,
-    "cp": 4182,
-    "k": 0.598,
-    "beta": 0.000207
+  "fluids": {
+    "water-20C": {
+      "id": "water-20C",
+      "name": "Water 20 °C",
+      "phase": "liquid",
+      "rho": 998.2,
+      "mu": 0.001002,
+      "cp": 4182,
+      "k": 0.598,
+      "beta": 0.000207,
+      "Tref": 293.15
+    }
   },
   "analysis": {
     "type": "steady",
@@ -29,26 +34,31 @@
     "gravity": true,
     "convergence": {
       "massResidual": 1e-10,
-      "maxIter": 200,
-      "relaxationP": 0.7,
-      "relaxationQ": 0.8
+      "energyResidual": 1e-8,
+      "maxIter": 80,
+      "relaxationP": 0.85,
+      "relaxationQ": 0.7
     }
   },
   "nodes": [
     {
       "id": "res-hi",
       "kind": "boundary",
-      "x": 0, "y": 0, "z": 20,
-      "elevation": 20,
-      "pFixed": 297104.9606,
+      "x": 0,
+      "y": 0,
+      "z": 20,
+      "fluid": "water-20C",
+      "pFixed": 101325,
       "tFixed": 293.15
     },
     {
       "id": "res-lo",
       "kind": "boundary",
-      "x": 240, "y": 0, "z": 5,
-      "elevation": 5,
-      "pFixed": 150269.99015,
+      "x": 240,
+      "y": 0,
+      "z": 5,
+      "fluid": "water-20C",
+      "pFixed": 101325,
       "tFixed": 293.15
     }
   ],
@@ -57,24 +67,26 @@
       "id": "pipe-a",
       "from": "res-hi",
       "to": "res-lo",
+      "fluid": "water-20C",
       "component": {
         "type": "pipe",
         "lossModel": "darcy-weisbach",
-        "K": 1.5,
-        "geometry": { "L": 100, "D": 0.05, "eps": 4.5e-5 }
+        "geometry": { "L": 100, "D": 0.05, "eps": 4.5e-5 },
+        "K": 1.5
       }
     },
     {
       "id": "pipe-b",
       "from": "res-hi",
       "to": "res-lo",
+      "fluid": "water-20C",
       "component": {
         "type": "pipe",
         "lossModel": "darcy-weisbach",
-        "K": 1.5,
-        "geometry": { "L": 100, "D": 0.05, "eps": 4.5e-5 }
+        "geometry": { "L": 100, "D": 0.05, "eps": 4.5e-5 },
+        "K": 1.5
       }
     }
   ],
-  "results": null
+  "couplings": []
 }

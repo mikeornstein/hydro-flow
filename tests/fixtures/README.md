@@ -1,6 +1,6 @@
 # P0 golden fixtures
 
-Hand-calculated reference results for the incompressible Hydro-Flow solver.
+Reference results for the incompressible hydro-flow solver (`src/engine`). Values in `goldens.json` are this engine's converged SI results. Acceptance is 1% relative on flow.
 
 ## Fluid and constants
 
@@ -11,26 +11,25 @@ Hand-calculated reference results for the incompressible Hydro-Flow solver.
 | g | 9.80665 m/s² |
 | Atmospheric pressure | 101325 Pa |
 | Pipe roughness ε | 4.5×10⁻⁵ m |
-| Turbulent friction | Swamee–Jain |
-| Laminar friction | 64/Re when Re < 2300 |
+| Friction | Churchill (1977) Darcy factor, all Re |
 
-Pipe pressure drop used for the goldens:
+Pipe pressure drop:
 
 ```
-Δp = (f L/D + K) · ρ V² / 2
-V = Q / (π D² / 4)
-Re = ρ V D / μ
+Δp_friction = (f L/D + K) · ρ V |V| / 2
+P_from − P_to = Δp_friction + ρ g (z_to − z_from) − Δp_pump
 ```
 
-Boundary `pFixed` values in the example JSON files already include `Patm + ρ g z`. If the solver *also* applies elevation from node `elevation` / `z`, use `pFixed = Patm` instead or you will double-count hydrostatic head.
+Boundary `pFixed` is absolute pressure. Reservoirs use Patm. Hydrostatic head is applied from node `z`. Do not bake `ρ g z` into `pFixed` or head is double-counted.
+
+Pump head is a polynomial `H(Q) = c0 + c1 Q + c2 Q²` (m, Q in m³/s), stored as `component.pump.coeffs`.
 
 ## Cases
 
 See `goldens.json`.
 
 - **A** `examples/series-pipes.hydroflow.json` — two pipes in series, 15 m static head.
-- **B** `examples/pump-loop.hydroflow.json` — pump `H = 30 − 2000 Q²` against the Case-C single-pipe system curve plus 15 m lift.
-- **C** `examples/parallel-pipes.hydroflow.json` — two identical pipes; each branch matches a single-pipe 15 m-head solution.
-- **D** emitter `Q = k P^x` with x = 0.5 calibrated at 2.0 L/h @ 100 kPa.
-
-P0 acceptance from the research report: computed flow within **1 %** of these Q values.
+- **B** `examples/pump-loop.hydroflow.json` — pump `H = 30 − 2000 Q²` against one pipe plus 15 m lift.
+- **C** `examples/parallel-pipes.hydroflow.json` — two identical pipes; equal split.
+- **D** emitter `Q = k P^x` — not implemented; `file` is null.
+- **E** `examples/dlc-pumped-cooling.hydroflow.json` — compiled DLC worked example.
