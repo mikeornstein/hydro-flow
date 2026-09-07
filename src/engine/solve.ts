@@ -575,7 +575,8 @@ export function massImbalance(
   const imb: Record<string, number> = {};
   for (const n of project.nodes) {
     if (n.kind !== "junction") continue;
-    let s = n.mdotSource ?? 0;
+    const rho = project.fluids[n.fluid]?.rho ?? 1;
+    let s = (n.mdotSource ?? 0) / rho;
     for (const l of project.links) {
       const Q = result.links[l.id].Q;
       if (l.to === n.id) s += Q;
