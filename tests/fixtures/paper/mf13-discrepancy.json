@@ -1,0 +1,6 @@
+{
+  "paper": "MF13",
+  "status": "blocked",
+  "reason": "Design I far-passage bias requires tee/manifold inertia. Friction-only headers prefer near-inlet passages (opposite of the paper). A first momentum-recovery attempt destabilized MF03 and was reverted rather than special-cased.",
+  "next": "Implement verified Idelchik dividing/combining tee K(q) with unit tests before replaying MF13."
+}
