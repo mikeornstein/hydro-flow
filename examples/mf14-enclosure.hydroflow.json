@@ -1,0 +1,386 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF14 enclosure FNM (handbook impedance)",
+    "description": "MF14 toward published 65.8 CFM total. Synthetic fan endpoints + EMI K; card Δp from Darcy not CFD table.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "air-25C": {
+      "id": "air-25C",
+      "name": "Air 25 °C",
+      "phase": "gas",
+      "rho": 1.2,
+      "mu": 0.0000185,
+      "cp": 1007,
+      "k": 0.026,
+      "beta": 0.0033,
+      "Tref": 298.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-9,
+      "energyResidual": 1e-8,
+      "maxIter": 250,
+      "relaxationP": 0.65,
+      "relaxationQ": 0.65
+    }
+  },
+  "nodes": [
+    {
+      "id": "ambient",
+      "kind": "boundary",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    },
+    {
+      "id": "after-inlet",
+      "kind": "junction",
+      "x": 40,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "before-fans",
+      "kind": "junction",
+      "x": 200,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-25C"
+    },
+    {
+      "id": "exit",
+      "kind": "boundary",
+      "x": 280,
+      "y": 80,
+      "z": 0,
+      "fluid": "air-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    }
+  ],
+  "links": [
+    {
+      "id": "inlet-emi",
+      "name": "Inlet EMI 51% open",
+      "from": "ambient",
+      "to": "after-inlet",
+      "fluid": "air-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.007873999999999999,
+          "eps": 0,
+          "A": 0.02526962688
+        },
+        "K": 2.8446751249519417
+      }
+    },
+    {
+      "id": "pass-1",
+      "name": "Card passage 1",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-2",
+      "name": "Card passage 2",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-3",
+      "name": "Card passage 3",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-4",
+      "name": "Card passage 4",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-5",
+      "name": "Card passage 5",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-6",
+      "name": "Card passage 6",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-7",
+      "name": "Card passage 7",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-8",
+      "name": "Card passage 8",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-9",
+      "name": "Card passage 9",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-10",
+      "name": "Card passage 10",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-11",
+      "name": "Card passage 11",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "pass-12",
+      "name": "Card passage 12",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.026586915887850466,
+          "eps": 0.00015,
+          "A": 0.0028903168
+        },
+        "K": 2.5
+      }
+    },
+    {
+      "id": "bypass",
+      "name": "End-wall bypass",
+      "from": "after-inlet",
+      "to": "before-fans",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15239999999999998,
+          "D": 0.019352380952380954,
+          "eps": 0.00015,
+          "A": 0.002064512
+        },
+        "K": 1.5
+      }
+    },
+    {
+      "id": "fan-L",
+      "name": "Axial fan L",
+      "from": "before-fans",
+      "to": "exit",
+      "fluid": "air-25C",
+      "component": {
+        "type": "fan",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.08,
+          "eps": 0
+        },
+        "K": 1.9223375624759709,
+        "fan": {
+          "coeffs": [
+            59.781338399999996,
+            0,
+            -132541.93865375192
+          ],
+          "dpMin": 0
+        }
+      }
+    },
+    {
+      "id": "fan-R",
+      "name": "Axial fan R",
+      "from": "before-fans",
+      "to": "exit",
+      "fluid": "air-25C",
+      "component": {
+        "type": "fan",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.08,
+          "eps": 0
+        },
+        "K": 1.9223375624759709,
+        "fan": {
+          "coeffs": [
+            59.781338399999996,
+            0,
+            -132541.93865375192
+          ],
+          "dpMin": 0
+        }
+      }
+    }
+  ],
+  "couplings": []
+}

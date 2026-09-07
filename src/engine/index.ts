@@ -14,3 +14,6 @@ export * from "./examples/mf03OrificeBalance";
 export * from "./examples/mf11Composite";
 export * from "./examples/mf13CardCabinet";
 export * from "./examples/mf04Microchannel";
+export * from "./examples/mf06AltitudeDensity";
+export * from "./examples/mf14Enclosure";
+export * from "./examples/mf01Multiplicity";
