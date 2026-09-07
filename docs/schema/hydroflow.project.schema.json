@@ -93,7 +93,16 @@
           "pFixed": { "type": "number" },
           "tFixed": { "type": "number" },
           "mdotSource": { "type": "number" },
-          "qSource": { "type": "number" }
+          "qSource": { "type": "number" },
+          "tee": {
+            "type": "object",
+            "description": "Junction-only. Idelchik sharp 90° tee; branch names the side-branch link, the remaining incident links are the equal-area run.",
+            "required": ["branch"],
+            "additionalProperties": false,
+            "properties": {
+              "branch": { "type": "string" }
+            }
+          }
         }
       }
     },

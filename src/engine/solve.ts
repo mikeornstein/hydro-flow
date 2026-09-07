@@ -2,6 +2,7 @@ import { solveLinear } from "./linalg";
 import { dDp_dQ, linkDeltaP } from "./constitutive";
 import { hexHeat, epsilonNtu } from "./thermo";
 import { areaFromD } from "./friction";
+import { teeLegDrops, type TeeLegFlow } from "./tee";
 import type {
   CouplingResult,
   Fluid,
@@ -14,6 +15,15 @@ import type {
   SolveResult,
 } from "./types";
 
+interface TeeJunction {
+  /** Incident link indices; legs[i] and sign[i] belong to links[i]. */
+  links: number[];
+  legs: TeeLegFlow[];
+  /** +1 when the link points into the node, −1 when it leaves it. */
+  sign: number[];
+  rho: number;
+}
+
 interface Network {
   project: Project;
   nodeIndex: Map<string, number>;
@@ -23,6 +33,96 @@ interface Network {
   freeNodes: number[];
   fixedP: Map<string, number>;
   gravity: boolean;
+  tees: TeeJunction[];
+}
+
+function linkArea(link: LinkDef): number {
+  const g = link.component.geometry;
+  const A = g.A ?? (g.D > 0 ? areaFromD(g.D) : 0);
+  return A * Math.max(1, link.component.parallelCount ?? 1);
+}
+
+function assembleTees(project: Project): TeeJunction[] {
+  const tees: TeeJunction[] = [];
+  for (const node of project.nodes) {
+    if (!node.tee) continue;
+    if (node.kind !== "junction") {
+      throw new Error(`Node ${node.id}: tee needs a junction node`);
+    }
+    const links: number[] = [];
+    project.links.forEach((l, k) => {
+      if (l.from === node.id || l.to === node.id) links.push(k);
+    });
+    if (links.length < 2 || links.length > 3) {
+      throw new Error(`Node ${node.id}: tee needs 2 or 3 incident links, has ${links.length}`);
+    }
+    const branchId = node.tee.branch;
+    if (!links.some((k) => project.links[k].id === branchId)) {
+      throw new Error(`Node ${node.id}: tee branch ${branchId} is not an incident link`);
+    }
+    const legs: TeeLegFlow[] = links.map((k) => ({
+      into: 0,
+      area: linkArea(project.links[k]),
+      role: project.links[k].id === branchId ? "branch" : "run",
+    }));
+    if (legs.some((leg) => !(leg.area > 0))) {
+      throw new Error(`Node ${node.id}: tee legs need a flow area (D or geometry.A)`);
+    }
+    const runs = legs.filter((leg) => leg.role === "run");
+    if (runs.length === 2 && Math.abs(runs[0].area - runs[1].area) > 1e-6 * runs[0].area) {
+      throw new Error(`Node ${node.id}: tee run legs need equal areas`);
+    }
+    const fluid = project.fluids[node.fluid];
+    if (!fluid) throw new Error(`Missing fluid ${node.fluid}`);
+    tees.push({
+      links,
+      legs,
+      sign: links.map((k) => (project.links[k].to === node.id ? 1 : -1)),
+      rho: fluid.rho,
+    });
+  }
+  return tees;
+}
+
+/** Static drop along each link's own flow direction from tee junctions at its ends. */
+function teeDropsByLink(net: Network, Q: number[]): number[] {
+  const drop = new Array<number>(net.links.length).fill(0);
+  for (const t of net.tees) {
+    t.links.forEach((k, i) => {
+      t.legs[i].into = t.sign[i] * Q[k];
+    });
+    const d = teeLegDrops(t.legs, t.rho);
+    t.links.forEach((k, i) => {
+      drop[k] += d[i];
+    });
+  }
+  return drop;
+}
+
+function flowDir(Q: number): number {
+  return Q >= 0 ? 1 : -1;
+}
+
+/** Central-difference ∂(tee drop on link i)/∂Q_j for every leg pair of every junction. */
+function addTeeJacobian(net: Network, Q: number[], J: number[][], col0: number): void {
+  for (const t of net.tees) {
+    t.links.forEach((k, i) => {
+      t.legs[i].into = t.sign[i] * Q[k];
+    });
+    t.links.forEach((kj, j) => {
+      const h = Math.max(1e-9, 1e-6 * Math.abs(Q[kj]));
+      const into = t.legs[j].into;
+      t.legs[j].into = into + h;
+      const plus = teeLegDrops(t.legs, t.rho);
+      t.legs[j].into = into - h;
+      const minus = teeLegDrops(t.legs, t.rho);
+      t.legs[j].into = into;
+      t.links.forEach((ki, i) => {
+        const dDrop = (t.sign[j] * (plus[i] - minus[i])) / (2 * h);
+        J[ki][col0 + kj] -= flowDir(Q[ki]) * dDrop;
+      });
+    });
+  }
 }
 
 function assemble(project: Project): Network {
@@ -59,6 +159,7 @@ function assemble(project: Project): Network {
     freeNodes,
     fixedP,
     gravity: project.analysis.gravity,
+    tees: assembleTees(project),
   };
 }
 
@@ -97,8 +198,9 @@ function pressureOf(net: Network, P: number[], id: string): number {
 /**
  * Newton–Raphson on {P_free, Q_links}.
  *
- * Link residual:  P_from − P_to − Δp(Q) = 0
+ * Link residual:  P_from − P_to − Δp(Q) − (tee drops at either end) = 0
  * Node residual:  Σ Q_in − Σ Q_out + mdot_source/ρ = 0
+ * A node with `tee` holds the static pressure of the tee's common channel.
  */
 function solveHydraulics(net: Network): {
   P: number[];
@@ -132,6 +234,7 @@ function solveHydraulics(net: Network): {
     };
 
     // Link momentum residuals
+    const teeDrop = teeDropsByLink(net, Q);
     for (let k = 0; k < nL; k++) {
       const link = net.links[k];
       const fluid = fluidOf(net, link.fluid);
@@ -139,7 +242,7 @@ function solveHydraulics(net: Network): {
       const Pt = pressureOf(net, P, link.to);
       const evald = linkDeltaP(link, Q[k], fluid, nodesById, net.gravity);
       const row = k;
-      r[row] = Pf - Pt - evald.dP;
+      r[row] = Pf - Pt - evald.dP - flowDir(Q[k]) * teeDrop[k];
       const a = dDp_dQ(link, Q[k], fluid, nodesById, net.gravity);
       J[row][nFree + k] = -a;
       const iFrom = net.nodeIndex.get(link.from)!;
@@ -149,6 +252,7 @@ function solveHydraulics(net: Network): {
       if (cF !== null) J[row][cF] += 1;
       if (cT !== null) J[row][cT] -= 1;
     }
+    addTeeJacobian(net, Q, J, nFree);
 
     // Nodal continuity for free nodes (volumetric, incompressible, per-fluid density)
     for (let fi = 0; fi < nFree; fi++) {
@@ -401,6 +505,7 @@ export function solveSteady(project: Project): SolveResult {
 
   const links: Record<string, LinkResult> = {};
   const nodesById = nodeMap(net);
+  const teeDrop = teeDropsByLink(net, hyd.Q);
   for (let k = 0; k < net.links.length; k++) {
     const link = net.links[k];
     const fluid = fluidOf(net, link.fluid);
@@ -421,7 +526,7 @@ export function solveSteady(project: Project): SolveResult {
     links[link.id] = {
       Q: hyd.Q[k],
       mdot,
-      dP: ev.dP,
+      dP: ev.dP + flowDir(hyd.Q[k]) * teeDrop[k],
       V: ev.V,
       Re: ev.Re,
       f: ev.f,
