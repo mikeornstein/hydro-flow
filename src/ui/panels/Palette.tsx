@@ -14,7 +14,12 @@ const ITEMS: { kind: EquipmentKind; label: string; domain: string }[] = [
   { kind: "boundary", label: "Boundary", domain: "air" },
 ];
 
-export function Palette() {
+export interface PaletteProps {
+  /** Runs after the existing pending-kind store action. */
+  onChoose?(): void;
+}
+
+export function Palette({ onChoose }: PaletteProps) {
   const pending = useStore((s) => s.pendingKind);
   const setPending = useStore((s) => s.setPendingKind);
   return (
@@ -27,7 +32,10 @@ export function Palette() {
             <button
               type="button"
               className={`palette-item domain-${it.domain} ${pending === it.kind ? "is-active" : ""}`}
-              onClick={() => setPending(pending === it.kind ? null : it.kind)}
+              onClick={() => {
+                setPending(pending === it.kind ? null : it.kind);
+                onChoose?.();
+              }}
             >
               <span className="swatch" />
               {it.label}
