@@ -4,16 +4,19 @@ import { dlcPumpedCoolingDiagram } from "../src/engine/examples/dlcPumpedCooling
 import { solveSteady } from "../src/engine/solve";
 import { polyval } from "../src/engine/thermo";
 import { G, type Project } from "../src/engine/types";
+import { verifySolution } from "../src/engine/verify";
 import goldensJson from "./fixtures/goldens.json";
 import seriesPipes from "../examples/series-pipes.hydroflow.json";
 import pumpLoop from "../examples/pump-loop.hydroflow.json";
 import parallelPipes from "../examples/parallel-pipes.hydroflow.json";
+import emitterProject from "../examples/emitter.hydroflow.json";
 import dlcProject from "../examples/dlc-pumped-cooling.hydroflow.json";
 
 const projects: Record<string, Project> = {
   "examples/series-pipes.hydroflow.json": seriesPipes as Project,
   "examples/pump-loop.hydroflow.json": pumpLoop as Project,
   "examples/parallel-pipes.hydroflow.json": parallelPipes as Project,
+  "examples/emitter.hydroflow.json": emitterProject as Project,
   "examples/dlc-pumped-cooling.hydroflow.json": dlcProject as Project,
 };
 
@@ -30,7 +33,7 @@ interface GoldenFile {
   }[];
 }
 
-const goldens = goldensJson as GoldenFile;
+const goldens = goldensJson as unknown as GoldenFile;
 const flowTol = goldens.tolerance.flowRelative;
 const pTol = goldens.tolerance.pressureRelative;
 
@@ -58,6 +61,8 @@ describe("P0 goldens vs this solver", () => {
       expect(project, `fixture ${c.file}`).toBeTruthy();
       const result = solveSteady(project);
       expect(result.status).toBe("converged");
+      const report = verifySolution(project, result);
+      expect(report.checks.filter((k) => !k.pass), "continuity and momentum residuals").toEqual([]);
       for (const [id, exp] of Object.entries(c.expected?.links ?? {})) {
         const link = result.links[id];
         expect(link, `missing link ${id}`).toBeTruthy();

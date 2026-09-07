@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { numericDiffs, referenceGoldens } from "./goldens-reference.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SCHEMA_PATH = join(ROOT, "docs/schema/hydroflow.project.schema.json");
@@ -256,6 +257,26 @@ if (goldens) {
     }
     if (expectedLinks.length || expectedNodes.length) {
       ok(`golden ${goldenCase.id} ids match ${goldenCase.file}`);
+    }
+  }
+
+  let reference = null;
+  try {
+    reference = referenceGoldens();
+  } catch (err) {
+    fail(`scripts/goldens-reference.mjs failed: ${err.message}`);
+  }
+  for (const goldenCase of reference ? goldens.cases ?? [] : []) {
+    const expected = reference[goldenCase.id];
+    if (!expected) {
+      ok(`golden ${goldenCase.id} is an engine regression pin (no hand-calculated reference)`);
+      continue;
+    }
+    const diffs = numericDiffs(expected, goldenCase.expected ?? {}, 1e-9);
+    if (diffs.length) {
+      fail(`golden ${goldenCase.id} drifted from scripts/goldens-reference.mjs: ${diffs.join("; ")}`);
+    } else {
+      ok(`golden ${goldenCase.id} matches scripts/goldens-reference.mjs`);
     }
   }
 }

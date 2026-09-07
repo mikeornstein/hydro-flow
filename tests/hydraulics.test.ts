@@ -1,9 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { solveSteady } from "../src/engine/solve";
 import { WATER } from "../src/engine/fluids";
-import { darcyWeisbach, hagenPoiseuille } from "../src/engine/friction";
-import { G, P_ATM, type Project } from "../src/engine/types";
+import { linkDeltaP } from "../src/engine/constitutive";
+import { areaFromD, darcyWeisbach, hagenPoiseuille } from "../src/engine/friction";
+import { G, P_ATM, type LinkDef, type NodeDef, type Project } from "../src/engine/types";
 import { verifySolution } from "../src/engine/verify";
+import seriesPipes from "../examples/series-pipes.hydroflow.json";
+
+function relErr(actual: number, expected: number): number {
+  return Math.abs(actual - expected) / Math.abs(expected);
+}
+
+function swameeJain(Re: number, epsOverD: number): number {
+  return 0.25 / Math.log10(epsOverD / 3.7 + 5.74 / Re ** 0.9) ** 2;
+}
 
 const conv = {
   massResidual: 1e-10,
@@ -220,6 +230,91 @@ describe("hydraulics", () => {
       K: 1.5,
     }).dp;
     expect(r.nodes.a.P - r.nodes.b.P).toBeCloseTo(dp1 + dp2, 2);
+  });
+
+  it("U2 turbulent Δp agrees with an independent Swamee–Jain evaluation", () => {
+    const L = 50;
+    const D = 0.05;
+    const eps = 4.5e-5;
+    const K = 0.5;
+    const Q = 3.471278803556e-3;
+    const dw = darcyWeisbach({ Q, L, D, eps, rho: WATER.rho, mu: WATER.mu, K });
+    const V = Q / areaFromD(D);
+    const Re = (WATER.rho * V * D) / WATER.mu;
+    const independent = ((swameeJain(Re, eps / D) * L) / D + K) * WATER.rho * V * V * 0.5;
+    expect(Re).toBeGreaterThan(2300);
+    expect(relErr(dw.dp, independent)).toBeLessThan(5e-3);
+    expect(relErr(dw.f, swameeJain(Re, eps / D))).toBeLessThan(5e-3);
+  });
+
+  it("U3 minor loss only: Δp = K ρ V² / 2 with the sign of Q", () => {
+    const D = 0.05;
+    const K = 1.5;
+    const nodes: Record<string, NodeDef> = {
+      a: { id: "a", kind: "junction", x: 0, y: 0, z: 0, fluid: "water" },
+      b: { id: "b", kind: "junction", x: 1, y: 0, z: 0, fluid: "water" },
+    };
+    const link: LinkDef = {
+      id: "k",
+      from: "a",
+      to: "b",
+      fluid: "water",
+      component: { type: "valve", lossModel: "k-factor", geometry: { L: 0, D, eps: 0 }, K },
+    };
+    for (const Q of [2e-3, -2e-3]) {
+      const V = Q / areaFromD(D);
+      const expected = K * WATER.rho * V * Math.abs(V) * 0.5;
+      const ev = linkDeltaP(link, Q, WATER, nodes, true);
+      expect(relErr(ev.dP, expected)).toBeLessThan(1e-12);
+      expect(ev.f).toBeUndefined();
+    }
+  });
+
+  it("U4 hydrostatic only: 15 m of water is 146834.97045 Pa, applied once", () => {
+    const nodes: Record<string, NodeDef> = {
+      lo: { id: "lo", kind: "junction", x: 0, y: 0, z: 0, fluid: "water" },
+      hi: { id: "hi", kind: "junction", x: 0, y: 0, z: 15, fluid: "water" },
+    };
+    const link: LinkDef = {
+      id: "riser",
+      from: "lo",
+      to: "hi",
+      fluid: "water",
+      component: { type: "pipe", lossModel: "darcy-weisbach", geometry: { L: 15, D: 0.05, eps: 0 }, K: 0 },
+    };
+    expect(relErr(linkDeltaP(link, 0, WATER, nodes, true).dP, 146834.97045)).toBeLessThan(1e-9);
+    expect(linkDeltaP(link, 0, WATER, nodes, false).dP).toBe(0);
+  });
+
+  it("15 m lift encoded three ways gives one Q (Golden A topology)", () => {
+    const base = seriesPipes as unknown as Project;
+    const rho = base.fluids["water-20C"].rho;
+    const nodeZ = Object.fromEntries(base.nodes.map((n) => [n.id, n.z]));
+
+    const inPressure = structuredClone(base);
+    inPressure.analysis.gravity = false;
+    for (const n of inPressure.nodes) {
+      if (n.pFixed !== undefined) n.pFixed += rho * G * n.z;
+    }
+
+    const onLinks = structuredClone(base);
+    for (const n of onLinks.nodes) n.z = 0;
+    for (const l of onLinks.links) l.component.geometry.dZ = nodeZ[l.to] - nodeZ[l.from];
+
+    const [fromNodes, fromPressure, fromLinks] = [base, inPressure, onLinks].map((p) => {
+      const r = solveSteady(p);
+      expect(r.status).toBe("converged");
+      expect(verifySolution(p, r).pass).toBe(true);
+      return r;
+    });
+    const Q = fromNodes.links["pipe-1"].Q;
+    const doubleCounted = "a double-counted 15 m head would move Q by 41%";
+    expect(relErr(fromPressure.links["pipe-1"].Q, Q), doubleCounted).toBeLessThan(1e-6);
+    expect(relErr(fromLinks.links["pipe-1"].Q, Q), doubleCounted).toBeLessThan(1e-6);
+    expect(relErr(Q, 3.471278803556e-3)).toBeLessThan(1e-2);
+
+    const datumShift = fromPressure.nodes.mid.P - fromNodes.nodes.mid.P;
+    expect(relErr(datumShift, rho * G * nodeZ.mid)).toBeLessThan(1e-6);
   });
 
   it("hydrostatic: elevation only, Q = 0", () => {

@@ -1,6 +1,13 @@
 # P0 golden fixtures
 
-Reference results for the incompressible hydro-flow solver (`src/engine`). Values in `goldens.json` are this engine's converged SI results. Acceptance is 1% relative on flow.
+Reference results for the incompressible hydro-flow solver (`src/engine`). Cases A–D in `goldens.json` are hand calculations produced by `scripts/goldens-reference.mjs`, which shares no code with the engine (Swamee–Jain friction, bisection on the head balance). Case E is an engine regression pin. Acceptance is 1% relative on flow.
+
+```bash
+node scripts/goldens-reference.mjs          # print the reference values
+node scripts/goldens-reference.mjs --write  # regenerate the expected blocks
+```
+
+`npm run check` fails when A–D drift from the script. `npm test` (`tests/goldens.test.ts`) fails when the engine drifts from A–E.
 
 ## Fluid and constants
 
@@ -11,7 +18,8 @@ Reference results for the incompressible hydro-flow solver (`src/engine`). Value
 | g | 9.80665 m/s² |
 | Atmospheric pressure | 101325 Pa |
 | Pipe roughness ε | 4.5×10⁻⁵ m |
-| Friction | Churchill (1977) Darcy factor, all Re |
+| Friction (reference) | Swamee–Jain for Re ≥ 2300, 64/Re below |
+| Friction (engine) | Churchill (1977), all Re; within 0.05% of the reference on these cases |
 
 Pipe pressure drop:
 
@@ -31,5 +39,5 @@ See `goldens.json`.
 - **A** `examples/series-pipes.hydroflow.json` — two pipes in series, 15 m static head.
 - **B** `examples/pump-loop.hydroflow.json` — pump `H = 30 − 2000 Q²` against one pipe plus 15 m lift.
 - **C** `examples/parallel-pipes.hydroflow.json` — two identical pipes; equal split.
-- **D** emitter `Q = k P^x` — not implemented; `file` is null.
+- **D** `examples/emitter.hydroflow.json` — one emitter `Q = k ΔP^x` (x = 0.5, 2.0 L/h at 100 kPa) fed at 150 kPa gauge, discharging to atmosphere.
 - **E** `examples/dlc-pumped-cooling.hydroflow.json` — compiled DLC worked example.

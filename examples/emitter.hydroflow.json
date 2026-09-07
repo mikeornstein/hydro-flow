@@ -1,0 +1,81 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "Single emitter to atmosphere, 150 kPa",
+    "description": "Dripper Q = k ΔP^x calibrated 2.0 L/h at 100 kPa (x = 0.5), fed at 150 kPa gauge and discharging to atmosphere. Golden Case D.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "water-20C": {
+      "id": "water-20C",
+      "name": "Water 20 °C",
+      "phase": "liquid",
+      "rho": 998.2,
+      "mu": 0.001002,
+      "cp": 4182,
+      "k": 0.598,
+      "beta": 0.000207,
+      "Tref": 293.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": true,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 80,
+      "relaxationP": 0.85,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "supply",
+      "kind": "boundary",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "pFixed": 251325,
+      "tFixed": 293.15
+    },
+    {
+      "id": "air",
+      "kind": "boundary",
+      "x": 40,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "pFixed": 101325,
+      "tFixed": 293.15
+    }
+  ],
+  "links": [
+    {
+      "id": "emitter",
+      "from": "supply",
+      "to": "air",
+      "fluid": "water-20C",
+      "component": {
+        "type": "emitter",
+        "lossModel": "k-factor",
+        "geometry": { "L": 0, "D": 0.001, "eps": 0 },
+        "K": 0,
+        "emitter": { "k": 1.756820922316e-9, "x": 0.5 }
+      }
+    }
+  ],
+  "couplings": []
+}
