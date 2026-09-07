@@ -1,0 +1,35 @@
+{
+  "paper": "MF08",
+  "table": "Table 1",
+  "source": "MF08-Air-Cooled-Server.pdf",
+  "units": "CFM",
+  "cases": {
+    "A": {
+      "description": "100% open CPU bypass",
+      "processor_avg": 9.0,
+      "pci_1_6_avg": 9.2,
+      "pci_7_10_avg": 9.6,
+      "total": 172
+    },
+    "B": {
+      "description": "36% open CPU bypass",
+      "processor_avg": 15.8,
+      "pci_1_6_avg": 8.8,
+      "pci_7_10_avg": 8.9,
+      "total": 162
+    },
+    "C": {
+      "description": "36% open CPU bypass + 16 in² additional exhaust",
+      "processor_avg": 19.5,
+      "pci_1_6_avg": 7.6,
+      "pci_7_10_avg": 7.7,
+      "total": 197
+    }
+  },
+  "table2_caseB_FNM_vs_CFD": {
+    "FNM": { "processor_avg": 15.8, "total": 162 },
+    "CFD": { "processor_avg": 18.0, "total": 151 }
+  },
+  "goals": { "processor_CFM": 14, "pci_CFM": 6 },
+  "reconstruction": "blocked_on_vendor_fan_curves_and_full_impedance_map"
+}

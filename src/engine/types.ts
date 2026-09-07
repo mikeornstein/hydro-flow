@@ -119,6 +119,8 @@ export interface LinkComponent {
     eps: number;
     /** Elevation change z_to − z_from if not taken from nodes. */
     dZ?: number;
+    /** Optional flow area (m²). When set, V = Q/A while D remains the hydraulic diameter. */
+    A?: number;
   };
   /** Minor-loss K based on velocity in D. */
   K: number;

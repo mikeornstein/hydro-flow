@@ -132,7 +132,8 @@
                   "L": { "type": "number" },
                   "D": { "type": "number" },
                   "eps": { "type": "number" },
-                  "dZ": { "type": "number" }
+                  "dZ": { "type": "number" },
+                  "A": { "type": "number", "description": "Optional flow area m²; D is then hydraulic diameter only." }
                 }
               },
               "K": { "type": "number" },
