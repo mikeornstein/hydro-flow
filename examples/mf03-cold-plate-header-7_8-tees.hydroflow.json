@@ -1,0 +1,594 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF03 cold plate header 7/8\" (Idelchik tees)",
+    "description": "U-header 7-tube cold plate from MF03. Header ID 7/8\", laterals 1/4\"×7\" @ 1\" pitch, Q=5 gpm water. Idelchik sharp 90° tees at every junction.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "water-20C": {
+      "id": "water-20C",
+      "name": "Water 20 °C",
+      "phase": "liquid",
+      "rho": 998.2,
+      "mu": 0.001002,
+      "cp": 4182,
+      "k": 0.598,
+      "beta": 0.000207,
+      "Tref": 293.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 200,
+      "relaxationP": 0.7,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "inlet",
+      "kind": "junction",
+      "name": "Inlet",
+      "x": -40,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "mdotSource": 0.31488317023240003
+    },
+    {
+      "id": "outlet",
+      "kind": "boundary",
+      "name": "Outlet",
+      "x": -40,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "pFixed": 101325,
+      "tFixed": 293.15
+    },
+    {
+      "id": "F0",
+      "kind": "junction",
+      "name": "Feed tee 1",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-1"
+      }
+    },
+    {
+      "id": "C0",
+      "kind": "junction",
+      "name": "Collect tee 1",
+      "x": 0,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-1"
+      }
+    },
+    {
+      "id": "F1",
+      "kind": "junction",
+      "name": "Feed tee 2",
+      "x": 40,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-2"
+      }
+    },
+    {
+      "id": "C1",
+      "kind": "junction",
+      "name": "Collect tee 2",
+      "x": 40,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-2"
+      }
+    },
+    {
+      "id": "F2",
+      "kind": "junction",
+      "name": "Feed tee 3",
+      "x": 80,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-3"
+      }
+    },
+    {
+      "id": "C2",
+      "kind": "junction",
+      "name": "Collect tee 3",
+      "x": 80,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-3"
+      }
+    },
+    {
+      "id": "F3",
+      "kind": "junction",
+      "name": "Feed tee 4",
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-4"
+      }
+    },
+    {
+      "id": "C3",
+      "kind": "junction",
+      "name": "Collect tee 4",
+      "x": 120,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-4"
+      }
+    },
+    {
+      "id": "F4",
+      "kind": "junction",
+      "name": "Feed tee 5",
+      "x": 160,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-5"
+      }
+    },
+    {
+      "id": "C4",
+      "kind": "junction",
+      "name": "Collect tee 5",
+      "x": 160,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-5"
+      }
+    },
+    {
+      "id": "F5",
+      "kind": "junction",
+      "name": "Feed tee 6",
+      "x": 200,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-6"
+      }
+    },
+    {
+      "id": "C5",
+      "kind": "junction",
+      "name": "Collect tee 6",
+      "x": 200,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-6"
+      }
+    },
+    {
+      "id": "F6",
+      "kind": "junction",
+      "name": "Feed tee 7",
+      "x": 240,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-7"
+      }
+    },
+    {
+      "id": "C6",
+      "kind": "junction",
+      "name": "Collect tee 7",
+      "x": 240,
+      "y": 80,
+      "z": 0,
+      "fluid": "water-20C",
+      "tee": {
+        "branch": "cross-7"
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "in-F0",
+      "name": "Inlet to feed",
+      "from": "inlet",
+      "to": "F0",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0127,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0.5
+      }
+    },
+    {
+      "id": "feed-0",
+      "name": "Feed-1",
+      "from": "F0",
+      "to": "F1",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "feed-1",
+      "name": "Feed-2",
+      "from": "F1",
+      "to": "F2",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "feed-2",
+      "name": "Feed-3",
+      "from": "F2",
+      "to": "F3",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "feed-3",
+      "name": "Feed-4",
+      "from": "F3",
+      "to": "F4",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "feed-4",
+      "name": "Feed-5",
+      "from": "F4",
+      "to": "F5",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "feed-5",
+      "name": "Feed-6",
+      "from": "F5",
+      "to": "F6",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-1",
+      "name": "Cross-1",
+      "from": "F0",
+      "to": "C0",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-2",
+      "name": "Cross-2",
+      "from": "F1",
+      "to": "C1",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-3",
+      "name": "Cross-3",
+      "from": "F2",
+      "to": "C2",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-4",
+      "name": "Cross-4",
+      "from": "F3",
+      "to": "C3",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-5",
+      "name": "Cross-5",
+      "from": "F4",
+      "to": "C4",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-6",
+      "name": "Cross-6",
+      "from": "F5",
+      "to": "C5",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "cross-7",
+      "name": "Cross-7",
+      "from": "F6",
+      "to": "C6",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.17779999999999999,
+          "D": 0.00635,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "collect-0",
+      "name": "Collect-1",
+      "from": "C1",
+      "to": "C0",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "collect-1",
+      "name": "Collect-2",
+      "from": "C2",
+      "to": "C1",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "collect-2",
+      "name": "Collect-3",
+      "from": "C3",
+      "to": "C2",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "collect-3",
+      "name": "Collect-4",
+      "from": "C4",
+      "to": "C3",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "collect-4",
+      "name": "Collect-5",
+      "from": "C5",
+      "to": "C4",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "collect-5",
+      "name": "Collect-6",
+      "from": "C6",
+      "to": "C5",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0254,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "C0-out",
+      "name": "Collect to outlet",
+      "from": "C0",
+      "to": "outlet",
+      "fluid": "water-20C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.0127,
+          "D": 0.022224999999999998,
+          "eps": 0.0000015
+        },
+        "K": 0.5
+      }
+    }
+  ],
+  "couplings": []
+}

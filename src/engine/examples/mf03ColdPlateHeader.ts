@@ -11,6 +11,15 @@ export function headerDiameterM(kind: Mf03HeaderKind): number {
   return kind === "7/16" ? (7 / 16) * IN : (7 / 8) * IN;
 }
 
+export interface Mf03HeaderOptions {
+  /**
+   * Idelchik sharp 90° tees at every header/lateral junction (Fig 2 of the
+   * paper). The far end has no run continuation, which the tee model treats as
+   * the q = 1 sharp-elbow limit. Default false keeps the friction-only replay.
+   */
+  tees?: boolean;
+}
+
 /**
  * MF03 U-header cold plate (InterPACK 2003).
  * Seven 1/4" × 7" laterals at 1" pitch; headers 7/16" or 7/8".
@@ -18,11 +27,14 @@ export function headerDiameterM(kind: Mf03HeaderKind): number {
  *
  * Assumptions (documented, not MacroFlow catalogs):
  * - Smooth copper ε = 1.5e-6 m
- * - Branch minor loss K = 0 (friction-dominated laterals; tee K(Re,q) not yet modeled)
+ * - Laterals: friction only (K = 0) unless `tees`, then Idelchik sharp-tee legs
  * - Inlet/outlet K = 0.5 on header velocity
  * - Gravity off (planar cold plate)
  */
-export function mf03ColdPlateHeader(kind: Mf03HeaderKind): Project {
+export function mf03ColdPlateHeader(
+  kind: Mf03HeaderKind,
+  { tees = false }: Mf03HeaderOptions = {},
+): Project {
   const headerD = headerDiameterM(kind);
   const branchD = 0.25 * IN;
   const branchL = 7 * IN;
@@ -57,6 +69,7 @@ export function mf03ColdPlateHeader(kind: Mf03HeaderKind): Project {
   const links: Project["links"] = [];
 
   for (let i = 0; i < 7; i++) {
+    const tee = tees ? { tee: { branch: `cross-${i + 1}` } } : {};
     nodes.push({
       id: `F${i}`,
       kind: "junction",
@@ -65,6 +78,7 @@ export function mf03ColdPlateHeader(kind: Mf03HeaderKind): Project {
       y: 0,
       z: 0,
       fluid: "water-20C",
+      ...tee,
     });
     nodes.push({
       id: `C${i}`,
@@ -74,6 +88,7 @@ export function mf03ColdPlateHeader(kind: Mf03HeaderKind): Project {
       y: 80,
       z: 0,
       fluid: "water-20C",
+      ...tee,
     });
   }
 
@@ -156,9 +171,10 @@ export function mf03ColdPlateHeader(kind: Mf03HeaderKind): Project {
   return {
     version: "0.1.0",
     meta: {
-      name: `MF03 cold plate header ${kind}"`,
+      name: `MF03 cold plate header ${kind}"${tees ? " (Idelchik tees)" : ""}`,
       description:
-        `U-header 7-tube cold plate from MF03. Header ID ${kind}", laterals 1/4"×7" @ 1" pitch, Q=5 gpm water.`,
+        `U-header 7-tube cold plate from MF03. Header ID ${kind}", laterals 1/4"×7" @ 1" pitch, Q=5 gpm water.` +
+        (tees ? " Idelchik sharp 90° tees at every junction." : ""),
       createdAt: "2026-09-07T00:00:00Z",
       updatedAt: "2026-09-07T00:00:00Z",
     },
