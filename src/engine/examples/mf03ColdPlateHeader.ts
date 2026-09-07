@@ -1,9 +1,9 @@
 import type { Project, TeeCorrelation } from "../types";
+import { GPM } from "../units";
 
 const IN = 0.0254;
 /** 5 gal/min → m³/s */
-export const MF03_Q_TOTAL = 5 * 6.30901964e-5;
-const GPM = 6.30901964e-5;
+export const MF03_Q_TOTAL = 5 * GPM;
 
 export type Mf03HeaderKind = "7/16" | "7/8";
 
@@ -223,8 +223,6 @@ export function mf03ColdPlateHeader(
   };
 }
 
-export function branchFlowsGpm(project: Project, linkQ: Record<string, { Q: number }>): number[] {
+export function branchFlowsGpm(linkQ: Record<string, { Q: number }>): number[] {
   return [1, 2, 3, 4, 5, 6, 7].map((i) => linkQ[`cross-${i}`].Q / GPM);
 }
-
-export { GPM };

@@ -1,5 +1,8 @@
 import { G } from "./types";
 
+/** One US gallon per minute, m³/s. */
+export const GPM = 6.30901964e-5;
+
 export function KtoC(T: number): number {
   return T - 273.15;
 }

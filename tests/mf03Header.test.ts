@@ -28,7 +28,7 @@ function solvedGpm(
   const project = mf03ColdPlateHeader(kind, { tees, correlation });
   const solved = solveSteady(project);
   expect(solved.status).toBe("converged");
-  const gpm = branchFlowsGpm(project, solved.links);
+  const gpm = branchFlowsGpm(solved.links);
   const sum = gpm.reduce((a, b) => a + b, 0);
   expect(Math.abs(sum - 5) / 5).toBeLessThan(1e-6);
   return gpm;

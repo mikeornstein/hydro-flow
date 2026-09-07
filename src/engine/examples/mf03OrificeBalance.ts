@@ -1,6 +1,5 @@
 import type { Project } from "../types";
-
-const GPM = 6.30901964e-5;
+import { GPM } from "../units";
 
 /** EU heat loads from MF03 Table 1 (kW). */
 export const MF03_LOADS_KW = [0.3, 0.4, 0.5, 3.0, 4.0] as const;
@@ -192,5 +191,3 @@ export function branchShares(
   const sum = qs.reduce((a, b) => a + b, 0);
   return qs.map((q) => q / sum);
 }
-
-export { GPM };
