@@ -355,7 +355,7 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   height: 100vh;
   height: 100dvh;
   grid-template-rows:
-    calc(48px + var(--sat))
+    calc(40px + var(--sat))
     minmax(0, 1fr)
     auto;
   padding-left: var(--sal);
@@ -370,7 +370,7 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  min-height: calc(48px + var(--sat));
+  min-height: calc(40px + var(--sat));
   padding: var(--sat) 12px 0;
   border-bottom: 1px solid var(--line);
   background: rgba(9, 13, 17, 0.72);
@@ -392,22 +392,39 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   gap: 8px;
   min-width: 0;
 }
+
+:root {
+  --chrome-ctl-h: 28px;
+}
+[data-layout="sheet"] {
+  --chrome-ctl-h: 28px;
+}
 .compact-header-status .pill,
-.compact-project {
+.compact-ctl,
+.mobile-action,
+.mobile-context .btn,
+.sheet-close,
+.remove-in-sheet,
+.remove-actions .btn {
   box-sizing: border-box;
-  height: 28px;
+  height: var(--chrome-ctl-h);
+  min-height: 0;
   padding: 0 10px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-size: 11px;
   line-height: 1;
+  border-radius: 999px;
+}
+.compact-header-status .pill,
+.compact-ctl {
   max-width: 28vw;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.compact-project {
-  min-height: 0;
+.compact-ctl {
   background: var(--bg-3);
 }
 
@@ -420,11 +437,11 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: var(--chrome-ctl-h);
+  padding: 6px 12px;
   border-bottom: 1px solid var(--line);
   color: var(--text);
-  font-size: 13px;
+  font-size: 12px;
 }
 .mobile-context-name {
   flex: 1;
@@ -434,7 +451,6 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.mobile-context .btn { min-height: 44px; }
 .mobile-actions {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -442,13 +458,10 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   padding: 6px 8px calc(6px + var(--sab));
 }
 .mobile-action {
-  min-height: 44px;
   border: 1px solid transparent;
-  border-radius: 12px;
   background: transparent;
   color: var(--text);
   font-family: var(--sans);
-  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
 }
@@ -461,6 +474,16 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   color: #06211c;
   font-weight: 600;
 }
+.mobile-action.primary.is-solved {
+  background: rgba(157, 255, 196, 0.16);
+  color: var(--ok);
+  border-color: rgba(157, 255, 196, 0.28);
+}
+.mobile-action.primary.is-error {
+  background: rgba(255, 122, 107, 0.16);
+  color: var(--danger);
+  border-color: rgba(255, 122, 107, 0.35);
+}
 .mobile-action:disabled { opacity: 0.45; cursor: default; }
 
 .sheet-dialog {
@@ -469,11 +492,16 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   width: min(100%, 100vw);
   max-width: none;
   margin: 0;
-  inset: auto 0 0;
+  left: 0;
+  right: 0;
+  top: auto;
+  /* bottom is set from visualViewport in SheetHost so iOS Safari chrome does not cover the sheet */
+  bottom: 0;
   color: var(--text);
   background: var(--bg-2);
   border-radius: 16px 16px 0 0;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 .sheet-dialog[open] {
   display: flex;
@@ -486,9 +514,19 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   background: rgba(4, 7, 10, 0.55);
   animation: fade-in 160ms ease-out;
 }
-.sheet-dialog.detent-compact { max-height: 40dvh; }
-.sheet-dialog.detent-medium { max-height: 56dvh; }
-.sheet-dialog.detent-large { max-height: 78dvh; }
+/* svh tracks the visible viewport when mobile browser chrome is expanded */
+.sheet-dialog.detent-compact {
+  height: auto;
+  max-height: 40svh;
+}
+.sheet-dialog.detent-medium {
+  height: 56svh;
+  max-height: 56svh;
+}
+.sheet-dialog.detent-large {
+  height: 78svh;
+  max-height: 78svh;
+}
 .sheet-header {
   display: flex;
   align-items: center;
@@ -505,13 +543,10 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   font-weight: 650;
 }
 .sheet-close {
-  min-width: 44px;
-  min-height: 44px;
   border: none;
   background: transparent;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: 13px;
   cursor: pointer;
 }
 .sheet-body {
@@ -540,15 +575,22 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
 }
 .sheet-body .table-wrap { max-height: none; }
 .inspector-sheet { display: grid; gap: 12px; }
-.remove-in-sheet { justify-self: start; min-height: 44px; }
+.remove-in-sheet { justify-self: start; }
 .remove-confirm p { margin: 0 0 16px; line-height: 1.45; color: var(--text); }
 .remove-actions { display: flex; gap: 8px; justify-content: flex-end; }
-.remove-actions .btn { min-height: 44px; }
 
 [data-layout="sheet"] .brand-sub,
 [data-layout="sheet"] .project-desc { display: none; }
 [data-layout="sheet"] .palette ul { grid-template-columns: 1fr 1fr; }
-[data-layout="sheet"] .palette-item { min-height: 44px; }
+[data-layout="sheet"] .palette-item {
+  min-height: var(--chrome-ctl-h);
+  padding: 0 10px;
+  font-size: 12px;
+}
+[data-layout="sheet"] .dock-tabs button {
+  min-height: var(--chrome-ctl-h);
+  padding: 0 12px;
+}
 [data-layout="sheet"] .field input,
 [data-layout="sheet"] .example-select {
   font-size: 16px;
@@ -570,7 +612,6 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
 [data-layout="sheet"] .kpi-grid { grid-template-columns: 1fr 1fr; }
 [data-layout="sheet"] .charts-row { grid-template-columns: 1fr; }
 [data-layout="sheet"] .proof-list { grid-template-columns: 1fr; }
-[data-layout="sheet"] .dock-tabs button { min-height: 44px; }
 
 [data-layout="sheet"] .react-flow__handle.port::after {
   content: "";
@@ -612,9 +653,13 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
     border-radius: 12px;
     background: rgba(16, 23, 30, 0.94);
   }
-  .sheet-dialog.detent-medium,
+  .sheet-dialog.detent-medium {
+    height: min(56svh, calc(100svh - var(--sat) - 8px));
+    max-height: min(56svh, calc(100svh - var(--sat) - 8px));
+  }
   .sheet-dialog.detent-large {
-    max-height: calc(100dvh - var(--sat) - 8px);
+    height: min(78svh, calc(100svh - var(--sat) - 8px));
+    max-height: min(78svh, calc(100svh - var(--sat) - 8px));
   }
 }
 
