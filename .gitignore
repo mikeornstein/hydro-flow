@@ -1,10 +1,12 @@
-node_modules
-dist
+node_modules/
+dist/
 dist-ssr
-.vite
+.vite/
 coverage
 *.local
 .DS_Store
 .idea
 .vscode
 *.tsbuildinfo
+web/dist/
+.audit/

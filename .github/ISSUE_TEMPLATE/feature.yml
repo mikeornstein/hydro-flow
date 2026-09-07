@@ -1,0 +1,33 @@
+name: Feature
+description: New FNM behavior, a component, or a report
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: user
+    attributes:
+      label: Who is this for
+      description: The engineer using the app, not the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: A checkable result. Name a golden, a screen state, or a command.
+    validations:
+      required: true
+  - type: dropdown
+    id: phase
+    attributes:
+      label: MVP phase
+      options:
+        - P0 engine
+        - P1 hydro pack
+        - P2 energy
+        - P3 transients
+        - P4 product
+        - process / tooling
+      default: 0
+    validations:
+      required: true

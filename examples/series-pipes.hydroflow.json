@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "0.1.0",
+  "meta": {
+    "name": "Series pipes, 15 m static head",
+    "description": "Two pipes in series between reservoirs at 20 m and 5 m elevation. Golden Case A."
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluid": {
+    "id": "water-20C",
+    "name": "Water 20 C",
+    "model": "constant",
+    "rho": 998.2,
+    "mu": 0.001002,
+    "cp": 4182,
+    "k": 0.598,
+    "beta": 0.000207
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": true,
+    "convergence": {
+      "massResidual": 1e-10,
+      "maxIter": 200,
+      "relaxationP": 0.7,
+      "relaxationQ": 0.8
+    }
+  },
+  "nodes": [
+    {
+      "id": "res-hi",
+      "kind": "boundary",
+      "x": 0, "y": 0, "z": 20,
+      "elevation": 20,
+      "pFixed": 297104.9606,
+      "tFixed": 293.15
+    },
+    {
+      "id": "mid",
+      "kind": "junction",
+      "x": 120, "y": 0, "z": 12.5,
+      "elevation": 12.5
+    },
+    {
+      "id": "res-lo",
+      "kind": "boundary",
+      "x": 240, "y": 0, "z": 5,
+      "elevation": 5,
+      "pFixed": 150269.99015,
+      "tFixed": 293.15
+    }
+  ],
+  "links": [
+    {
+      "id": "pipe-1",
+      "from": "res-hi",
+      "to": "mid",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "K": 0.5,
+        "geometry": { "L": 50, "D": 0.05, "eps": 4.5e-5 }
+      }
+    },
+    {
+      "id": "pipe-2",
+      "from": "mid",
+      "to": "res-lo",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "K": 1.0,
+        "geometry": { "L": 50, "D": 0.04, "eps": 4.5e-5 }
+      }
+    }
+  ],
+  "results": null
+}

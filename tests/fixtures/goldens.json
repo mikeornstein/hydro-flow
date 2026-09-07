@@ -1,0 +1,66 @@
+{
+  "version": "0.1.0",
+  "tolerance": {
+    "flowRelative": 0.01,
+    "pressureRelative": 0.01
+  },
+  "assumptions": {
+    "fluid": "water-20C",
+    "rho": 998.2,
+    "mu": 0.001002,
+    "g": 9.80665,
+    "Patm": 101325.0,
+    "friction": "Swamee-Jain for Re>=2300; 64/Re laminar",
+    "eps_m": 4.5e-5,
+    "notes": "Boundary pFixed already includes Patm + rho g elevation so link models should treat geometry.L/D/eps/K only and must NOT add elevation twice. If a solver applies rho g dz from node elevations, drop the hydrostatic part from pFixed (use Patm only)."
+  },
+  "cases": [
+    {
+      "id": "A-series-pipes",
+      "file": "examples/series-pipes.hydroflow.json",
+      "expected": {
+        "links": {
+          "pipe-1": { "Q": 3.471278803556e-03, "V": 1.767907777395, "Re": 88060.16, "f": 0.02227773, "dP": 35531.80 },
+          "pipe-2": { "Q": 3.471278803556e-03, "V": 2.762355902180, "Re": 110075.20, "f": 0.02258033, "dP": 111303.18 }
+        },
+        "nodes": {
+          "res-hi": { "P": 297104.9606 },
+          "mid": { "P": 261573.16546 },
+          "res-lo": { "P": 150269.99015 }
+        }
+      }
+    },
+    {
+      "id": "B-pump-loop",
+      "file": "examples/pump-loop.hydroflow.json",
+      "expected": {
+        "links": {
+          "pipe": { "Q": 5.040585921353e-03, "V": 2.567149329481 },
+          "pump": { "Q": 5.040585921353e-03, "H": 29.949185 }
+        }
+      },
+      "pumpCurveSI": "H_m = 30 - 2000 * Q_m3s^2. Tabulated curve in the example is that polynomial sampled."
+    },
+    {
+      "id": "C-parallel-pipes",
+      "file": "examples/parallel-pipes.hydroflow.json",
+      "expected": {
+        "links": {
+          "pipe-a": { "Q": 5.049515832330e-03, "V": 2.571697295796, "Re": 128097.22, "f": 0.02149192 },
+          "pipe-b": { "Q": 5.049515832330e-03, "V": 2.571697295796, "Re": 128097.22, "f": 0.02149192 }
+        },
+        "totals": { "Q": 1.009903166466e-02 }
+      }
+    },
+    {
+      "id": "D-emitter",
+      "file": null,
+      "expected": {
+        "calibration": "2.0 L/h at 100 kPa, x=0.5",
+        "k_SI": 1.756820922316e-09,
+        "Q_m3s_at_150kPa": 6.804138174398e-07,
+        "Q_Lph_at_150kPa": 2.449489742783
+      }
+    }
+  ]
+}
