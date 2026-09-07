@@ -9,10 +9,10 @@
     "rho": 998.2,
     "mu": 0.001002,
     "g": 9.80665,
-    "Patm": 101325.0,
-    "friction": "Churchill (1977) Darcy f, all Re",
-    "eps_m": 4.5e-5,
-    "notes": "Boundary pFixed is Patm. Hydrostatic head comes from node z via ρ g Δz on each link. Pump head is the polynomial H = c0 + c1 Q + c2 Q² (m). Values below are this engine's converged SI results."
+    "Patm": 101325,
+    "friction": "Swamee-Jain for Re>=2300; 64/Re laminar (reference); engine ships Churchill (1977)",
+    "eps_m": 0.000045,
+    "notes": "Boundary pFixed is Patm. Hydrostatic head comes from node z via ρ g Δz on each link. Pump head is the polynomial H = c0 + c1 Q + c2 Q² (m). Cases A-D are hand calculations from scripts/goldens-reference.mjs (regenerate with --write); npm run check fails if they drift. Case E is an engine regression pin with no independent source."
   },
   "cases": [
     {
@@ -20,13 +20,29 @@
       "file": "examples/series-pipes.hydroflow.json",
       "expected": {
         "links": {
-          "pipe-1": { "Q": 0.0034712641819, "V": 1.7679003306, "Re": 88059.79, "f": 0.02228006 },
-          "pipe-2": { "Q": 0.0034712641706, "V": 2.7623442576, "Re": 110074.73, "f": 0.02257983 }
+          "pipe-1": {
+            "Q": 0.003471278803556,
+            "V": 1.767907777395,
+            "Re": 88060.15685608,
+            "f": 0.02227772613211
+          },
+          "pipe-2": {
+            "Q": 0.003471278803556,
+            "V": 2.76235590218,
+            "Re": 110075.1960701,
+            "f": 0.02258033376472
+          }
         },
         "nodes": {
-          "res-hi": { "P": 101325 },
-          "mid": { "P": 139207.3505 },
-          "res-lo": { "P": 101325 }
+          "res-hi": {
+            "P": 101325
+          },
+          "mid": {
+            "P": 139210.6900838
+          },
+          "res-lo": {
+            "P": 101325
+          }
         }
       }
     },
@@ -35,8 +51,16 @@
       "file": "examples/pump-loop.hydroflow.json",
       "expected": {
         "links": {
-          "pipe": { "Q": 0.0050405909202, "V": 2.5671518754, "Re": 127870.81, "f": 0.02149514 },
-          "pump": { "Q": 0.0050405909202, "H": 29.949185 }
+          "pipe": {
+            "Q": 0.005040585921353,
+            "V": 2.567149329481,
+            "Re": 127870.6816711,
+            "f": 0.02149518016839
+          },
+          "pump": {
+            "Q": 0.005040585921353,
+            "H": 29.94918498714
+          }
         }
       },
       "pumpCurveSI": "H_m = 30 - 2000 * Q_m3s^2 stored as pump.coeffs [30, 0, -2000]."
@@ -46,10 +70,22 @@
       "file": "examples/parallel-pipes.hydroflow.json",
       "expected": {
         "links": {
-          "pipe-a": { "Q": 0.0050495219982, "V": 2.5717004360, "Re": 128097.37, "f": 0.02149186 },
-          "pipe-b": { "Q": 0.0050495219982, "V": 2.5717004360, "Re": 128097.37, "f": 0.02149186 }
+          "pipe-a": {
+            "Q": 0.00504951583233,
+            "V": 2.571697295796,
+            "Re": 128097.217598,
+            "f": 0.02149191815143
+          },
+          "pipe-b": {
+            "Q": 0.00504951583233,
+            "V": 2.571697295796,
+            "Re": 128097.217598,
+            "f": 0.02149191815143
+          }
         },
-        "totals": { "Q": 0.010099043996 }
+        "totals": {
+          "Q": 0.01009903166466
+        }
       }
     },
     {
@@ -57,8 +93,8 @@
       "file": null,
       "expected": {
         "calibration": "2.0 L/h at 100 kPa, x=0.5",
-        "k_SI": 1.756820922316e-09,
-        "Q_m3s_at_150kPa": 6.804138174398e-07,
+        "k_SI": 1.756820922316e-9,
+        "Q_m3s_at_150kPa": 6.804138174398e-7,
         "Q_Lph_at_150kPa": 2.449489742783
       }
     },
@@ -67,7 +103,9 @@
       "file": "examples/dlc-pumped-cooling.hydroflow.json",
       "expected": {
         "links": {
-          "pump.core": { "Q": 0.00032743000075 }
+          "pump.core": {
+            "Q": 0.00032743000075
+          }
         }
       }
     }

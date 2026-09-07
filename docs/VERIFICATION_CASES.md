@@ -66,7 +66,7 @@ Re-dependent `K` (MF08) — required once electronics/air packs land:
 Friction factor for P0 goldens:
 
 - `Re < 2300` → `f = 64/Re`
-This engine ships **Churchill (1977)** for Darcy `f` at all Re (Hagen–Poiseuille recovered in laminar). P0 goldens in `tests/fixtures/goldens.json` are this solver's results, not a Swamee–Jain spreadsheet. Substituting Swamee–Jain is allowed as an optional loss model later; do not treat U2 below as a requirement to replace Churchill.
+This engine ships **Churchill (1977)** for Darcy `f` at all Re (Hagen–Poiseuille recovered in laminar). P0 goldens A–D in `tests/fixtures/goldens.json` are Swamee–Jain hand calculations from `scripts/goldens-reference.mjs`, independent of the engine; Churchill lands within 0.05% of them on these cases. Do not treat U2 below as a requirement to replace Churchill.
 
 - `Re < Re_lam` — Hagen–Poiseuille / `f = 64/Re` (Churchill matches this)
 - else Churchill (default) or Swamee–Jain: `f = 0.25 / [log10(ε/D / 3.7 + 5.74 / Re^0.9)]²`
@@ -118,7 +118,7 @@ Pipe `Re < 2300`. Compare `Δp` to `f = 64/Re` Darcy–Weisbach closed form. Tol
 
 ### U2. Turbulent friction (Churchill; Swamee–Jain optional)
 
-Pipe `Re ~ 1e5`, `ε/D` from Golden A (`D = 0.05 m`, `ε = 4.5e-5 m`). Compare `f` to Golden A (`tests/fixtures/goldens.json`). Tolerance 1% on `f` and `Q`.
+Pipe `Re ~ 1e5`, `ε/D` from Golden A (`D = 0.05 m`, `ε = 4.5e-5 m`). Compare `Δp` to an independent Swamee–Jain + Darcy evaluation. Tolerance 0.5% because the engine substitutes Churchill.
 
 ### U3. Minor loss only
 
