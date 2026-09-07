@@ -1,32 +1,43 @@
 /**
- * Sharp 90° tee with an equal-area run (F_st = F_c), after Idelchik,
- * Handbook of Hydraulic Resistance, 4th ed. (2007), Chapter 7.
+ * Sharp 90° tee with an equal-area run (F_st = F_c).
  *
- * Every ζ is a total-pressure loss coefficient on the common-channel velocity,
- * Δp_total = ζ ρ w_c² / 2, with q = Q_s / Q_c and areaRatio = F_s / F_c:
- *   dividing  branch    Diagram 7.18 item 1 (A′ = 1 at 90°, D_s/D_c ≤ 2/3) and item 2 (D_s/D_c = 1)
+ * Idelchik — Handbook of Hydraulic Resistance, 4th ed. (2007), Chapter 7:
+ *   dividing  branch    Diagram 7.18
  *   dividing  straight  Diagram 7.20 No. 1, ζ = τ_st q²
  *   combining branch    Diagram 7.4 with Table 7.1 for A
  *   combining straight  Diagram 7.4, ζ = 1.55 q − q²
- * Valid for turbulent flow in the common channel; ζ may be negative where the
- * handbook says so (energy handed from one stream to the other).
+ *
+ * Gardel — A. Gardel, Bull. Tech. Suisse Romande 83(9–10), 1957
+ * (equations as transcribed in Vasava, LUT thesis 2007, §5.1–5.2; combining
+ * coefficient set matches Blaisdell & Manson, USDA TB 1283, 1963, who
+ * transpose Gardel and note r → 0 recovers sharp-edged junctions):
+ *   dividing  K31 (branch), K32 (straight)
+ *   combining K31 (branch), K23 (straight)
+ *   q = Q_branch / Q_common, a = A_branch / A_common,
+ *   φ = π − θ, θ = junction angle, r★ = r/D_common (0 for sharp).
+ *
+ * Every ζ is a total-pressure loss coefficient on the common-channel velocity,
+ * Δp_total = ζ ρ w_c² / 2. Valid for turbulent flow in the common channel;
+ * ζ may be negative where energy is handed from one stream to the other.
  */
 
 export type TeeMode = "dividing" | "combining";
 export type TeeLeg = "branch" | "straight";
+export type TeeCorrelation = "idelchik" | "gardel";
 
 type Zeta = (q: number, areaRatio: number) => number;
 
-function dividingBranch(q: number, areaRatio: number): number {
+// --- Idelchik --------------------------------------------------------------
+
+function idelchikDividingBranch(q: number, areaRatio: number): number {
   const wr = q / areaRatio;
-  // Diagram 7.18 gives 1.0 on (w_s/w_c)² up to D_s/D_c = 2/3 and 0.3 at
-  // D_s/D_c = 1; the handbook is silent between, so interpolate linearly.
+  // Diagram 7.18: 1.0 on (w_s/w_c)² up to D_s/D_c = 2/3; 0.3 at D_s/D_c = 1.
   const h = Math.sqrt(areaRatio);
   const k = h <= 2 / 3 ? 1 : h >= 1 ? 0.3 : 1 - 2.1 * (h - 2 / 3);
   return 1 + k * wr * wr;
 }
 
-function dividingStraight(q: number, areaRatio: number): number {
+function idelchikDividingStraight(q: number, areaRatio: number): number {
   const tau = areaRatio <= 0.4 ? 0.4 : q <= 0.5 ? 2 * (2 * q - 1) : 0.3 * (2 * q - 1);
   return tau * q * q;
 }
@@ -36,19 +47,106 @@ export function combiningA(q: number, areaRatio: number): number {
   return q <= 0.4 ? 0.9 * (1 - q) : 0.55;
 }
 
-function combiningBranch(q: number, areaRatio: number): number {
+function idelchikCombiningBranch(q: number, areaRatio: number): number {
   const wr = q / areaRatio;
   return combiningA(q, areaRatio) * (1 + wr * wr - 2 * (1 - q) ** 2);
 }
 
-function combiningStraight(q: number): number {
+function idelchikCombiningStraight(q: number): number {
   return 1.55 * q - q * q;
 }
 
-export const ZETA: Record<TeeMode, Record<TeeLeg, Zeta>> = {
-  dividing: { branch: dividingBranch, straight: dividingStraight },
-  combining: { branch: combiningBranch, straight: combiningStraight },
+// --- Gardel (sharp 90°, r★ = 0) --------------------------------------------
+
+/** Sharp-edged: r/D_common = 0. */
+const GARDEL_R_STAR = 0;
+/** 90° junction: θ = π/2 → cos θ = 0, φ = π − θ = π/2 → tan(φ/2) = 1. */
+const GARDEL_COS_THETA = 0;
+const GARDEL_TAN_PHI_HALF = 1;
+
+/**
+ * Gardel dividing branch (K31). Vasava (2007) eq. (5.7) after Gardel (1957):
+ *   K31 = 0.95(1−q)²
+ *       + q² [1.3 tan(φ/2) − 0.3 + (0.4−0.1a)/a²] [1 − 0.9 √(r★/a)]
+ *       + 0.4 q ((1+a)/a) tan(φ/2)
+ */
+function gardelDividingBranch(q: number, a: number): number {
+  const aa = Math.max(a, 1e-12);
+  const bracket =
+    GARDEL_TAN_PHI_HALF * 1.3 - 0.3 + (0.4 - 0.1 * aa) / (aa * aa);
+  const round = 1 - 0.9 * Math.sqrt(GARDEL_R_STAR / aa);
+  return (
+    0.95 * (1 - q) ** 2 +
+    q * q * bracket * round +
+    0.4 * q * ((1 + aa) / aa) * GARDEL_TAN_PHI_HALF
+  );
+}
+
+/**
+ * Gardel dividing straight (K32). Vasava (2007) eq. (5.8):
+ *   K32 = 0.03(1−q)² + 0.35 q² − 0.2 q(1−q)
+ * Independent of a and r (handbook identity).
+ */
+function gardelDividingStraight(q: number, _a: number): number {
+  return 0.03 * (1 - q) ** 2 + 0.35 * q * q - 0.2 * q * (1 - q);
+}
+
+/**
+ * Gardel combining branch (K31). Vasava (2007) eq. (5.10) after Gardel (1957):
+ *   K31 = −0.92(1−q)²
+ *       − q² (1.2 − √r★) (cosθ/a − 1)
+ *       + 0.8 q² (1 − 1/a²)
+ *       − 0.8 q² (1/a − 1) cosθ
+ *       + (2−a)(1−q)q
+ */
+function gardelCombiningBranch(q: number, a: number): number {
+  const aa = Math.max(a, 1e-12);
+  const rootR = Math.sqrt(GARDEL_R_STAR);
+  return (
+    -0.92 * (1 - q) ** 2 -
+    q * q * (1.2 - rootR) * (GARDEL_COS_THETA / aa - 1) +
+    0.8 * q * q * (1 - 1 / (aa * aa)) -
+    0.8 * q * q * (1 / aa - 1) * GARDEL_COS_THETA +
+    (2 - aa) * (1 - q) * q
+  );
+}
+
+/**
+ * Gardel combining straight (K23). Vasava (2007) eq. (5.11); coefficients
+ * 0.03 / 1.62 / 0.38 match Blaisdell & Manson (1963) transposed Gardel:
+ *   K23 = 0.03(1−q)²
+ *       − q² [1 + (1.62 − √r★)(cosθ/a − 1) − 0.38(1−a)]
+ *       + (2−a)(1−q)q
+ */
+function gardelCombiningStraight(q: number, a: number): number {
+  const aa = Math.max(a, 1e-12);
+  const rootR = Math.sqrt(GARDEL_R_STAR);
+  const inner =
+    1 +
+    (1.62 - rootR) * (GARDEL_COS_THETA / aa - 1) -
+    0.38 * (1 - aa);
+  return 0.03 * (1 - q) ** 2 - q * q * inner + (2 - aa) * (1 - q) * q;
+}
+
+export const ZETA_IDELCHIK: Record<TeeMode, Record<TeeLeg, Zeta>> = {
+  dividing: { branch: idelchikDividingBranch, straight: idelchikDividingStraight },
+  combining: {
+    branch: idelchikCombiningBranch,
+    straight: (q, _a) => idelchikCombiningStraight(q),
+  },
 };
+
+export const ZETA_GARDEL: Record<TeeMode, Record<TeeLeg, Zeta>> = {
+  dividing: { branch: gardelDividingBranch, straight: gardelDividingStraight },
+  combining: { branch: gardelCombiningBranch, straight: gardelCombiningStraight },
+};
+
+/** Default export keeps the historical Idelchik name used by existing tests. */
+export const ZETA = ZETA_IDELCHIK;
+
+export function zetaTable(correlation: TeeCorrelation = "idelchik") {
+  return correlation === "gardel" ? ZETA_GARDEL : ZETA_IDELCHIK;
+}
 
 export interface TeeLegState {
   mode: TeeMode;
@@ -64,6 +162,7 @@ export interface TeeLegState {
   /** Side-branch flow area, m² (selects the handbook row even for the run). */
   As: number;
   rho: number;
+  correlation?: TeeCorrelation;
 }
 
 /**
@@ -76,7 +175,7 @@ export function teeStaticDrop(s: TeeLegState): number {
   if (s.Qc <= 0) return 0;
   const areaRatio = s.As / s.Ac;
   const q = s.leg === "branch" ? Math.min(1, s.Qx / s.Qc) : Math.max(0, 1 - s.Qx / s.Qc);
-  const zeta = ZETA[s.mode][s.leg](q, areaRatio);
+  const zeta = zetaTable(s.correlation)[s.mode][s.leg](q, areaRatio);
   const wc = s.Qc / s.Ac;
   const wr = s.Qx / s.Ax / wc;
   const dyn = 0.5 * s.rho * wc * wc;
@@ -100,7 +199,11 @@ export interface TeeLegFlow {
  * side branch itself carries the total flow the handbook has no row, so the
  * junction is lossless.
  */
-export function teeLegDrops(legs: TeeLegFlow[], rho: number): number[] {
+export function teeLegDrops(
+  legs: TeeLegFlow[],
+  rho: number,
+  correlation: TeeCorrelation = "idelchik",
+): number[] {
   const drops = legs.map(() => 0);
   const branch = legs.findIndex((leg) => leg.role === "branch");
   const runs = legs.map((_, i) => i).filter((i) => legs[i].role === "run");
@@ -124,6 +227,7 @@ export function teeLegDrops(legs: TeeLegFlow[], rho: number): number[] {
       Ax: leg.area,
       As: legs[branch].area,
       rho,
+      correlation,
     });
   });
   return drops;

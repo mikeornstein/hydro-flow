@@ -1,4 +1,4 @@
-import type { Project } from "../types";
+import type { Project, TeeCorrelation } from "../types";
 
 const CFM = 1 / 2118.8799727597;
 const IN_H2O = 249.08891;
@@ -12,8 +12,10 @@ export const MF13_FAN = {
 export type Mf13Design = "I" | "II";
 
 export interface Mf13Options {
-  /** Idelchik sharp tees at bottom header / passage junctions. */
+  /** Sharp tees at bottom header / passage junctions. */
   tees?: boolean;
+  /** Handbook tee correlation when `tees` is set. Default idelchik. */
+  correlation?: TeeCorrelation;
   design?: Mf13Design;
 }
 
@@ -22,7 +24,7 @@ export interface Mf13Options {
  * Bottom header feeds 10 equal card passages; top plenum to screened exit.
  * Design I: constant 4 cm bottom height. Design II: 18° floor taper.
  *
- * Design II + tees: each tee sits in an equal-area run pocket (Idelchik
+ * Design II + tees: each tee sits in an equal-area run pocket (handbook
  * equal-area run). Area changes happen at plain mid-junctions between tees.
  *
  * Geometry from Fig 1 (cm) plus a documented board-depth assumption (16 cm)
@@ -31,6 +33,7 @@ export interface Mf13Options {
  */
 export function mf13CardCabinet({
   tees = false,
+  correlation = "idelchik",
   design = "I",
 }: Mf13Options = {}): Project {
   const n = 10;
@@ -90,7 +93,9 @@ export function mf13CardCabinet({
   const links: Project["links"] = [];
 
   for (let i = 0; i < n; i++) {
-    const tee = tees ? { tee: { branch: `pass-${i + 1}` } } : {};
+    const tee = tees
+      ? { tee: { branch: `pass-${i + 1}`, correlation } }
+      : {};
     nodes.push({
       id: `T${i}`,
       kind: "junction",
@@ -221,7 +226,7 @@ export function mf13CardCabinet({
   return {
     version: "0.1.0",
     meta: {
-      name: `MF13 Design ${design}${tees ? " tees" : " friction"}`,
+      name: `MF13 Design ${design}${tees ? ` ${correlation} tees` : " friction"}`,
       description:
         "MF13 card cabinet. Fig 1 geometry + synthetic fan from published endpoints. Depth 16 cm assumed.",
       createdAt: "2026-09-07T00:00:00Z",

@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF13 Design I idelchik tees",
+    "name": "MF13 Design II gardel tees",
     "description": "MF13 card cabinet. Fig 1 geometry + synthetic fan from published endpoints. Depth 16 cm assumed.",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
@@ -82,7 +82,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-1",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -113,7 +113,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-2",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -144,7 +144,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-3",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -175,7 +175,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-4",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -206,7 +206,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-5",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -237,7 +237,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-6",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -268,7 +268,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-7",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -299,7 +299,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-8",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -330,7 +330,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-9",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -361,7 +361,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-10",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -411,9 +411,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.061903483960239744,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.006140064243013676
         },
         "K": 0.5
       }
@@ -429,9 +429,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.061903483960239744,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.006140064243013676
         },
         "K": 0
       }
@@ -447,11 +447,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.0576057197629084,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.005620192729041025
         },
-        "K": 0
+        "K": 0.007168795836492374
       }
     },
     {
@@ -465,9 +465,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.0576057197629084,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.005620192729041025
         },
         "K": 0
       }
@@ -483,11 +483,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.05316240105073588,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.005100321215068375
         },
-        "K": 0
+        "K": 0.008556371350223491
       }
     },
     {
@@ -501,9 +501,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.05316240105073588,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.005100321215068375
         },
         "K": 0
       }
@@ -519,11 +519,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.04856600610220254,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.004580449701095724
         },
-        "K": 0
+        "K": 0.010389555928207166
       }
     },
     {
@@ -537,9 +537,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.04856600610220254,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.004580449701095724
         },
         "K": 0
       }
@@ -555,11 +555,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.043808485852224646,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.004060578187123075
         },
-        "K": 0
+        "K": 0.012881777855906164
       }
     },
     {
@@ -573,9 +573,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.043808485852224646,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.004060578187123075
         },
         "K": 0
       }
@@ -591,11 +591,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.03888121685299005,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.003540706673150425
         },
-        "K": 0
+        "K": 0.016391409029054865
       }
     },
     {
@@ -609,9 +609,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.03888121685299005,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.003540706673150425
         },
         "K": 0
       }
@@ -627,11 +627,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.03377494910825162,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.003020835159177775
         },
-        "K": 0
+        "K": 0.021558182465622897
       }
     },
     {
@@ -645,9 +645,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.03377494910825162,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.003020835159177775
         },
         "K": 0
       }
@@ -663,11 +663,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.028479748117185892,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.0025009636452051247
         },
-        "K": 0
+        "K": 0.029616790117638896
       }
     },
     {
@@ -681,9 +681,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.028479748117185892,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.0025009636452051247
         },
         "K": 0
       }
@@ -699,11 +699,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.02298493036381672,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.0019810921312324744
         },
-        "K": 0
+        "K": 0.04320930539451711
       }
     },
     {
@@ -717,9 +717,9 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.02298493036381672,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.0019810921312324744
         },
         "K": 0
       }
@@ -735,11 +735,11 @@
         "lossModel": "darcy-weisbach",
         "geometry": {
           "L": 0.005,
-          "D": 0.064,
+          "D": 0.017278991370585535,
           "eps": 0.00015,
-          "A": 0.0064
+          "A": 0.0014612206172598247
         },
-        "K": 0
+        "K": 0.06886248589249792
       }
     },
     {

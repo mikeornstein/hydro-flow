@@ -14,10 +14,14 @@ function maxMin(qs: number[]): number {
   return Math.max(...qs) / Math.min(...qs);
 }
 
-function solvePassages(design: "I" | "II", tees: boolean): number[] {
-  const project = mf13CardCabinet({ design, tees });
+function solvePassages(
+  design: "I" | "II",
+  tees: boolean,
+  correlation: "idelchik" | "gardel" = "idelchik",
+): number[] {
+  const project = mf13CardCabinet({ design, tees, correlation });
   const solved = solveSteady(project);
-  expect(solved.status, `Design ${design} tees=${tees}`).toBe("converged");
+  expect(solved.status, `Design ${design} tees=${tees} ${correlation}`).toBe("converged");
   return mf13PassageCfm(solved);
 }
 
@@ -60,7 +64,7 @@ describe("MF13 card cabinet (paper replay)", () => {
       paper: "MF13",
       status: "documented_discrepancy",
       reason:
-        "Idelchik sharp 90° tees produce mild Design I far-passage bias (far/near ≈ 1.57) in the same direction as Fig 3 (far/near ≈ 10.6), but the magnitude is far too small. Friction-only stays near-flat. Design II 18° taper plus the same tees steepens far bias further instead of flattening mid-passages as in Fig 4. MacroFlow's unpublished tee/inertia correlation remains the gap. No momentum hack shipped.",
+        "Idelchik and Gardel sharp 90° tees both produce mild Design I far-passage bias in the same direction as Fig 3 (far/near ≈ 10.6), but the magnitude remains far too small. Friction-only stays near-flat. Design II 18° taper plus tees steepens far bias further instead of flattening mid-passages as in Fig 4. MacroFlow's unpublished tee/inertia correlation remains the gap. No momentum hack / ζ scaling shipped.",
       digitized_fig3_sum_CFM: figs.figures.fig3_design_I.sum_CFM,
       digitized_fig4_sum_CFM: figs.figures.fig4_design_II.sum_CFM,
       digitization_uncertainty_CFM: CFM_UNC,
@@ -69,7 +73,7 @@ describe("MF13 card cabinet (paper replay)", () => {
         figs.figures.fig3_design_I.passage_Q_CFM[0]
       ).toFixed(3),
       hydroflow: {} as Record<string, unknown>,
-      next: "Gardel / Rennels–Hudson tee family or handbook rounded-entry wye if hardware supports it; do not invent momentum recovery.",
+      next: "Rounded-entry wye if hardware supports it, or other published tee families with verifiable handbook identities; do not invent momentum recovery.",
     };
 
     for (const design of ["I", "II"] as const) {
@@ -77,11 +81,12 @@ describe("MF13 card cabinet (paper replay)", () => {
         design === "I"
           ? figs.figures.fig3_design_I.passage_Q_CFM
           : figs.figures.fig4_design_II.passage_Q_CFM;
-      for (const [label, tees] of [
-        ["friction", false],
-        ["idelchik-tees", true],
+      for (const [label, tees, correlation] of [
+        ["friction", false, "idelchik"],
+        ["idelchik-tees", true, "idelchik"],
+        ["gardel-tees", true, "gardel"],
       ] as const) {
-        const ours = solvePassages(design, tees);
+        const ours = solvePassages(design, tees, correlation);
         discrepancy.hydroflow[`design${design}_${label}`] = {
           passage_Q_CFM: ours.map((v) => +v.toFixed(2)),
           sum_CFM: +ours.reduce((a, b) => a + b, 0).toFixed(2),
@@ -105,8 +110,15 @@ describe("MF13 card cabinet (paper replay)", () => {
     const teesI = discrepancy.hydroflow["designI_idelchik-tees"] as {
       far_over_near: number;
     };
+    const gardelI = discrepancy.hydroflow["designI_gardel-tees"] as {
+      far_over_near: number;
+    };
     expect(teesI.far_over_near).toBeGreaterThan(1);
     expect(teesI.far_over_near).toBeLessThan(
+      discrepancy.paper_designI_far_over_near * 0.3,
+    );
+    expect(gardelI.far_over_near).toBeGreaterThan(1);
+    expect(gardelI.far_over_near).toBeLessThan(
       discrepancy.paper_designI_far_over_near * 0.3,
     );
   });

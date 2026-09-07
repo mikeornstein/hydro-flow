@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { WATER } from "../src/engine/fluids";
 import { areaFromD } from "../src/engine/friction";
 import { solveSteady } from "../src/engine/solve";
-import { ZETA, teeLegDrops, teeStaticDrop, type TeeLegFlow } from "../src/engine/tee";
+import { ZETA, ZETA_GARDEL, teeLegDrops, teeStaticDrop, type TeeLegFlow } from "../src/engine/tee";
 import type { LinkDef, NodeDef, Project } from "../src/engine/types";
 import { verifySolution } from "../src/engine/verify";
 
@@ -282,5 +282,133 @@ describe("tee junctions in the network solver", () => {
     expect(() =>
       solveSteady(project(base, [links[0], leg("run", "J", "R", 0.03), links[2]])),
     ).toThrow(/equal areas/);
+  });
+});
+
+describe("Gardel sharp 90° tee coefficients (r★=0)", () => {
+  it("dividing branch matches Vasava (5.7) at equal-area and reduced branch", () => {
+    // a=1, φ/2=π/4, tan=1, r★=0 → 0.95(1−q)² + 1.3 q² + 0.8 q
+    expect(ZETA_GARDEL.dividing.branch(0.5, 1)).toBeCloseTo(
+      0.95 * 0.25 + 1.3 * 0.25 + 0.8 * 0.5,
+      12,
+    );
+    expect(ZETA_GARDEL.dividing.branch(0, 1)).toBeCloseTo(0.95, 12);
+    expect(ZETA_GARDEL.dividing.branch(1, 1)).toBeCloseTo(2.1, 12);
+    // a=0.25: bracket = 1.3 − 0.3 + (0.4−0.025)/0.0625 = 1 + 6 = 7
+    expect(ZETA_GARDEL.dividing.branch(0.25, 0.25)).toBeCloseTo(
+      0.95 * (0.75) ** 2 + (0.25) ** 2 * 7 + 0.4 * 0.25 * ((1.25) / 0.25),
+      10,
+    );
+  });
+
+  it("dividing straight K32 is independent of area ratio (handbook identity)", () => {
+    const q = 0.4;
+    const z = 0.03 * (0.6) ** 2 + 0.35 * 0.16 - 0.2 * 0.4 * 0.6;
+    expect(ZETA_GARDEL.dividing.straight(q, 0.25)).toBeCloseTo(z, 12);
+    expect(ZETA_GARDEL.dividing.straight(q, 1)).toBeCloseTo(z, 12);
+    expect(ZETA_GARDEL.dividing.straight(0, 1)).toBeCloseTo(0.03, 12);
+    expect(ZETA_GARDEL.dividing.straight(1, 1)).toBeCloseTo(0.35, 12);
+  });
+
+  it("combining equal-area 90° reduces to closed forms with cosθ=0", () => {
+    // branch: −0.92(1−q)² + 1.2 q² + (2−a)q(1−q); a=1 → + q(1−q)
+    expect(ZETA_GARDEL.combining.branch(0.5, 1)).toBeCloseTo(
+      -0.92 * 0.25 + 1.2 * 0.25 + 0.5 * 0.5,
+      12,
+    );
+    // straight: 0.03(1−q)² + 0.62 q² + q(1−q) at a=1
+    expect(ZETA_GARDEL.combining.straight(0.5, 1)).toBeCloseTo(
+      0.03 * 0.25 + 0.62 * 0.25 + 0.25,
+      12,
+    );
+  });
+
+  it("q=0 and q=1 limits are finite for both modes", () => {
+    for (const a of [0.25, 0.5, 1]) {
+      for (const q of [0, 1]) {
+        expect(Number.isFinite(ZETA_GARDEL.dividing.branch(q, a))).toBe(true);
+        expect(Number.isFinite(ZETA_GARDEL.dividing.straight(q, a))).toBe(true);
+        expect(Number.isFinite(ZETA_GARDEL.combining.branch(q, a))).toBe(true);
+        expect(Number.isFinite(ZETA_GARDEL.combining.straight(q, a))).toBe(true);
+      }
+    }
+  });
+
+  it("equal-area sharp branch ζ is below Idelchik near mid-q (no figure fit)", () => {
+    // Docs estimated Gardel ~15–20% below Idelchik on branch near the inlet.
+    const q = 0.3;
+    const g = ZETA_GARDEL.dividing.branch(q, 1);
+    const i = ZETA.dividing.branch(q, 1);
+    expect(g).toBeLessThan(i);
+    expect(g / i).toBeGreaterThan(0.7);
+    expect(g / i).toBeLessThan(0.95);
+  });
+});
+
+describe("Gardel tee static-drop identities", () => {
+  const corr = "gardel" as const;
+
+  it("q=0 recovers handbook ζ (branch 0.95, straight 0.03), not Idelchik's lossless limit", () => {
+    const As = areaFromD(0.01);
+    const a = As / Ac;
+    expect(ZETA_GARDEL.dividing.branch(0, a)).toBeCloseTo(0.95, 12);
+    expect(ZETA_GARDEL.dividing.straight(0, a)).toBeCloseTo(0.03, 12);
+    const d = teeLegDrops(legs(1e-3, 0, As, "dividing"), rho, corr);
+    const wc = 1e-3 / Ac;
+    // branch Qx=0 → static = dyn*(ζ−1); straight full flow → dyn*ζ_st
+    expect(d[2]).toBeCloseTo(dyn(wc) * (0.95 - 1), 6);
+    expect(d[1]).toBeCloseTo(dyn(wc) * 0.03, 6);
+  });
+
+  it("q=1 dividing branch is the sharp-elbow limit ζ_c = 2.1 at equal area", () => {
+    const Qc = 1e-3;
+    const drop = teeStaticDrop({
+      mode: "dividing",
+      leg: "branch",
+      Qc,
+      Qx: Qc,
+      Ac,
+      Ax: Ac,
+      As: Ac,
+      rho,
+      correlation: corr,
+    });
+    const w = Qc / Ac;
+    // total loss on common velocity = ζ_c = 2.1 (a=1, q=1)
+    const totalLoss = drop + dyn(w) - dyn(w);
+    expect(totalLoss / dyn(w)).toBeCloseTo(2.1, 9);
+    expect(drop / dyn(w)).toBeCloseTo(2.1, 9); // wr=1 → drop = dyn*(ζ−1+1)
+  });
+
+  it("dissipates total pressure for dividing flow in Gardel's area-ratio range (a ≥ 0.16)", () => {
+    // Combining at a ≪ Gardel's Lausanne/German range can yield empirical
+    // energy-gain artifacts; do not invent a fix — fence the identity to the
+    // published dividing case inside the calibrated a band.
+    for (const Ds of [0.008, 0.0115, 0.014, 0.02]) {
+      const As = areaFromD(Ds);
+      const a = As / Ac;
+      expect(a).toBeGreaterThanOrEqual(0.15);
+      for (let q = 0.02; q <= 1; q += 0.02) {
+        const Qc = 1e-3;
+        const l = legs(Qc, q, As, "dividing");
+        const d = teeLegDrops(l, rho, corr);
+        const wc = Qc / Ac;
+        let power = 0;
+        for (let i = 1; i < 3; i++) {
+          const wx = Math.abs(l[i].into) / l[i].area;
+          const totalLoss = d[i] + dyn(wc) - dyn(wx);
+          power += Math.abs(l[i].into) * totalLoss;
+        }
+        expect(power).toBeGreaterThanOrEqual(-1e-12);
+      }
+    }
+  });
+
+  it("equal-area dividing branch ζ(1) exceeds ζ(0); mid-q sits below Idelchik", () => {
+    expect(ZETA_GARDEL.dividing.branch(1, 1)).toBeGreaterThan(
+      ZETA_GARDEL.dividing.branch(0, 1),
+    );
+    const q = 0.3;
+    expect(ZETA_GARDEL.dividing.branch(q, 1)).toBeLessThan(ZETA.dividing.branch(q, 1));
   });
 });

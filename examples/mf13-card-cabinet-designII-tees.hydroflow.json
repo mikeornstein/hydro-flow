@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF13 Design II tees",
+    "name": "MF13 Design II idelchik tees",
     "description": "MF13 card cabinet. Fig 1 geometry + synthetic fan from published endpoints. Depth 16 cm assumed.",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
@@ -81,7 +81,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-1"
+        "branch": "pass-1",
+        "correlation": "idelchik"
       }
     },
     {
@@ -111,7 +112,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-2"
+        "branch": "pass-2",
+        "correlation": "idelchik"
       }
     },
     {
@@ -141,7 +143,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-3"
+        "branch": "pass-3",
+        "correlation": "idelchik"
       }
     },
     {
@@ -171,7 +174,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-4"
+        "branch": "pass-4",
+        "correlation": "idelchik"
       }
     },
     {
@@ -201,7 +205,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-5"
+        "branch": "pass-5",
+        "correlation": "idelchik"
       }
     },
     {
@@ -231,7 +236,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-6"
+        "branch": "pass-6",
+        "correlation": "idelchik"
       }
     },
     {
@@ -261,7 +267,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-7"
+        "branch": "pass-7",
+        "correlation": "idelchik"
       }
     },
     {
@@ -291,7 +298,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-8"
+        "branch": "pass-8",
+        "correlation": "idelchik"
       }
     },
     {
@@ -321,7 +329,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-9"
+        "branch": "pass-9",
+        "correlation": "idelchik"
       }
     },
     {
@@ -351,7 +360,8 @@
       "z": 0,
       "fluid": "air-27C",
       "tee": {
-        "branch": "pass-10"
+        "branch": "pass-10",
+        "correlation": "idelchik"
       }
     },
     {

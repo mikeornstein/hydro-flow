@@ -96,11 +96,16 @@
           "qSource": { "type": "number" },
           "tee": {
             "type": "object",
-            "description": "Junction-only. Idelchik sharp 90° tee; branch names the side-branch link, the remaining incident links are the equal-area run.",
+            "description": "Junction-only. Sharp 90° tee; branch names the side-branch link, the remaining incident links are the equal-area run. Optional correlation: idelchik (default) or gardel.",
             "required": ["branch"],
             "additionalProperties": false,
             "properties": {
-              "branch": { "type": "string" }
+              "branch": { "type": "string" },
+              "correlation": {
+                "type": "string",
+                "enum": ["idelchik", "gardel"],
+                "default": "idelchik"
+              }
             }
           }
         }

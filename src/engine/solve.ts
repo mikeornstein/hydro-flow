@@ -2,7 +2,7 @@ import { solveLinear } from "./linalg";
 import { dDp_dQ, linkDeltaP } from "./constitutive";
 import { hexHeat, epsilonNtu } from "./thermo";
 import { areaFromD } from "./friction";
-import { teeLegDrops, type TeeLegFlow } from "./tee";
+import { teeLegDrops, type TeeCorrelation, type TeeLegFlow } from "./tee";
 import type {
   CouplingResult,
   Fluid,
@@ -22,6 +22,7 @@ interface TeeJunction {
   /** +1 when the link points into the node, −1 when it leaves it. */
   sign: number[];
   rho: number;
+  correlation: TeeCorrelation;
 }
 
 interface Network {
@@ -79,6 +80,7 @@ function assembleTees(project: Project): TeeJunction[] {
       legs,
       sign: links.map((k) => (project.links[k].to === node.id ? 1 : -1)),
       rho: fluid.rho,
+      correlation: node.tee.correlation ?? "idelchik",
     });
   }
   return tees;
@@ -91,7 +93,7 @@ function teeDropsByLink(net: Network, Q: number[]): number[] {
     t.links.forEach((k, i) => {
       t.legs[i].into = t.sign[i] * Q[k];
     });
-    const d = teeLegDrops(t.legs, t.rho);
+    const d = teeLegDrops(t.legs, t.rho, t.correlation);
     t.links.forEach((k, i) => {
       drop[k] += d[i];
     });
@@ -113,9 +115,9 @@ function addTeeJacobian(net: Network, Q: number[], J: number[][], col0: number):
       const h = Math.max(1e-9, 1e-6 * Math.abs(Q[kj]));
       const into = t.legs[j].into;
       t.legs[j].into = into + h;
-      const plus = teeLegDrops(t.legs, t.rho);
+      const plus = teeLegDrops(t.legs, t.rho, t.correlation);
       t.legs[j].into = into - h;
-      const minus = teeLegDrops(t.legs, t.rho);
+      const minus = teeLegDrops(t.legs, t.rho, t.correlation);
       t.legs[j].into = into;
       t.links.forEach((ki, i) => {
         const dDrop = (t.sign[j] * (plus[i] - minus[i])) / (2 * h);

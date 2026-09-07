@@ -15,7 +15,7 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 |---|---|---|---|
 | MF01 | partial (multiplicity) | `examples/mf01-multiplicity-chassis.hydroflow.json`, `out/mf01-multiplicity-comparison.tsv`, `mf01-table1.json`, `mf01-blocker.json` | Table 2 fans clean; `parallelCount=4` matches expanded 4 links ≤1%. OCR Table 1 B decades recorded but rejected as SI rQuad (ΔP ≪ fan head). No invented exponents. |
 | MF02 | none | `mf02-blocker.json` | Methodology / process paper; no reconstructible network. |
-| MF03 R1 | implemented | `examples/mf03-cold-plate-header-*.hydroflow.json`, `tests/mf03Header.test.ts`, `out/mf03-fig3-comparison.tsv` | Friction-only replay: max rel err vs Fig 3 12.7% (7/16"), 4.9% (7/8"). Idelchik sharp-tee replay (`-tees` files): 21.7% (7/16"), flatter than the paper. Fig 3 is a MacroFlow prediction; see the MF03 tee section below. |
+| MF03 R1 | implemented | `examples/mf03-cold-plate-header-*.hydroflow.json`, `tests/mf03Header.test.ts`, `out/mf03-fig3-comparison.tsv` | Friction 12.7% / Idelchik 21.7% / Gardel 10.4% max rel on 7/16" vs Fig 3. Gardel overshoots max/min (2.61 vs 2.12). See MF03 tee section. |
 | MF03 R2 | partial (flow + fixed-rTh energy) | `examples/mf03-orifice-balance-*.hydroflow.json`, `out/mf03-orifice-comparison.tsv`, `out/mf03-orifice-energy.tsv` | Tuned orifices raise high-load share; fixed rTh energy shows identical max T&gt;60 °C and tuned ≤60 °C. Not Lytron Rth(Q). |
 | MF04 | partial | `examples/mf04-orifice-balanced.hydroflow.json`, `out/mf04-orifice-energy.tsv`, `mf04-blocker.json` | fRe 57/62, loads 70/120/200 W, unbalanced bases 33.1/42.3/49.8 °C from PDF. Orifice rebalance + energy `rTh`/`q` implemented; manifold channel count / Nu / inlet T sparse → absolute T not a 1% golden. |
 | MF05 | blocked | `mf05-blocker.json` | Recirculation targets exist; absolute CFM / fan curves unpublished. |
@@ -33,19 +33,21 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 ## Physics upgrades landed for these cases
 
 - Optional `geometry.A` (flow area) with `D` as hydraulic diameter for rectangular ducts/slots (`src/engine/friction.ts`, schema).
-- Sharp 90° tee junctions after Idelchik, *Handbook of Hydraulic Resistance*, 4th ed., Chapter 7 (`node.tee`, `src/engine/tee.ts`). A junction node names its side-branch link; the other one or two incident links are the equal-area run. The solver picks dividing or combining from the solved flow directions and adds the run-leg and branch-leg static drops to the link residuals. Node pressure is the static pressure of the tee's common channel. Diagrams used: 7.18 and 7.20 (dividing branch and run), 7.4 with Table 7.1 (combining branch and run). `tests/tee.test.ts` checks the handbook identities (dividing branch static drop ρw_s², combining branch static rise ρ(w_c² − w_st²), Bernoulli bounds on the run legs, q = 1 sharp-elbow limit, net dissipation ≥ 0 for every q).
+- Sharp 90° tee junctions after Idelchik, *Handbook of Hydraulic Resistance*, 4th ed., Chapter 7 (`node.tee`, default `correlation: "idelchik"`, `src/engine/tee.ts`). A junction node names its side-branch link; the other one or two incident links are the equal-area run. The solver picks dividing or combining from the solved flow directions and adds the run-leg and branch-leg static drops to the link residuals. Node pressure is the static pressure of the tee's common channel. Diagrams used: 7.18 and 7.20 (dividing branch and run), 7.4 with Table 7.1 (combining branch and run). `tests/tee.test.ts` checks the handbook identities (dividing branch static drop ρw_s², combining branch static rise ρ(w_c² − w_st²), Bernoulli bounds on the run legs, q = 1 sharp-elbow limit, net dissipation ≥ 0 for every q).
+- Optional Gardel sharp 90° tee family (`node.tee.correlation: "gardel"`): Gardel (1957) as transcribed in Vasava (2007) eqs. 5.7–5.11; combining coefficients match Blaisdell & Manson (USDA TB 1283, 1963) with r★ → 0. Unit tests cover q = 0/1 limits, equal-area closed forms, K32 independence of a, dividing dissipation in the calibrated a band, and mid-q branch ζ below Idelchik. No ζ scaling to match figures.
 
 ## MF03 Fig 3 with tees: why the sharp-tee model does not close the gap
 
 Fig 2 of the paper puts a tee at every header/lateral junction, so the tee variant (`examples/mf03-cold-plate-header-*-tees.hydroflow.json`) is the faithful topology. It matches Fig 3 worse than the friction-only replay. Every number below comes from `npx vitest run tests/mf03Header.test.ts` (writes `out/mf03-fig3-comparison.tsv`) and the digitized bars in `tests/fixtures/paper/mf03-fig3-digitized.json`, which were re-measured pixel by pixel on the raster embedded in the PDF (bars sum to 5.01 gpm against the imposed 5 gpm; the earlier eyeballed values summed to 5.14 gpm).
 
-| 7/16" header, passage | 1 | 2 | 3 | 4 | 5 | 6 | 7 | max/min | max rel err |
-|---|---|---|---|---|---|---|---|---|---|
-| Fig 3 (MacroFlow) | 1.117 | 0.898 | 0.745 | 0.631 | 0.555 | 0.526 | 0.536 | 2.12 | — |
-| friction-only junctions | 0.978 | 0.837 | 0.732 | 0.660 | 0.615 | 0.593 | 0.586 | 1.67 | 12.7% |
-| Idelchik sharp tees | 0.882 | 0.791 | 0.721 | 0.673 | 0.644 | 0.637 | 0.652 | 1.38 | 21.7% |
+| variant | 7/16" max/min | 7/16" max rel err | 7/8" max rel err |
+|---|---|---|---|
+| Fig 3 (MacroFlow) | 2.12 | — | — |
+| friction-only | 1.67 | 12.7% | 4.9% |
+| Idelchik sharp tees | 1.38 | 21.7% | 4.9% |
+| Gardel sharp tees | 2.61 | 10.4% | 3.3% |
 
-Both models agree with the 7/8" bars within 5%. The 7/16" pressure budget shows the mechanism. With tees the header statics do move the way the paper argues (feed rises 4.4 kPa toward the far end from momentum recovery, collector rises 9.6 kPa), so the feed-to-collector differential falls from 7.8 kPa at passage 1 to 2.6 kPa at passage 7. But the sharp-tee legs load the laterals unevenly: the dividing branch costs ρw_s² of static pressure and the combining branch ρ(w_c² − w_st²), which is 6.5 kPa on passage 1 against 1.3 kPa of tube friction, and 1.9 kPa on passage 7 against 0.8 kPa. The lateral resistance grows faster toward the inlet than the differential does, so the distribution flattens.
+Gardel moves the 7/16" profile *toward* Fig 3 (cuts max rel err vs Idelchik) but overshoots the paper max/min (2.61 vs 2.12). It does not close the figure. Evidence: `out/mf03-fig3-comparison.tsv`, examples `*-gardel.hydroflow.json`.
 
 What was tried, all in a standalone U-manifold prototype that reproduces the engine bit for bit, before the tee model shipped:
 
@@ -56,7 +58,7 @@ What was tried, all in a standalone U-manifold prototype that reproduces the eng
 - Header as 7/16" OD with a 0.032" wall (ID 0.3735"), laterals 1/4" ID, friction-only: 8.3%. Rejected. The paper says diameter, and reading both tubes as OD gives 22.5%.
 - Diagnostic only, not shipped: scaling the sharp-tee branch coefficients while keeping the run coefficients gives 3.9% at 0.5× for both headers (max/min 2.04 vs 2.12 and 1.06 vs 1.10). Run-only or branch-only scaling is far off. This says the bars are consistent with a smoother branch entry or a different correlation family, but fitting that factor to the bars is forbidden by policy.
 
-Why this stays open: Fig 3 is MacroFlow's own FNM output with its unpublished tee correlation, not a measurement, so agreement means reproducing that correlation. Idelchik's sharp-edge diagrams are the published option and they flatten the distribution. The friction-only replay stays the acceptance fence (≤15%) and the tee replay is fenced at ≤25% so a coefficient change is noticed. Next candidates, in order: the Gardel-based correlations compiled by Rennels and Hudson (*Pipe Flow*, 2012, chapter 16), whose sharp-tee branch coefficients near the inlet come out 15–20% below Idelchik's on a first estimate, so they would move the number without closing it alone; Idelchik's improved-shape wye diagrams for a rounded branch entry, if the hardware can be shown to have one.
+Why this stays open: Fig 3 is MacroFlow's own FNM output with its unpublished tee correlation, not a measurement. Idelchik sharp tees flatten (21.7%). Gardel sharp tees (`correlation: "gardel"`) cut max rel err to 10.4% but overshoot max/min (2.61 vs 2.12). The friction-only replay stays the ≤15% fence; tee variants stay ≤25%. Next: rounded-entry wye if hardware supports it. No ζ scaling.
 
 ## MF13 Figs 3–4 with tees
 
@@ -67,13 +69,13 @@ Digitized bars (`mf13-figs-digitized.json`, ±1.5 CFM): Design I sums to 191 CFM
 | Fig 3 (digitized) | 10.6 | 191 |
 | friction-only | 0.99 | 138 |
 | Idelchik sharp tees | 1.57 | 139 |
+| Gardel sharp tees | 1.62 | 142 |
 
-Tees move the profile in the paper's direction but stop far short of the spike. Design II + the same tees reaches far/near ≈ 3.8 (steeper), while Fig 4 is flatter mid-span. Evidence: `out/mf13-fig3-4-comparison.tsv`, `mf13-discrepancy.json`. Same next correlation candidates as MF03; no momentum special case.
+Tees move the profile in the paper's direction but stop far short of the spike. Gardel is only a small step past Idelchik on far/near. Design II + tees steepens rather than flattening Fig 4. Evidence: `out/mf13-fig3-4-comparison.tsv`, `mf13-discrepancy.json`. No momentum special case.
 
 ## Open physics gaps (do not paper over)
 
-1. **Tee correlation family for MF03 and MF13.** Idelchik sharp 90° tees are implemented (`node.tee`). On MF03 7/16" they flatten (21.7% vs 12.7% friction-only). On MF13 Design I they produce mild far-passage bias (far/near ≈ 1.57 vs digitized Fig 3 ≈ 10.6) — right direction, wrong magnitude — and Design II taper steepens rather than flattening Fig 4. See MF03 section and `mf13-discrepancy.json`. Next: Gardel / Rennels–Hudson, or rounded-entry wye if hardware supports it. No momentum hack.
+1. **Tee correlation family for MF03 and MF13.** Idelchik and Gardel sharp 90° tees are implemented (`node.tee.correlation`). On MF03 7/16" Idelchik flattens (21.7%); Gardel improves max rel to 10.4% but overshoots max/min. On MF13 Design I both give mild far-passage bias (far/near ≈ 1.57–1.62 vs digitized ≈ 10.6). See MF03/MF13 sections and `tee-gardel-blocker.json` (status: implemented). Next: rounded-entry wye if hardware supports it. No momentum hack / ζ scaling.
 2. **MF09 clearance topology.** Paper uses distinct side and top bypass ducts; current model is one equivalent slot.
 3. **Vendor fan curves.** MF08/MF13 use synthetic curves from published max points / goals only, never MacroFlow binary catalogs. Absolute CFM still limited by missing full impedance maps.
 4. **Energy + Rth(Q)** without vendor catalog scrape. MF03 R2 now has fixed-rTh energy (directional T&lt;60 °C); Lytron Rth(Q) curves remain out of bounds. MF04 energy path exists but manifold geometry is sparse.
-5. **Gardel / Rennels–Hudson tee family.** Deferred (`tee-gardel-blocker.json`): handbook text not in workspace, so optional `tee.correlation` cannot be unit-tested against cited identities yet. Do not scale Idelchik ζ to match figures.

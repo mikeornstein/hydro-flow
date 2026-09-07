@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF13 Design I idelchik tees",
+    "name": "MF13 Design I gardel tees",
     "description": "MF13 card cabinet. Fig 1 geometry + synthetic fan from published endpoints. Depth 16 cm assumed.",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
@@ -82,7 +82,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-1",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -113,7 +113,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-2",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -144,7 +144,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-3",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -175,7 +175,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-4",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -206,7 +206,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-5",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -237,7 +237,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-6",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -268,7 +268,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-7",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -299,7 +299,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-8",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -330,7 +330,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-9",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -361,7 +361,7 @@
       "fluid": "air-27C",
       "tee": {
         "branch": "pass-10",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {

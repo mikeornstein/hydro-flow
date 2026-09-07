@@ -79,6 +79,8 @@ export interface ProjectMeta {
   updatedAt: string;
 }
 
+export type TeeCorrelation = "idelchik" | "gardel";
+
 export interface TeeSpec {
   /**
    * Link id of the side branch at 90°. The other one or two links at the node
@@ -86,6 +88,11 @@ export interface TeeSpec {
    * solved flow directions.
    */
   branch: string;
+  /**
+   * Handbook correlation for sharp 90° equal-area tees.
+   * Default `idelchik` (Idelchik ch.7). Optional `gardel` (Gardel 1957).
+   */
+  correlation?: TeeCorrelation;
 }
 
 export interface NodeDef {
@@ -105,7 +112,7 @@ export interface NodeDef {
   mdotSource?: number;
   /** Heat into the node, W. */
   qSource?: number;
-  /** Junction-only. Idelchik sharp-tee losses on the run and branch legs. */
+  /** Junction-only. Sharp-tee losses on the run and branch legs. */
   tee?: TeeSpec;
 }
 

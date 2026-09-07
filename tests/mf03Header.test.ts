@@ -10,8 +10,9 @@ import fig3 from "./fixtures/paper/mf03-fig3-digitized.json";
 
 const kinds: Mf03HeaderKind[] = ["7/16", "7/8"];
 const variants = [
-  { label: "junctions", tees: false, suffix: "", band: 0.15 },
-  { label: "idelchik-tees", tees: true, suffix: "-tees", band: 0.25 },
+  { label: "junctions", tees: false as boolean, correlation: "idelchik" as const, suffix: "", band: 0.15 },
+  { label: "idelchik-tees", tees: true, correlation: "idelchik" as const, suffix: "-tees", band: 0.25 },
+  { label: "gardel-tees", tees: true, correlation: "gardel" as const, suffix: "-gardel", band: 0.25 },
 ];
 const OUT = "tests/fixtures/paper/out";
 
@@ -19,8 +20,12 @@ function maxMinRatio(qs: number[]): number {
   return Math.max(...qs) / Math.min(...qs);
 }
 
-function solvedGpm(kind: Mf03HeaderKind, tees: boolean): number[] {
-  const project = mf03ColdPlateHeader(kind, { tees });
+function solvedGpm(
+  kind: Mf03HeaderKind,
+  tees: boolean,
+  correlation: "idelchik" | "gardel" = "idelchik",
+): number[] {
+  const project = mf03ColdPlateHeader(kind, { tees, correlation });
   const solved = solveSteady(project);
   expect(solved.status).toBe("converged");
   const gpm = branchFlowsGpm(project, solved.links);
@@ -37,25 +42,32 @@ describe("MF03 cold-plate header (paper replay)", () => {
         const file = JSON.parse(
           readFileSync(`examples/mf03-cold-plate-header-${slug}${v.suffix}.hydroflow.json`, "utf8"),
         );
-        expect(file).toEqual(mf03ColdPlateHeader(kind, { tees: v.tees }));
+        expect(file).toEqual(
+          mf03ColdPlateHeader(kind, { tees: v.tees, correlation: v.correlation }),
+        );
       }
     }
   });
 
   it("larger header reduces max/min branch-flow ratio", () => {
     for (const v of variants) {
-      const small = solvedGpm("7/16", v.tees);
-      const large = solvedGpm("7/8", v.tees);
+      const small = solvedGpm("7/16", v.tees, v.correlation);
+      const large = solvedGpm("7/8", v.tees, v.correlation);
       expect(maxMinRatio(large)).toBeLessThan(maxMinRatio(small));
-      expect(maxMinRatio(large)).toBeLessThan(1.05);
+      // Gardel steepens more than Idelchik; 7/8" still stays near-flat (<1.15).
+      expect(maxMinRatio(large)).toBeLessThan(1.15);
     }
   });
 
-  it("sharp tees flatten the 7/16 header against the paper's steeper bars", () => {
+  it("Idelchik flattens 7/16 vs friction; Gardel steepens toward Fig 3 without closing it", () => {
     const junctions = solvedGpm("7/16", false);
-    const tees = solvedGpm("7/16", true);
+    const idelchik = solvedGpm("7/16", true, "idelchik");
+    const gardel = solvedGpm("7/16", true, "gardel");
     const paper = maxMinRatio(fig3.cases["7/16"].branch_Q_gpm);
-    expect(maxMinRatio(tees)).toBeLessThan(maxMinRatio(junctions));
+    expect(maxMinRatio(idelchik)).toBeLessThan(maxMinRatio(junctions));
+    expect(maxMinRatio(gardel)).toBeGreaterThan(maxMinRatio(junctions));
+    // Gardel overshoots paper max/min (~2.12) but cuts max rel err vs Idelchik.
+    expect(maxMinRatio(gardel)).toBeGreaterThan(paper);
     expect(maxMinRatio(junctions)).toBeLessThan(paper);
   });
 
@@ -67,7 +79,7 @@ describe("MF03 cold-plate header (paper replay)", () => {
     for (const v of variants) {
       let maxRel = 0;
       for (const kind of kinds) {
-        const ours = solvedGpm(kind, v.tees);
+        const ours = solvedGpm(kind, v.tees, v.correlation);
         const paper = fig3.cases[kind].branch_Q_gpm;
         for (let i = 0; i < 7; i++) {
           const abs = Math.abs(ours[i] - paper[i]);

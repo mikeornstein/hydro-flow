@@ -1,6 +1,27 @@
 {
   "paper": "Gardel-Rennels-tee",
-  "status": "deferred",
-  "reason": "Optional tee.correlation=gardel not implemented this session: Rennels & Hudson Pipe Flow ch.16 / Gardel handbook identities are not present as text in the workspace, so handbook unit tests cannot be verified without inventing coefficients.",
-  "policy": "Do not scale Idelchik ζ to match MF03 Fig 3 or MF13 Fig 3. Next session needs a cited formula source before adding a correlation family."
+  "status": "implemented",
+  "implemented": {
+    "api": "node.tee.correlation?: \"idelchik\" | \"gardel\" (default idelchik)",
+    "scope": "sharp r★=0, 90°, equal-area run; dividing K31/K32 and combining K31/K23",
+    "citations": [
+      "A. Gardel, Bull. Tech. Suisse Romande 83(9–10), 1957",
+      "Vasava, LUT M.Sc. thesis 2007, §5.1–5.2 (transcribed equations 5.7–5.11)",
+      "Blaisdell & Manson, USDA TB 1283, 1963 (transpose Gardel; r→0 for sharp)"
+    ],
+    "tests": "tests/tee.test.ts Gardel coefficient + static-drop identities"
+  },
+  "mf03_7_16_max_rel_err": {
+    "friction": "12.7%",
+    "idelchik": "21.7%",
+    "gardel": "10.4%"
+  },
+  "mf13_designI_far_over_near": {
+    "paper_digitized": 10.6,
+    "friction": 0.99,
+    "idelchik": 1.57,
+    "gardel": 1.62
+  },
+  "policy": "Do not scale ζ to match MF03 Fig 3 or MF13 Fig 3. Gardel improves MF03 max-rel vs Idelchik but overshoots paper max/min (2.61 vs 2.12); MF13 magnitude remains far short of Fig 3.",
+  "remaining": "Rounded-entry wye if hardware supports it; other published tee families with verifiable handbook identities."
 }

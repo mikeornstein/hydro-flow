@@ -1,8 +1,8 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF03 cold plate header 7/8\" (idelchik tees)",
-    "description": "U-header 7-tube cold plate from MF03. Header ID 7/8\", laterals 1/4\"×7\" @ 1\" pitch, Q=5 gpm water. idelchik sharp 90° tees at every junction.",
+    "name": "MF03 cold plate header 7/8\" (gardel tees)",
+    "description": "U-header 7-tube cold plate from MF03. Header ID 7/8\", laterals 1/4\"×7\" @ 1\" pitch, Q=5 gpm water. gardel sharp 90° tees at every junction.",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
   },
@@ -72,7 +72,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-1",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -85,7 +85,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-1",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -98,7 +98,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-2",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -111,7 +111,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-2",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -124,7 +124,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-3",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -137,7 +137,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-3",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -150,7 +150,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-4",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -163,7 +163,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-4",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -176,7 +176,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-5",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -189,7 +189,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-5",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -202,7 +202,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-6",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -215,7 +215,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-6",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -228,7 +228,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-7",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     },
     {
@@ -241,7 +241,7 @@
       "fluid": "water-20C",
       "tee": {
         "branch": "cross-7",
-        "correlation": "idelchik"
+        "correlation": "gardel"
       }
     }
   ],

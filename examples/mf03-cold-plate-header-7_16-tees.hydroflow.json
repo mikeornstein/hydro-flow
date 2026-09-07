@@ -1,8 +1,8 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF03 cold plate header 7/16\" (Idelchik tees)",
-    "description": "U-header 7-tube cold plate from MF03. Header ID 7/16\", laterals 1/4\"×7\" @ 1\" pitch, Q=5 gpm water. Idelchik sharp 90° tees at every junction.",
+    "name": "MF03 cold plate header 7/16\" (idelchik tees)",
+    "description": "U-header 7-tube cold plate from MF03. Header ID 7/16\", laterals 1/4\"×7\" @ 1\" pitch, Q=5 gpm water. idelchik sharp 90° tees at every junction.",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
   },
@@ -71,7 +71,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-1"
+        "branch": "cross-1",
+        "correlation": "idelchik"
       }
     },
     {
@@ -83,7 +84,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-1"
+        "branch": "cross-1",
+        "correlation": "idelchik"
       }
     },
     {
@@ -95,7 +97,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-2"
+        "branch": "cross-2",
+        "correlation": "idelchik"
       }
     },
     {
@@ -107,7 +110,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-2"
+        "branch": "cross-2",
+        "correlation": "idelchik"
       }
     },
     {
@@ -119,7 +123,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-3"
+        "branch": "cross-3",
+        "correlation": "idelchik"
       }
     },
     {
@@ -131,7 +136,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-3"
+        "branch": "cross-3",
+        "correlation": "idelchik"
       }
     },
     {
@@ -143,7 +149,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-4"
+        "branch": "cross-4",
+        "correlation": "idelchik"
       }
     },
     {
@@ -155,7 +162,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-4"
+        "branch": "cross-4",
+        "correlation": "idelchik"
       }
     },
     {
@@ -167,7 +175,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-5"
+        "branch": "cross-5",
+        "correlation": "idelchik"
       }
     },
     {
@@ -179,7 +188,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-5"
+        "branch": "cross-5",
+        "correlation": "idelchik"
       }
     },
     {
@@ -191,7 +201,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-6"
+        "branch": "cross-6",
+        "correlation": "idelchik"
       }
     },
     {
@@ -203,7 +214,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-6"
+        "branch": "cross-6",
+        "correlation": "idelchik"
       }
     },
     {
@@ -215,7 +227,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-7"
+        "branch": "cross-7",
+        "correlation": "idelchik"
       }
     },
     {
@@ -227,7 +240,8 @@
       "z": 0,
       "fluid": "water-20C",
       "tee": {
-        "branch": "cross-7"
+        "branch": "cross-7",
+        "correlation": "idelchik"
       }
     }
   ],

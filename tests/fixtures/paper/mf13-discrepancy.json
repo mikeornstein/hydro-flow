@@ -1,7 +1,7 @@
 {
   "paper": "MF13",
   "status": "documented_discrepancy",
-  "reason": "Idelchik sharp 90° tees produce mild Design I far-passage bias (far/near ≈ 1.57) in the same direction as Fig 3 (far/near ≈ 10.6), but the magnitude is far too small. Friction-only stays near-flat. Design II 18° taper plus the same tees steepens far bias further instead of flattening mid-passages as in Fig 4. MacroFlow's unpublished tee/inertia correlation remains the gap. No momentum hack shipped.",
+  "reason": "Idelchik and Gardel sharp 90° tees both produce mild Design I far-passage bias in the same direction as Fig 3 (far/near ≈ 10.6), but the magnitude remains far too small. Friction-only stays near-flat. Design II 18° taper plus tees steepens far bias further instead of flattening mid-passages as in Fig 4. MacroFlow's unpublished tee/inertia correlation remains the gap. No momentum hack / ζ scaling shipped.",
   "digitized_fig3_sum_CFM": 191.18,
   "digitized_fig4_sum_CFM": 191.4,
   "digitization_uncertainty_CFM": 1.5,
@@ -41,6 +41,23 @@
       "max_min": 1.569,
       "far_over_near": 1.569
     },
+    "designI_gardel-tees": {
+      "passage_Q_CFM": [
+        10.38,
+        11.39,
+        12.38,
+        13.32,
+        14.18,
+        14.96,
+        15.62,
+        16.16,
+        16.55,
+        16.8
+      ],
+      "sum_CFM": 141.73,
+      "max_min": 1.619,
+      "far_over_near": 1.619
+    },
     "designII_friction": {
       "passage_Q_CFM": [
         14.22,
@@ -74,7 +91,24 @@
       "sum_CFM": 147.5,
       "max_min": 3.788,
       "far_over_near": 3.788
+    },
+    "designII_gardel-tees": {
+      "passage_Q_CFM": [
+        7.22,
+        8.17,
+        9.36,
+        10.9,
+        12.79,
+        15.04,
+        17.66,
+        20.55,
+        23.27,
+        24.44
+      ],
+      "sum_CFM": 149.4,
+      "max_min": 3.387,
+      "far_over_near": 3.387
     }
   },
-  "next": "Gardel / Rennels–Hudson tee family or handbook rounded-entry wye if hardware supports it; do not invent momentum recovery."
+  "next": "Rounded-entry wye if hardware supports it, or other published tee families with verifiable handbook identities; do not invent momentum recovery."
 }
