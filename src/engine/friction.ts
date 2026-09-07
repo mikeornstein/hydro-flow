@@ -40,10 +40,13 @@ export function darcyWeisbach(args: {
   rho: number;
   mu: number;
   K?: number;
+  /** Optional flow area; defaults to π D² / 4. */
+  A?: number;
 }): DarcyResult {
   const { Q, L, D, eps, rho, mu, K = 0 } = args;
   if (D <= 0) throw new Error("D must be positive");
-  const A = areaFromD(D);
+  const A = args.A !== undefined ? args.A : areaFromD(D);
+  if (A <= 0) throw new Error("A must be positive");
   const V = Q / A;
   const Re = (rho * Math.abs(V) * D) / mu;
   const f = frictionFactorChurchill(Re, eps / D);

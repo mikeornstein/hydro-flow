@@ -1,0 +1,16 @@
+{
+  "paper": "MF01",
+  "status": "partial_pattern",
+  "have": [
+    "Table 2 fan endpoints: Main 0.15 inH2O / 66 SCFM; PSU 0.28 / 74 SCFM",
+    "Card-stack multiplicity factor of 4 (parallelCount pattern verified ≤1%)",
+    "OCR Table 1 B digits recorded in mf01-table1.json (rejected as SI rQuad)",
+    "examples/mf01-multiplicity-chassis.hydroflow.json"
+  ],
+  "missing": [
+    "Trusted Table 1 B decades / unit confirmation (OCR Pa/(m³/s)² values are physically inconsistent with Table 2 fan head)",
+    "Fig 5 absolute branch CFM (graphical only)",
+    "Clearance / Tape / CD-ROM path dimensions"
+  ],
+  "policy": "Do not invent B exponents. Multiplicity lever is verified; absolute chassis Q is not a golden."
+}

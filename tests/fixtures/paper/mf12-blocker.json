@@ -1,0 +1,6 @@
+{
+  "paper": "MF12",
+  "status": "blocked",
+  "reason": "FNM+CFD workflow / process paper. Not an FNM volumetric-flow golden.",
+  "missing": ["standalone reconstructible network with published Q targets"]
+}

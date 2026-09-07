@@ -1,0 +1,4 @@
+case	proc_avg_CFM	pci16_avg_CFM	pci710_avg_CFM	total_CFM	paper_proc	paper_total	proc_rel_err	total_rel_err
+A	5.79	16.16	16.16	161.60	9	172	35.7%	6.0%
+B	16.01	14.48	14.48	144.78	15.8	162	1.3%	10.6%
+C	16.77	15.17	15.17	151.67	19.5	197	14.0%	23.0%

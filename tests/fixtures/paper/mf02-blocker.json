@@ -1,0 +1,6 @@
+{
+  "paper": "MF02",
+  "status": "none",
+  "reason": "Methodology / design-process paper with no reconstructible network, tabulated Q, or digitized figure suitable as an FNM golden.",
+  "missing": ["network topology", "component dimensions", "flow/pressure tables"]
+}

@@ -1,0 +1,23 @@
+{
+  "paper": "MF01",
+  "table": "Table 1",
+  "header_units": "Pa/(m^3/s)^2 in Δp = B Q^2",
+  "ocr_B_Pa_per_m3s2": {
+    "DASD": 1.0e-4,
+    "Processor_and_Power_Supply": 2.0e-5,
+    "Memory": 5.0e-6,
+    "IO_Cards": 1.0e-5
+  },
+  "heat_W": {
+    "DASD": 2.5,
+    "Processor_and_Power_Supply": 150,
+    "Memory": 60,
+    "IO_Cards": 20
+  },
+  "usable_as_si_rquad": false,
+  "reason": "At SCFM-scale Q (~0.01–0.03 m³/s), OCR B gives ΔP ≪ 0.01 Pa while Table 2 Main fan shutoff is 0.15 inH2O ≈ 37 Pa. Decades are OCR-suspect (minus signs may be formula superscripts). Do not invent replacement exponents.",
+  "table2_fans": {
+    "Main": { "Hmax_inH2O": 0.15, "Qmax_SCFM": 66 },
+    "PSU": { "Hmax_inH2O": 0.28, "Qmax_SCFM": 74 }
+  }
+}

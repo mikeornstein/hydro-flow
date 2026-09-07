@@ -70,6 +70,7 @@ export function linkDeltaP(
       rho: fluid.rho,
       mu: fluid.mu,
       K,
+      A: c.geometry.A,
     });
     loss += dw.dp;
     f = dw.f;
@@ -84,12 +85,13 @@ export function linkDeltaP(
       rho: fluid.rho,
       mu: fluid.mu,
       K,
+      A: c.geometry.A,
     });
     loss += dw.dp;
     Re = dw.Re;
     V = dw.V;
   } else if (D > 0) {
-    const A = 0.25 * Math.PI * D * D;
+    const A = c.geometry.A ?? 0.25 * Math.PI * D * D;
     V = Q / A;
     Re = (fluid.rho * Math.abs(V) * D) / fluid.mu;
   }

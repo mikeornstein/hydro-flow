@@ -1,0 +1,7 @@
+mode	sink	load_W	Q_m3s	T_surface_C	paper_unbal_T_C
+unbalanced	1	70	7.260902207776579e-7	44.65	33.1
+orifice-balanced	1	70	7.252454825423567e-7	44.66	
+unbalanced	2	120	7.260902207776579e-7	62.10	42.3
+orifice-balanced	2	120	7.258243074666481e-7	62.10	
+unbalanced	3	200	7.260902207776579e-7	82.79	49.8
+orifice-balanced	3	200	7.260950591744713e-7	82.79	

@@ -1,0 +1,15 @@
+{
+  "paper": "MF09",
+  "figure": "Figure 4",
+  "source": "MF09-Heat-Sink-Bypass.pdf",
+  "note": "Sink-flow fraction vs fractional clear area digitized from Fig 4; uncertainty ~0.03 on fraction.",
+  "Q_total_SCFM": 10,
+  "points": [
+    { "clearFraction": 0.0, "sinkFraction": 1.0 },
+    { "clearFraction": 0.1, "sinkFraction": 0.85 },
+    { "clearFraction": 0.2, "sinkFraction": 0.5 },
+    { "clearFraction": 0.4, "sinkFraction": 0.15 },
+    { "clearFraction": 0.6, "sinkFraction": 0.05 },
+    { "clearFraction": 1.0, "sinkFraction": 0.0 }
+  ]
+}

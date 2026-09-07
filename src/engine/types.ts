@@ -79,6 +79,22 @@ export interface ProjectMeta {
   updatedAt: string;
 }
 
+export type TeeCorrelation = "idelchik" | "gardel";
+
+export interface TeeSpec {
+  /**
+   * Link id of the side branch at 90°. The other one or two links at the node
+   * are the straight run (equal areas). Dividing vs combining follows the
+   * solved flow directions.
+   */
+  branch: string;
+  /**
+   * Handbook correlation for sharp 90° equal-area tees.
+   * Default `idelchik` (Idelchik ch.7). Optional `gardel` (Gardel 1957).
+   */
+  correlation?: TeeCorrelation;
+}
+
 export interface NodeDef {
   id: string;
   kind: NodeKind;
@@ -96,6 +112,8 @@ export interface NodeDef {
   mdotSource?: number;
   /** Heat into the node, W. */
   qSource?: number;
+  /** Junction-only. Sharp-tee losses on the run and branch legs. */
+  tee?: TeeSpec;
 }
 
 export interface PumpCurve {
@@ -127,6 +145,8 @@ export interface LinkComponent {
     eps: number;
     /** Elevation change z_to − z_from if not taken from nodes. */
     dZ?: number;
+    /** Optional flow area (m²). When set, V = Q/A while D remains the hydraulic diameter. */
+    A?: number;
   };
   /** Minor-loss K based on velocity in D. */
   K: number;
@@ -193,6 +213,7 @@ export interface NodeResult {
 export interface LinkResult {
   Q: number;
   mdot: number;
+  /** P_from − P_to, Pa. Includes tee-junction drops at either end. */
   dP: number;
   V: number;
   Re: number;

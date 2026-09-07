@@ -93,7 +93,21 @@
           "pFixed": { "type": "number" },
           "tFixed": { "type": "number" },
           "mdotSource": { "type": "number" },
-          "qSource": { "type": "number" }
+          "qSource": { "type": "number" },
+          "tee": {
+            "type": "object",
+            "description": "Junction-only. Sharp 90° tee; branch names the side-branch link, the remaining incident links are the equal-area run. Optional correlation: idelchik (default) or gardel.",
+            "required": ["branch"],
+            "additionalProperties": false,
+            "properties": {
+              "branch": { "type": "string" },
+              "correlation": {
+                "type": "string",
+                "enum": ["idelchik", "gardel"],
+                "default": "idelchik"
+              }
+            }
+          }
         }
       }
     },
@@ -132,7 +146,8 @@
                   "L": { "type": "number" },
                   "D": { "type": "number" },
                   "eps": { "type": "number" },
-                  "dZ": { "type": "number" }
+                  "dZ": { "type": "number" },
+                  "A": { "type": "number", "description": "Optional flow area m²; D is then hydraulic diameter only." }
                 }
               },
               "K": { "type": "number" },

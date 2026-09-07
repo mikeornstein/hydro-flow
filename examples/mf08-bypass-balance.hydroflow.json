@@ -1,0 +1,102 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF08 bypass open=36%",
+    "description": "MF08 processor ∥ bypass at fixed total CFM. Perforated plate K from open fraction; no vendor fan curves.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "air-25C": {
+      "id": "air-25C",
+      "name": "Air 25 °C",
+      "phase": "gas",
+      "rho": 1.2,
+      "mu": 0.0000185,
+      "cp": 1007,
+      "k": 0.026,
+      "beta": 0.0033,
+      "Tref": 298.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 200,
+      "relaxationP": 0.7,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "inlet",
+      "kind": "junction",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C",
+      "mdotSource": 0.09174658427999907
+    },
+    {
+      "id": "outlet",
+      "kind": "boundary",
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "fluid": "air-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    }
+  ],
+  "links": [
+    {
+      "id": "processors",
+      "name": "Processors x4",
+      "from": "inlet",
+      "to": "outlet",
+      "fluid": "air-25C",
+      "component": {
+        "type": "duct",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.15,
+          "D": 0.04,
+          "eps": 0.0001
+        },
+        "K": 8,
+        "parallelCount": 4
+      }
+    },
+    {
+      "id": "cpu-bypass",
+      "name": "CPU bypass + perf plate",
+      "from": "inlet",
+      "to": "outlet",
+      "fluid": "air-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.08,
+          "eps": 0
+        },
+        "K": 6.71604938271605
+      }
+    }
+  ],
+  "couplings": []
+}

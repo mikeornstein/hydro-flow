@@ -1,0 +1,30 @@
+{
+  "paper": "MF06",
+  "source": "MF06-server.pdf",
+  "table": "Table 4",
+  "altitude_ft": 5000,
+  "units": "CFM",
+  "section_R_inH2O_per_CFM2": {
+    "cpu_power": 1.31e-6,
+    "pci_memory": 6.67e-6,
+    "source": "Tables 2–3 totals"
+  },
+  "sections": {
+    "cpu_power": {
+      "Ellison": 338,
+      "MacroFlow": 398,
+      "Exp": 398,
+      "Ellison_vs_MacroFlow_pct": 17.8,
+      "Ellison_vs_Exp_pct": 17.8
+    },
+    "pci_memory": {
+      "Ellison": 158,
+      "MacroFlow": 163,
+      "Exp": 180,
+      "Ellison_vs_MacroFlow_pct": 3.2,
+      "Ellison_vs_Exp_pct": 13.9
+    }
+  },
+  "historical_band": "14–18% Ellison vs prototype / MacroFlow",
+  "note": "Sea-level rQuad from published R + synthetic fans pinned to MacroFlow Table 4. Density scales rQuad; not a vendor-fan golden."
+}

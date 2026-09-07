@@ -1,0 +1,13 @@
+{
+  "paper": "MF11",
+  "table": "Table 1",
+  "source": "MF11-ATE-Liq-Cooling.pdf",
+  "units": { "flow": "gpm", "pressure": "psig" },
+  "rows": {
+    "lcm": { "Q_gpm": 0.12, "Q_tol": 0.01, "dP_psig": 3.5, "dP_tol": 0.3 },
+    "row": { "Q_gpm": 3.4, "Q_tol": 0.05, "dP_psig": 3.0, "dP_tol": 0.5 },
+    "system": { "Q_gpm": 13.6, "Q_tol": 0.5, "dP_psig": 2.0, "dP_tol": 1.1 }
+  },
+  "hardware_band": "within 10% of FNM (publication claim)",
+  "hierarchy_note": "row/lcm ≈ 28.33 LCMs; system/row ≈ 4 rows; system/lcm ≈ 113.3 LCMs"
+}

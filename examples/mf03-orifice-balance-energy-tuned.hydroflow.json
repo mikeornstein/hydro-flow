@@ -1,0 +1,398 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "MF03 orifice balance (tuned+energy)",
+    "description": "Five-branch orifice sizing with fixed rTh energy path (no Lytron Rth(Q) scrape).",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "Pa",
+    "flow": "m3/s",
+    "temperature": "K",
+    "power": "W"
+  },
+  "fluids": {
+    "water-25C": {
+      "id": "water-25C",
+      "name": "Water 25 °C",
+      "phase": "liquid",
+      "rho": 997,
+      "mu": 0.00089,
+      "cp": 4181,
+      "k": 0.607,
+      "beta": 0.000257,
+      "Tref": 298.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": true,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 200,
+      "relaxationP": 0.7,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "inlet",
+      "kind": "junction",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-25C",
+      "mdotSource": 0.42772629551344005,
+      "tFixed": 298.15
+    },
+    {
+      "id": "outlet",
+      "kind": "boundary",
+      "x": 0,
+      "y": 120,
+      "z": 0,
+      "fluid": "water-25C",
+      "pFixed": 101325,
+      "tFixed": 298.15
+    },
+    {
+      "id": "J0",
+      "kind": "junction",
+      "x": 40,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "O0",
+      "kind": "junction",
+      "x": 40,
+      "y": 60,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "J1",
+      "kind": "junction",
+      "x": 90,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "O1",
+      "kind": "junction",
+      "x": 90,
+      "y": 60,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "J2",
+      "kind": "junction",
+      "x": 140,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "O2",
+      "kind": "junction",
+      "x": 140,
+      "y": 60,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "J3",
+      "kind": "junction",
+      "x": 190,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "O3",
+      "kind": "junction",
+      "x": 190,
+      "y": 60,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "J4",
+      "kind": "junction",
+      "x": 240,
+      "y": 0,
+      "z": 0,
+      "fluid": "water-25C"
+    },
+    {
+      "id": "O4",
+      "kind": "junction",
+      "x": 240,
+      "y": 60,
+      "z": 0,
+      "fluid": "water-25C"
+    }
+  ],
+  "links": [
+    {
+      "id": "in-J0",
+      "from": "inlet",
+      "to": "J0",
+      "fluid": "water-25C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.05,
+          "D": 0.019049999999999997,
+          "eps": 0.0000015
+        },
+        "K": 0.5
+      }
+    },
+    {
+      "id": "hdr-0",
+      "from": "J0",
+      "to": "J1",
+      "fluid": "water-25C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.2,
+          "D": 0.019049999999999997,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-1",
+      "from": "J1",
+      "to": "J2",
+      "fluid": "water-25C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.2,
+          "D": 0.019049999999999997,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-2",
+      "from": "J2",
+      "to": "J3",
+      "fluid": "water-25C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.2,
+          "D": 0.019049999999999997,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "hdr-3",
+      "from": "J3",
+      "to": "J4",
+      "fluid": "water-25C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.2,
+          "D": 0.019049999999999997,
+          "eps": 0.0000015
+        },
+        "K": 0
+      }
+    },
+    {
+      "id": "orifice-1",
+      "from": "J0",
+      "to": "O0",
+      "fluid": "water-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.007619999999999999,
+          "eps": 0
+        },
+        "K": 28
+      }
+    },
+    {
+      "id": "plate-1",
+      "from": "O0",
+      "to": "outlet",
+      "fluid": "water-25C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.0127,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "q": 300,
+        "rTh": 0.035
+      }
+    },
+    {
+      "id": "orifice-2",
+      "from": "J1",
+      "to": "O1",
+      "fluid": "water-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.007619999999999999,
+          "eps": 0
+        },
+        "K": 22
+      }
+    },
+    {
+      "id": "plate-2",
+      "from": "O1",
+      "to": "outlet",
+      "fluid": "water-25C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.0127,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "q": 400,
+        "rTh": 0.03
+      }
+    },
+    {
+      "id": "orifice-3",
+      "from": "J2",
+      "to": "O2",
+      "fluid": "water-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.007619999999999999,
+          "eps": 0
+        },
+        "K": 16
+      }
+    },
+    {
+      "id": "plate-3",
+      "from": "O2",
+      "to": "outlet",
+      "fluid": "water-25C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.0127,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "q": 500,
+        "rTh": 0.025
+      }
+    },
+    {
+      "id": "orifice-4",
+      "from": "J3",
+      "to": "O3",
+      "fluid": "water-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.007619999999999999,
+          "eps": 0
+        },
+        "K": 0.5
+      }
+    },
+    {
+      "id": "plate-4",
+      "from": "O3",
+      "to": "outlet",
+      "fluid": "water-25C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.0127,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "q": 3000,
+        "rTh": 0.0082
+      }
+    },
+    {
+      "id": "orifice-5",
+      "from": "J4",
+      "to": "O4",
+      "fluid": "water-25C",
+      "component": {
+        "type": "orifice",
+        "lossModel": "k-factor",
+        "geometry": {
+          "L": 0,
+          "D": 0.007619999999999999,
+          "eps": 0
+        },
+        "K": 0.25
+      }
+    },
+    {
+      "id": "plate-5",
+      "from": "O4",
+      "to": "outlet",
+      "fluid": "water-25C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.0127,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "q": 4000,
+        "rTh": 0.0076
+      }
+    }
+  ],
+  "couplings": []
+}
