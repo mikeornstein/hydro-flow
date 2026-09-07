@@ -39,4 +39,4 @@ npm run check
 
 The check validates project JSON against `docs/schema/hydroflow.project.schema.json`, walks example graphs, and confirms the agent and pull-request files this repo needs.
 
-When `hydroflow goldens` exists, CI will also run that. Until then, do not claim a solve is verified.
+When the solver exists, CI will also run the golden fixtures in `tests/fixtures/goldens.json`. Until then, do not claim a solve is verified.
