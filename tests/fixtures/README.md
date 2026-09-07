@@ -39,5 +39,5 @@ See `goldens.json`.
 - **A** `examples/series-pipes.hydroflow.json` — two pipes in series, 15 m static head.
 - **B** `examples/pump-loop.hydroflow.json` — pump `H = 30 − 2000 Q²` against one pipe plus 15 m lift.
 - **C** `examples/parallel-pipes.hydroflow.json` — two identical pipes; equal split.
-- **D** emitter `Q = k P^x` — not implemented; `file` is null.
+- **D** `examples/emitter.hydroflow.json` — one emitter `Q = k ΔP^x` (x = 0.5, 2.0 L/h at 100 kPa) fed at 150 kPa gauge, discharging to atmosphere.
 - **E** `examples/dlc-pumped-cooling.hydroflow.json` — compiled DLC worked example.

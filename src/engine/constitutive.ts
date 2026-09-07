@@ -1,7 +1,12 @@
 import { darcyWeisbach } from "./friction";
 import { G } from "./types";
-import type { Fluid, LinkDef, NodeDef } from "./types";
+import type { EmitterLaw, Fluid, LinkDef, NodeDef } from "./types";
 import { fanRisePa, pumpHeadM } from "./thermo";
+
+/** Inverse of Q = k ΔP^x. Odd in Q so reverse flow meets the same resistance. */
+export function emitterDropPa(law: EmitterLaw, Q: number): number {
+  return Math.sign(Q) * Math.pow(Math.abs(Q) / law.k, 1 / law.x);
+}
 
 export interface ConstitutiveEval {
   dP: number;
@@ -90,6 +95,8 @@ export function linkDeltaP(
     V = Q / A;
     Re = (fluid.rho * Math.abs(V) * D) / fluid.mu;
   }
+
+  if (c.emitter) loss += emitterDropPa(c.emitter, Q);
 
   let rise = 0;
   if (c.pump) {

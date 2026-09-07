@@ -118,7 +118,7 @@
               "type": {
                 "enum": [
                   "pipe", "duct", "orifice", "valve", "pump", "fan",
-                  "filter", "generic-resistance", "cold-plate", "hex-stream", "logical"
+                  "filter", "generic-resistance", "cold-plate", "hex-stream", "emitter", "logical"
                 ]
               },
               "lossModel": {
@@ -164,6 +164,15 @@
                     "minItems": 1
                   },
                   "dpMin": { "type": "number" }
+                }
+              },
+              "emitter": {
+                "type": "object",
+                "required": ["k", "x"],
+                "additionalProperties": false,
+                "properties": {
+                  "k": { "type": "number", "exclusiveMinimum": 0 },
+                  "x": { "type": "number", "exclusiveMinimum": 0 }
                 }
               },
               "q": { "type": "number" },

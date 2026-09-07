@@ -150,16 +150,18 @@ function parallelPipes() {
 }
 
 function emitter() {
-  const x = 0.5;
-  const qCal = 2.0e-3 / 3600;
-  const pCal = 100e3;
-  const k = qCal / pCal ** x;
-  const Q = k * (150e3) ** x;
+  const p = loadProject("examples/emitter.hydroflow.json");
+  const { k, x } = link(p, "emitter").component.emitter;
+  assertClose(k, 2.0e-3 / 3600 / (100e3) ** 0.5, "emitter k vs 2.0 L/h at 100 kPa, x=0.5");
+  const dP = drivingHead(p, "supply", "air");
+  assertClose(dP, 150e3, "emitter example feeds 150 kPa gauge");
+  const Q = k * dP ** x;
   return {
     calibration: "2.0 L/h at 100 kPa, x=0.5",
     k_SI: sig(k),
     Q_m3s_at_150kPa: sig(Q),
     Q_Lph_at_150kPa: sig(Q * 3600e3),
+    links: { emitter: { Q: sig(Q) } },
   };
 }
 
