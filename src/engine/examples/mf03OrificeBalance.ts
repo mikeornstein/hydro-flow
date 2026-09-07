@@ -2,31 +2,39 @@ import type { Project } from "../types";
 
 const GPM = 6.30901964e-5;
 
+/** EU heat loads from MF03 Table 1 (kW). */
+export const MF03_LOADS_KW = [0.3, 0.4, 0.5, 3.0, 4.0] as const;
+export const MF03_T_LIMIT_C = 60;
+
 /**
- * MF03 five-branch orifice balance (flow-only slice of Fig 6).
+ * MF03 five-branch orifice balance (flow-only or energy slice of Fig 6).
  * Fixed 6.8 gpm through five parallel cold-plate branches with branch orifices.
  * Identical orifices → uneven Q (header geometry). Tuned orifice K pulls flow
- * toward the high-load branches (EU-4/5). Energy/T targets need cold-plate Rth
- * and are deferred (no Lytron catalog scrape).
+ * toward the high-load branches (EU-4/5).
+ *
+ * Energy mode uses fixed rTh (K/W), not Lytron Rth(Q) curves. rTh is chosen so
+ * equal-share flow at Tin=25 °C puts EU-5 near the 60 °C limit; orifice tuning
+ * then pulls high-load branches below the limit. Absolute T is illustrative.
  */
-export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
+export function mf03OrificeBalance(
+  mode: "identical" | "tuned",
+  opts: { energy?: boolean } = {},
+): Project {
+  const energy = opts.energy ?? false;
   const Q = 6.8 * GPM;
-  const rho = 998.2;
+  const rho = 997.0;
   const mdot = rho * Q;
   const IN = 0.0254;
   const headerD = 0.75 * IN;
   const branchD = 0.5 * IN;
   const eps = 1.5e-6;
-  // Loads 0.3/0.4/0.5/3.0/4.0 kW → relative cooling demand weights
-  const weights = [0.3, 0.4, 0.5, 3.0, 4.0];
-  const wSum = weights.reduce((a, b) => a + b, 0);
-  const targetShare = weights.map((w) => w / wSum);
+  const Tin = 25 + 273.15;
+  const rTh = [0.035, 0.03, 0.025, 0.0082, 0.0076];
 
-  // Identical: same orifice K. Tuned: K larger on low-demand branches.
   const orificeK =
     mode === "identical"
       ? [2, 2, 2, 2, 2]
-      : [12, 10, 8, 1.2, 0.8];
+      : [28, 22, 16, 0.5, 0.25];
 
   const nodes: Project["nodes"] = [
     {
@@ -35,8 +43,9 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       x: 0,
       y: 0,
       z: 0,
-      fluid: "water-20C",
+      fluid: "water-25C",
       mdotSource: mdot,
+      ...(energy ? { tFixed: Tin } : {}),
     },
     {
       id: "outlet",
@@ -44,9 +53,9 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       x: 0,
       y: 120,
       z: 0,
-      fluid: "water-20C",
+      fluid: "water-25C",
       pFixed: 101325,
-      tFixed: 293.15,
+      tFixed: Tin,
     },
   ];
   const links: Project["links"] = [];
@@ -58,7 +67,7 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       x: 40 + i * 50,
       y: 0,
       z: 0,
-      fluid: "water-20C",
+      fluid: "water-25C",
     });
     nodes.push({
       id: `O${i}`,
@@ -66,7 +75,7 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       x: 40 + i * 50,
       y: 60,
       z: 0,
-      fluid: "water-20C",
+      fluid: "water-25C",
     });
   }
 
@@ -74,7 +83,7 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
     id: "in-J0",
     from: "inlet",
     to: "J0",
-    fluid: "water-20C",
+    fluid: "water-25C",
     component: {
       type: "pipe",
       lossModel: "darcy-weisbach",
@@ -87,7 +96,7 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       id: `hdr-${i}`,
       from: `J${i}`,
       to: `J${i + 1}`,
-      fluid: "water-20C",
+      fluid: "water-25C",
       component: {
         type: "pipe",
         lossModel: "darcy-weisbach",
@@ -101,7 +110,7 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       id: `orifice-${i + 1}`,
       from: `J${i}`,
       to: `O${i}`,
-      fluid: "water-20C",
+      fluid: "water-25C",
       component: {
         type: "orifice",
         lossModel: "k-factor",
@@ -113,12 +122,15 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       id: `plate-${i + 1}`,
       from: `O${i}`,
       to: "outlet",
-      fluid: "water-20C",
+      fluid: "water-25C",
       component: {
         type: "cold-plate",
         lossModel: "darcy-weisbach",
         geometry: { L: 0.3, D: branchD, eps },
         K: 2,
+        ...(energy
+          ? { q: MF03_LOADS_KW[i] * 1000, rTh: rTh[i] }
+          : {}),
       },
     });
   }
@@ -126,9 +138,10 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
   return {
     version: "0.1.0",
     meta: {
-      name: `MF03 orifice balance (${mode})`,
-      description:
-        "Five-branch U-style manifold at 6.8 gpm. Flow-only orifice sizing vs load weights; thermal Rth deferred.",
+      name: `MF03 orifice balance (${mode}${energy ? "+energy" : ""})`,
+      description: energy
+        ? "Five-branch orifice sizing with fixed rTh energy path (no Lytron Rth(Q) scrape)."
+        : "Five-branch U-style manifold at 6.8 gpm. Flow-only orifice sizing vs load weights.",
       createdAt: "2026-09-07T00:00:00Z",
       updatedAt: "2026-09-07T00:00:00Z",
     },
@@ -141,22 +154,22 @@ export function mf03OrificeBalance(mode: "identical" | "tuned"): Project {
       power: "W",
     },
     fluids: {
-      "water-20C": {
-        id: "water-20C",
-        name: "Water 20 °C",
+      "water-25C": {
+        id: "water-25C",
+        name: "Water 25 °C",
         phase: "liquid",
-        rho: 998.2,
-        mu: 0.001002,
-        cp: 4182,
-        k: 0.598,
-        beta: 0.000207,
-        Tref: 293.15,
+        rho: 997.0,
+        mu: 0.00089,
+        cp: 4181,
+        k: 0.607,
+        beta: 0.000257,
+        Tref: 298.15,
       },
     },
     analysis: {
       type: "steady",
       flowRegime: "incompressible",
-      energy: false,
+      energy,
       gravity: false,
       convergence: {
         massResidual: 1e-10,

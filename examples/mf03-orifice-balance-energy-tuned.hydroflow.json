@@ -1,8 +1,8 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF03 orifice balance (tuned)",
-    "description": "Five-branch U-style manifold at 6.8 gpm. Flow-only orifice sizing vs load weights.",
+    "name": "MF03 orifice balance (tuned+energy)",
+    "description": "Five-branch orifice sizing with fixed rTh energy path (no Lytron Rth(Q) scrape).",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
   },
@@ -30,7 +30,7 @@
   "analysis": {
     "type": "steady",
     "flowRegime": "incompressible",
-    "energy": false,
+    "energy": true,
     "gravity": false,
     "convergence": {
       "massResidual": 1e-10,
@@ -48,7 +48,8 @@
       "y": 0,
       "z": 0,
       "fluid": "water-25C",
-      "mdotSource": 0.42772629551344005
+      "mdotSource": 0.42772629551344005,
+      "tFixed": 298.15
     },
     {
       "id": "outlet",
@@ -251,7 +252,9 @@
           "D": 0.0127,
           "eps": 0.0000015
         },
-        "K": 2
+        "K": 2,
+        "q": 300,
+        "rTh": 0.035
       }
     },
     {
@@ -283,7 +286,9 @@
           "D": 0.0127,
           "eps": 0.0000015
         },
-        "K": 2
+        "K": 2,
+        "q": 400,
+        "rTh": 0.03
       }
     },
     {
@@ -315,7 +320,9 @@
           "D": 0.0127,
           "eps": 0.0000015
         },
-        "K": 2
+        "K": 2,
+        "q": 500,
+        "rTh": 0.025
       }
     },
     {
@@ -347,7 +354,9 @@
           "D": 0.0127,
           "eps": 0.0000015
         },
-        "K": 2
+        "K": 2,
+        "q": 3000,
+        "rTh": 0.0082
       }
     },
     {
@@ -379,7 +388,9 @@
           "D": 0.0127,
           "eps": 0.0000015
         },
-        "K": 2
+        "K": 2,
+        "q": 4000,
+        "rTh": 0.0076
       }
     }
   ],
