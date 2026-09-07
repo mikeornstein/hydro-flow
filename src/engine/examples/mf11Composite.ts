@@ -1,7 +1,7 @@
 import type { Project } from "../types";
 import { solveSteady } from "../solve";
+import { GPM } from "../units";
 
-const GPM = 6.30901964e-5;
 const PSI = 6894.757;
 
 /** Published MF11 Table 1 LCM operating point (FNM design). */
