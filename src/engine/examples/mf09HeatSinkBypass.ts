@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import { EXAMPLE_SPAN_X } from "./canvasPitch";
 
 const IN = 0.0254;
 /** 10 SCFM → m³/s (standard CFM ≈ SCFM for this paper's use). */
@@ -48,7 +49,7 @@ export function mf09HeatSinkBypass(clearFraction: number): Project {
     {
       id: "outlet",
       kind: "boundary",
-      x: 120,
+      x: EXAMPLE_SPAN_X,
       y: 0,
       z: 0,
       fluid: "air-25C",

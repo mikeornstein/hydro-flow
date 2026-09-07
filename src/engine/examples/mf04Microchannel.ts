@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import { EXAMPLE_PITCH_Y } from "./canvasPitch";
 
 /**
  * MF04 three heat-sink orifice rebalance + energy (InterPACK microchannel paper).
@@ -55,7 +56,7 @@ export function mf04MicrochannelOrifice(mode: Mf04Mode): Project {
     {
       id: "outlet",
       kind: "boundary",
-      x: 200,
+      x: 320,
       y: 40,
       z: 0,
       fluid: "water-20C",
@@ -66,11 +67,11 @@ export function mf04MicrochannelOrifice(mode: Mf04Mode): Project {
   const links: Project["links"] = [];
 
   for (let i = 0; i < 3; i++) {
-    const y = i * 40;
+    const y = i * EXAMPLE_PITCH_Y;
     nodes.push({
       id: `J${i}`,
       kind: "junction",
-      x: 60,
+      x: 100,
       y,
       z: 0,
       fluid: "water-20C",
@@ -78,7 +79,7 @@ export function mf04MicrochannelOrifice(mode: Mf04Mode): Project {
     nodes.push({
       id: `O${i}`,
       kind: "junction",
-      x: 140,
+      x: 220,
       y,
       z: 0,
       fluid: "water-20C",

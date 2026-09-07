@@ -53,7 +53,7 @@
     {
       "id": "outlet",
       "kind": "boundary",
-      "x": 120,
+      "x": 200,
       "y": 0,
       "z": 0,
       "fluid": "air-25C",

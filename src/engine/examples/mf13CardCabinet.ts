@@ -1,4 +1,5 @@
 import type { Project, TeeCorrelation } from "../types";
+import { EXAMPLE_SPAN_Y, EXAMPLE_TEE_PITCH_X } from "./canvasPitch";
 
 const CFM = 1 / 2118.8799727597;
 const IN_H2O = 249.08891;
@@ -82,7 +83,7 @@ export function mf13CardCabinet({
       id: "exit",
       kind: "boundary",
       name: "Screened exit",
-      x: 200,
+      x: (n - 1) * EXAMPLE_TEE_PITCH_X,
       y: 120,
       z: 0,
       fluid: "air-27C",
@@ -100,7 +101,7 @@ export function mf13CardCabinet({
       id: `T${i}`,
       kind: "junction",
       name: `Tee ${i + 1}`,
-      x: i * 40,
+      x: i * EXAMPLE_TEE_PITCH_X,
       y: 0,
       z: 0,
       fluid: "air-27C",
@@ -110,8 +111,8 @@ export function mf13CardCabinet({
       id: `P${i}`,
       kind: "junction",
       name: `Plenum ${i + 1}`,
-      x: i * 40,
-      y: 80,
+      x: i * EXAMPLE_TEE_PITCH_X,
+      y: EXAMPLE_SPAN_Y,
       z: 0,
       fluid: "air-27C",
     });
@@ -120,7 +121,7 @@ export function mf13CardCabinet({
         id: `M${i}`,
         kind: "junction",
         name: `Header mid ${i + 1}`,
-        x: i * 40 + 20,
+        x: i * EXAMPLE_TEE_PITCH_X + EXAMPLE_TEE_PITCH_X / 2,
         y: 0,
         z: 0,
         fluid: "air-27C",

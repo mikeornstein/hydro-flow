@@ -42,7 +42,7 @@ export function mf14Enclosure(): Project {
     {
       id: "after-inlet",
       kind: "junction",
-      x: 40,
+      x: 80,
       y: 0,
       z: 0,
       fluid: "air-25C",
@@ -50,7 +50,7 @@ export function mf14Enclosure(): Project {
     {
       id: "before-fans",
       kind: "junction",
-      x: 200,
+      x: 280,
       y: 80,
       z: 0,
       fluid: "air-25C",
@@ -58,7 +58,7 @@ export function mf14Enclosure(): Project {
     {
       id: "exit",
       kind: "boundary",
-      x: 280,
+      x: 400,
       y: 80,
       z: 0,
       fluid: "air-25C",

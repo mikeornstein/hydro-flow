@@ -1,5 +1,6 @@
 import type { Project } from "../types";
 import { GPM } from "../units";
+import { EXAMPLE_PITCH_X } from "./canvasPitch";
 
 /** EU heat loads from MF03 Table 1 (kW). */
 export const MF03_LOADS_KW = [0.3, 0.4, 0.5, 3.0, 4.0] as const;
@@ -50,7 +51,7 @@ export function mf03OrificeBalance(
       id: "outlet",
       kind: "boundary",
       x: 0,
-      y: 120,
+      y: 200,
       z: 0,
       fluid: "water-25C",
       pFixed: 101325,
@@ -63,7 +64,7 @@ export function mf03OrificeBalance(
     nodes.push({
       id: `J${i}`,
       kind: "junction",
-      x: 40 + i * 50,
+      x: EXAMPLE_PITCH_X + i * EXAMPLE_PITCH_X,
       y: 0,
       z: 0,
       fluid: "water-25C",
@@ -71,8 +72,8 @@ export function mf03OrificeBalance(
     nodes.push({
       id: `O${i}`,
       kind: "junction",
-      x: 40 + i * 50,
-      y: 60,
+      x: EXAMPLE_PITCH_X + i * EXAMPLE_PITCH_X,
+      y: 100,
       z: 0,
       fluid: "water-25C",
     });

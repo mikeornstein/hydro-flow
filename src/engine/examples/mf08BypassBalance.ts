@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import { EXAMPLE_SPAN_X } from "./canvasPitch";
 
 const CFM = 1 / 2118.8799727597;
 const IN_H2O = 249.08891;
@@ -89,7 +90,7 @@ export function mf08ServerFan(caseId: Mf08Case = "B"): Project {
       {
         id: "after-fan",
         kind: "junction",
-        x: 40,
+        x: 80,
         y: 0,
         z: 0,
         fluid: "air-25C",
@@ -97,7 +98,7 @@ export function mf08ServerFan(caseId: Mf08Case = "B"): Project {
       {
         id: "after-cpu",
         kind: "junction",
-        x: 120,
+        x: 200,
         y: 0,
         z: 0,
         fluid: "air-25C",
@@ -105,7 +106,7 @@ export function mf08ServerFan(caseId: Mf08Case = "B"): Project {
       {
         id: "after-pci",
         kind: "junction",
-        x: 200,
+        x: 320,
         y: 0,
         z: 0,
         fluid: "air-25C",
@@ -113,7 +114,7 @@ export function mf08ServerFan(caseId: Mf08Case = "B"): Project {
       {
         id: "exit",
         kind: "boundary",
-        x: 280,
+        x: 440,
         y: 0,
         z: 0,
         fluid: "air-25C",
@@ -279,7 +280,7 @@ export function mf08BypassBalance(
       {
         id: "outlet",
         kind: "boundary",
-        x: 120,
+        x: EXAMPLE_SPAN_X,
         y: 0,
         z: 0,
         fluid: "air-25C",

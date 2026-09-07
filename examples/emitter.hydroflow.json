@@ -54,7 +54,7 @@
     {
       "id": "air",
       "kind": "boundary",
-      "x": 40,
+      "x": 200,
       "y": 0,
       "z": 0,
       "fluid": "water-20C",

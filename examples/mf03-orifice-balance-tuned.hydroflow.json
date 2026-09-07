@@ -54,7 +54,7 @@
       "id": "outlet",
       "kind": "boundary",
       "x": 0,
-      "y": 120,
+      "y": 200,
       "z": 0,
       "fluid": "water-25C",
       "pFixed": 101325,
@@ -63,7 +63,7 @@
     {
       "id": "J0",
       "kind": "junction",
-      "x": 40,
+      "x": 80,
       "y": 0,
       "z": 0,
       "fluid": "water-25C"
@@ -71,15 +71,15 @@
     {
       "id": "O0",
       "kind": "junction",
-      "x": 40,
-      "y": 60,
+      "x": 80,
+      "y": 100,
       "z": 0,
       "fluid": "water-25C"
     },
     {
       "id": "J1",
       "kind": "junction",
-      "x": 90,
+      "x": 160,
       "y": 0,
       "z": 0,
       "fluid": "water-25C"
@@ -87,15 +87,15 @@
     {
       "id": "O1",
       "kind": "junction",
-      "x": 90,
-      "y": 60,
+      "x": 160,
+      "y": 100,
       "z": 0,
       "fluid": "water-25C"
     },
     {
       "id": "J2",
       "kind": "junction",
-      "x": 140,
+      "x": 240,
       "y": 0,
       "z": 0,
       "fluid": "water-25C"
@@ -103,15 +103,15 @@
     {
       "id": "O2",
       "kind": "junction",
-      "x": 140,
-      "y": 60,
+      "x": 240,
+      "y": 100,
       "z": 0,
       "fluid": "water-25C"
     },
     {
       "id": "J3",
       "kind": "junction",
-      "x": 190,
+      "x": 320,
       "y": 0,
       "z": 0,
       "fluid": "water-25C"
@@ -119,15 +119,15 @@
     {
       "id": "O3",
       "kind": "junction",
-      "x": 190,
-      "y": 60,
+      "x": 320,
+      "y": 100,
       "z": 0,
       "fluid": "water-25C"
     },
     {
       "id": "J4",
       "kind": "junction",
-      "x": 240,
+      "x": 400,
       "y": 0,
       "z": 0,
       "fluid": "water-25C"
@@ -135,8 +135,8 @@
     {
       "id": "O4",
       "kind": "junction",
-      "x": 240,
-      "y": 60,
+      "x": 400,
+      "y": 100,
       "z": 0,
       "fluid": "water-25C"
     }
