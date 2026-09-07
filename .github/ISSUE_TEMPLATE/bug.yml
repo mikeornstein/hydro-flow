@@ -1,0 +1,30 @@
+name: Bug
+description: A defect in the solver, schema, fixtures, or UI
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: Observed behavior, including numbers, screenshots, or logs.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen
+    validations:
+      required: true
+  - type: input
+    id: example
+    attributes:
+      label: Project file
+      description: Path under examples/ or a gist of a .hydroflow.json file.
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Commands or canvas steps.
+    validations:
+      required: true

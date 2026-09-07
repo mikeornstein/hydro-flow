@@ -4,8 +4,17 @@ Web clone of the core functionality of [MacroFlow](https://inresllc.com/macroflo
 
 ## Research
 
-See [docs/MACROFLOW_RESEARCH.md](docs/MACROFLOW_RESEARCH.md) for the full product-research report covering methodology, solver, component library, UI, competitors, data model, and a phased MVP plan for this repo.
+See [docs/MACROFLOW_RESEARCH.md](docs/MACROFLOW_RESEARCH.md) for the product-research report. See [docs/WORKFLOWS_AND_ACCEPTANCE.md](docs/WORKFLOWS_AND_ACCEPTANCE.md) for the user workflows and [docs/VERIFICATION_CASES.md](docs/VERIFICATION_CASES.md) for the test catalog.
 
 ## Status
 
-Research complete. Implementation has not started.
+Research and the project schema are in. Example networks and P0 golden fixtures are in `examples/` and `tests/fixtures/`. The solver and web UI are not started.
+
+## Checks
+
+```bash
+npm install
+npm run check
+```
+
+GitHub Actions runs the same check on every pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for branching and pull-request rules. Agents start at [AGENTS.md](AGENTS.md).

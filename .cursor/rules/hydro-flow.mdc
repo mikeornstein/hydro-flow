@@ -1,0 +1,23 @@
+---
+description: Hydro-Flow product and process constraints for every agent
+alwaysApply: true
+---
+
+# Hydro-Flow
+
+This repo is a 1-D flow-network modeling (FNM) web app. It is not 3-D CFD.
+
+## Product
+
+- Reimplement the published FNM method. Do not copy MacroFlow's name, artwork, vendor catalogs, or unpublished binary artifacts.
+- Do not invent a native MacroFlow file format. The project file is `docs/schema/hydroflow.project.schema.json`.
+- Store SI internally. Convert at the UI boundary.
+- Treat `tests/fixtures/goldens.json` as the P0 acceptance source. Solver flow must land within 1% of those Q values.
+- Do not trust the canvas until `tests/solver` exists and those goldens pass.
+
+## Process
+
+- Use `/poteto-mode` (pstack) for nontrivial work.
+- Branch from `main`. Open a pull request. Fill `.github/PULL_REQUEST_TEMPLATE.md`.
+- Run `npm run check` before you push. CI runs the same command.
+- Keep one concern per PR. Use Conventional Commits.

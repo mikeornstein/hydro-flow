@@ -121,12 +121,16 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "required": ["Q", "dP"],
+                  "required": ["Q"],
                   "properties": {
                     "Q": { "type": "number" },
                     "dP": { "type": "number" },
                     "H": { "type": "number" }
-                  }
+                  },
+                  "anyOf": [
+                    { "required": ["dP"] },
+                    { "required": ["H"] }
+                  ]
                 }
               },
               "emitter": {
