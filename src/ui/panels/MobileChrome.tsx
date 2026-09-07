@@ -30,7 +30,6 @@ function assertNever(value: never): never {
 
 export function CompactHeader({ layout }: { layout: SheetLayout }) {
   const diagram = useStore((s) => s.diagram);
-  const result = useStore((s) => s.result);
   const error = useStore((s) => s.error);
   const projectOpen = layout.sheet.status === "open" && layout.sheet.id === "project";
 
@@ -46,15 +45,14 @@ export function CompactHeader({ layout }: { layout: SheetLayout }) {
         </div>
       </div>
       <div className="compact-header-status">
-        {error && <span className="pill danger">{error}</span>}
-        {!error && result && (
-          <span className={`pill ${result.status === "converged" ? "ok" : "warn"}`}>
-            {result.status}
+        {error && (
+          <span className="pill danger" title={error}>
+            error
           </span>
         )}
         <button
           type="button"
-          className="btn ghost compact-project"
+          className="btn ghost compact-ctl"
           aria-pressed={projectOpen}
           onClick={() => layout.toggleSheet("project")}
         >
@@ -191,8 +189,20 @@ function SheetContents({ id, layout }: { id: SheetId; layout: SheetLayout }) {
 export function MobileChrome({ layout }: MobileChromeProps) {
   const solve = useStore((s) => s.solve);
   const solving = useStore((s) => s.solving);
+  const result = useStore((s) => s.result);
+  const error = useStore((s) => s.error);
   const selectedId = useStore((s) => s.selectedId);
   const sheetId = layout.sheet.status === "open" ? layout.sheet.id : null;
+  const solved = !error && result?.status === "converged";
+  const solveLabel = solving ? "Solving…" : error ? "Retry" : solved ? "Solved" : "Solve";
+  const solveClass = [
+    "mobile-action",
+    "primary",
+    solved ? "is-solved" : "",
+    error ? "is-error" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className="mobile-chrome">
@@ -215,8 +225,14 @@ export function MobileChrome({ layout }: MobileChromeProps) {
         >
           Inspect
         </button>
-        <button type="button" className="mobile-action primary" onClick={solve} disabled={solving}>
-          {solving ? "Solving…" : "Solve"}
+        <button
+          type="button"
+          className={solveClass}
+          onClick={solve}
+          disabled={solving}
+          title={error ?? (result ? `${result.status} · ${result.iterations} iter` : undefined)}
+        >
+          {solveLabel}
         </button>
         <button
           type="button"
