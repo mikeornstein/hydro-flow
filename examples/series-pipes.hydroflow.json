@@ -1,8 +1,10 @@
 {
-  "schemaVersion": "0.1.0",
+  "version": "0.1.0",
   "meta": {
     "name": "Series pipes, 15 m static head",
-    "description": "Two pipes in series between reservoirs at 20 m and 5 m elevation. Golden Case A."
+    "description": "Two pipes in series between reservoirs at 20 m and 5 m. Elevation is on nodes; pFixed is Patm. Golden Case A.",
+    "createdAt": "2026-09-07T00:00:00Z",
+    "updatedAt": "2026-09-07T00:00:00Z"
   },
   "units": {
     "system": "SI",
@@ -12,15 +14,18 @@
     "temperature": "K",
     "power": "W"
   },
-  "fluid": {
-    "id": "water-20C",
-    "name": "Water 20 C",
-    "model": "constant",
-    "rho": 998.2,
-    "mu": 0.001002,
-    "cp": 4182,
-    "k": 0.598,
-    "beta": 0.000207
+  "fluids": {
+    "water-20C": {
+      "id": "water-20C",
+      "name": "Water 20 °C",
+      "phase": "liquid",
+      "rho": 998.2,
+      "mu": 0.001002,
+      "cp": 4182,
+      "k": 0.598,
+      "beta": 0.000207,
+      "Tref": 293.15
+    }
   },
   "analysis": {
     "type": "steady",
@@ -29,32 +34,39 @@
     "gravity": true,
     "convergence": {
       "massResidual": 1e-10,
-      "maxIter": 200,
-      "relaxationP": 0.7,
-      "relaxationQ": 0.8
+      "energyResidual": 1e-8,
+      "maxIter": 80,
+      "relaxationP": 0.85,
+      "relaxationQ": 0.7
     }
   },
   "nodes": [
     {
       "id": "res-hi",
       "kind": "boundary",
-      "x": 0, "y": 0, "z": 20,
-      "elevation": 20,
-      "pFixed": 297104.9606,
+      "x": 0,
+      "y": 0,
+      "z": 20,
+      "fluid": "water-20C",
+      "pFixed": 101325,
       "tFixed": 293.15
     },
     {
       "id": "mid",
       "kind": "junction",
-      "x": 120, "y": 0, "z": 12.5,
-      "elevation": 12.5
+      "x": 120,
+      "y": 0,
+      "z": 12.5,
+      "fluid": "water-20C"
     },
     {
       "id": "res-lo",
       "kind": "boundary",
-      "x": 240, "y": 0, "z": 5,
-      "elevation": 5,
-      "pFixed": 150269.99015,
+      "x": 240,
+      "y": 0,
+      "z": 5,
+      "fluid": "water-20C",
+      "pFixed": 101325,
       "tFixed": 293.15
     }
   ],
@@ -63,24 +75,26 @@
       "id": "pipe-1",
       "from": "res-hi",
       "to": "mid",
+      "fluid": "water-20C",
       "component": {
         "type": "pipe",
         "lossModel": "darcy-weisbach",
-        "K": 0.5,
-        "geometry": { "L": 50, "D": 0.05, "eps": 4.5e-5 }
+        "geometry": { "L": 50, "D": 0.05, "eps": 4.5e-5 },
+        "K": 0.5
       }
     },
     {
       "id": "pipe-2",
       "from": "mid",
       "to": "res-lo",
+      "fluid": "water-20C",
       "component": {
         "type": "pipe",
         "lossModel": "darcy-weisbach",
-        "K": 1.0,
-        "geometry": { "L": 50, "D": 0.04, "eps": 4.5e-5 }
+        "geometry": { "L": 50, "D": 0.04, "eps": 4.5e-5 },
+        "K": 1.0
       }
     }
   ],
-  "results": null
+  "couplings": []
 }

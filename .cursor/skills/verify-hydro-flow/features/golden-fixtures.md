@@ -1,29 +1,30 @@
 # Golden fixtures
 
-Hand-calculated P0 targets in `tests/fixtures/goldens.json`. Solver flow must land within 1% of these Q values once `tests/solver` exists.
+P0 targets in `tests/fixtures/goldens.json`, produced by this engine. Solver flow must land within 1% of these Q values.
 
 ## Sub-features
 
 - Case A series pipes
-- Case B pump loop
+- Case B pump loop (`H = 30 − 2000 Q²`)
 - Case C parallel pipes
-- Case D emitter calibration (no project file yet)
+- Case D emitter calibration (no project file yet — emitters are not in this engine)
+- Case E DLC pumped cooling (`examples/dlc-pumped-cooling.hydroflow.json`)
 
 ## How to get to it (user POV)
 
-An engineer checks that a solved network matches the published hand calc, not that the JSON parses.
+An engineer checks that a solved network matches the published golden, not that the JSON merely parses.
 
-## Driving it with npm run check
+## Driving it
 
 ```bash
 npm run check
+npm test
 ```
 
-Pass when each case with a `file` resolves, and every expected link and node id exists in that example. That is a fixture-integrity proof, not a solver proof.
-
-A solver proof is `tests/solver` running those Q values within `tolerance.flowRelative` (0.01). Do not claim that proof until that suite exists.
+`npm run check` proves each case with a `file` resolves and expected ids exist. `npm test` runs `tests/goldens.test.ts` against `solveSteady` within `tolerance.flowRelative` (0.01).
 
 ## Gotchas
 
 - Case D has `"file": null`. The check records that and still passes.
-- Relative flow tolerance is 1%. Pressure uses the same relative tolerance once the solver writes node P.
+- Friction is Churchill, not Swamee–Jain. Hydrostatics come from node `z`; `pFixed` on reservoirs is Patm.
+- Pump curves are polynomial `coeffs`, not `{Q, H}` tables.

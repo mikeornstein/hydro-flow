@@ -178,9 +178,30 @@ function checkProject(rel, project) {
     if (!nodeIds.has(link.from)) fail(`${rel} link ${link.id} from unknown node ${link.from}`);
     if (!nodeIds.has(link.to)) fail(`${rel} link ${link.id} to unknown node ${link.to}`);
   }
-  if (project.fluid?.model === "constant") {
-    if (typeof project.fluid.rho !== "number" || typeof project.fluid.mu !== "number") {
-      fail(`${rel} constant fluid needs numeric rho and mu`);
+  const fluids = project.fluids ?? {};
+  const fluidIds = new Set(Object.keys(fluids));
+  if (fluidIds.size === 0) fail(`${rel} needs a fluids map`);
+  for (const [id, fluid] of Object.entries(fluids)) {
+    if (typeof fluid?.rho !== "number" || typeof fluid?.mu !== "number") {
+      fail(`${rel} fluid ${id} needs numeric rho and mu`);
+    }
+  }
+  for (const node of project.nodes ?? []) {
+    if (node.fluid && !fluidIds.has(node.fluid)) {
+      fail(`${rel} node ${node.id} unknown fluid ${node.fluid}`);
+    }
+  }
+  for (const link of project.links ?? []) {
+    if (link.fluid && !fluidIds.has(link.fluid)) {
+      fail(`${rel} link ${link.id} unknown fluid ${link.fluid}`);
+    }
+  }
+  for (const coupling of project.couplings ?? []) {
+    if (coupling.hotLinkId && !linkIds.has(coupling.hotLinkId)) {
+      fail(`${rel} coupling ${coupling.id} unknown hot link ${coupling.hotLinkId}`);
+    }
+    if (coupling.coldLinkId && !linkIds.has(coupling.coldLinkId)) {
+      fail(`${rel} coupling ${coupling.id} unknown cold link ${coupling.coldLinkId}`);
     }
   }
   ok(`${rel} graph ids resolve`);

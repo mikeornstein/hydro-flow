@@ -1,15 +1,17 @@
 # Agent notes for hydro-flow
 
-1-D flow-network modeling in the browser. Research lives in `docs/MACROFLOW_RESEARCH.md`. Workflows and acceptance tests live in `docs/WORKFLOWS_AND_ACCEPTANCE.md`. Verification cases live in `docs/VERIFICATION_CASES.md`. The project file schema is `docs/schema/hydroflow.project.schema.json`.
+1-D flow-network modeling in the browser. The engine lives in `src/engine`, the canvas in `src/ui`. Research lives in `docs/MACROFLOW_RESEARCH.md`. Workflows live in `docs/WORKFLOWS_AND_ACCEPTANCE.md`. Verification cases live in `docs/VERIFICATION_CASES.md`. The project file schema is `docs/schema/hydroflow.project.schema.json` and matches `src/engine/types.ts`.
 
 ## Commands
 
 ```bash
 npm install
 npm run check
+npm test
+npm run dev
 ```
 
-`npm run check` is the gate. GitHub Actions runs the same command on every pull request. There is no solver or web app to start yet.
+`npm run check` is the schema/contract gate. GitHub Actions runs it on every pull request. `npm test` is Vitest: hydraulics, energy, HEX, DLC, and P0 goldens within 1% on flow. `npm run dev` starts the Vite canvas.
 
 ## Process
 
@@ -23,11 +25,12 @@ npm run check
 - Reimplement the published FNM method. Do not copy MacroFlow's name, artwork, vendor catalogs, or unpublished binaries.
 - Do not invent a native MacroFlow file format. Validate `.hydroflow.json` files against the schema.
 - Store SI internally.
-- P0 acceptance is `tests/fixtures/goldens.json` within 1% on flow. Do not trust a canvas until `tests/solver` exists and those goldens pass.
+- Runtime model: `version`, `fluids` map, per-node/per-link `fluid`, polynomial pump/fan `coeffs`, HEX `couplings`, Churchill Darcy friction, hydrostatic from node `z` with `pFixed` as absolute pressure (Patm on free surfaces).
+- P0 acceptance is `tests/fixtures/goldens.json` within 1% on flow, enforced by `tests/goldens.test.ts`.
 
-## Next product work
+## Layout
 
-1. `packages/solver` with the P0 goldens as tests.
-2. `apps/web` Vite + React + XYFlow shell that loads the JSON and calls a worker.
-
-When those land, extend `.cursor/skills/verify-hydro-flow/` so agents drive the real canvas. Until then, the verify skill runs `npm run check`.
+- `src/engine` — Newton hydraulics + linear ε-NTU energy
+- `src/ui` — Vite + React + XYFlow editor
+- `examples/*.hydroflow.json` — including the compiled DLC worked example
+- Do not split into `packages/solver` / `apps/web` unless a later change explicitly migrates this tree

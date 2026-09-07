@@ -1,21 +1,24 @@
 # Project files
 
-Saved networks are `.hydroflow.json` files that match `docs/schema/hydroflow.project.schema.json`.
+Saved networks are `.hydroflow.json` files that match `docs/schema/hydroflow.project.schema.json` (`src/engine/types.ts`).
 
 ## Sub-features
 
-- Schema version `0.1.0`
-- Nodes with unique ids and kinds `junction` / `boundary` / `tank` / `plenum`
+- `version` `0.1.0`
+- `fluids` map; every node and link names a fluid id
+- Nodes with unique ids and kinds `junction` / `boundary` / `tank`
 - Links whose `from` and `to` name existing nodes
-- Constant-property water with numeric `rho` and `mu`
+- Optional HEX `couplings` between two stream links
+- Constant-property fluids with numeric `rho` and `mu`
 
 ## How to get to it (user POV)
 
-A user saves or opens a project. Until the canvas exists, the user-facing files are the committed examples:
+A user saves or opens a project from the canvas (Save / Open) or commits an example:
 
 - `examples/series-pipes.hydroflow.json`
 - `examples/pump-loop.hydroflow.json`
 - `examples/parallel-pipes.hydroflow.json`
+- `examples/dlc-pumped-cooling.hydroflow.json`
 
 ## Driving it with npm run check
 
@@ -23,9 +26,9 @@ A user saves or opens a project. Until the canvas exists, the user-facing files 
 npm run check
 ```
 
-Pass when the transcript contains `matches schema` and `graph ids resolve` for each of those three files.
+Pass when the transcript contains `matches schema` and `graph ids resolve` for each file in `examples/`.
 
 ## Gotchas
 
-- Boundary `pFixed` in the examples already includes `Patm + ρ g z`. A solver that also applies elevation from node `z` double-counts head. See `tests/fixtures/README.md`.
-- `results` is `null` on the examples. Do not treat a missing solve as a failed save.
+- `pFixed` is absolute pressure. Free-surface reservoirs use Patm. Elevation is node `z`.
+- Do not add a legacy `schemaVersion` / singular `fluid` / table `curve` field — the schema rejects them.

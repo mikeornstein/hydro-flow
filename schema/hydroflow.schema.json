@@ -1,17 +1,1 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://hydro-flow.local/schema/hydroflow.schema.json",
-  "title": "hydro-flow project",
-  "type": "object",
-  "required": ["version", "nodes", "links", "fluids", "analysis"],
-  "properties": {
-    "version": { "const": "0.1.0" },
-    "meta": { "type": "object" },
-    "units": { "type": "object" },
-    "fluids": { "type": "object" },
-    "analysis": { "type": "object" },
-    "nodes": { "type": "array" },
-    "links": { "type": "array" },
-    "couplings": { "type": "array" }
-  }
-}
+{ "$ref": "../docs/schema/hydroflow.project.schema.json" }

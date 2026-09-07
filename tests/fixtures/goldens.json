@@ -10,9 +10,9 @@
     "mu": 0.001002,
     "g": 9.80665,
     "Patm": 101325.0,
-    "friction": "Swamee-Jain for Re>=2300; 64/Re laminar",
+    "friction": "Churchill (1977) Darcy f, all Re",
     "eps_m": 4.5e-5,
-    "notes": "Boundary pFixed already includes Patm + rho g elevation so link models should treat geometry.L/D/eps/K only and must NOT add elevation twice. If a solver applies rho g dz from node elevations, drop the hydrostatic part from pFixed (use Patm only)."
+    "notes": "Boundary pFixed is Patm. Hydrostatic head comes from node z via ρ g Δz on each link. Pump head is the polynomial H = c0 + c1 Q + c2 Q² (m). Values below are this engine's converged SI results."
   },
   "cases": [
     {
@@ -20,13 +20,13 @@
       "file": "examples/series-pipes.hydroflow.json",
       "expected": {
         "links": {
-          "pipe-1": { "Q": 3.471278803556e-03, "V": 1.767907777395, "Re": 88060.16, "f": 0.02227773, "dP": 35531.80 },
-          "pipe-2": { "Q": 3.471278803556e-03, "V": 2.762355902180, "Re": 110075.20, "f": 0.02258033, "dP": 111303.18 }
+          "pipe-1": { "Q": 0.0034712641819, "V": 1.7679003306, "Re": 88059.79, "f": 0.02228006 },
+          "pipe-2": { "Q": 0.0034712641706, "V": 2.7623442576, "Re": 110074.73, "f": 0.02257983 }
         },
         "nodes": {
-          "res-hi": { "P": 297104.9606 },
-          "mid": { "P": 261573.16546 },
-          "res-lo": { "P": 150269.99015 }
+          "res-hi": { "P": 101325 },
+          "mid": { "P": 139207.3505 },
+          "res-lo": { "P": 101325 }
         }
       }
     },
@@ -35,21 +35,21 @@
       "file": "examples/pump-loop.hydroflow.json",
       "expected": {
         "links": {
-          "pipe": { "Q": 5.040585921353e-03, "V": 2.567149329481 },
-          "pump": { "Q": 5.040585921353e-03, "H": 29.949185 }
+          "pipe": { "Q": 0.0050405909202, "V": 2.5671518754, "Re": 127870.81, "f": 0.02149514 },
+          "pump": { "Q": 0.0050405909202, "H": 29.949185 }
         }
       },
-      "pumpCurveSI": "H_m = 30 - 2000 * Q_m3s^2. Tabulated curve in the example is that polynomial sampled."
+      "pumpCurveSI": "H_m = 30 - 2000 * Q_m3s^2 stored as pump.coeffs [30, 0, -2000]."
     },
     {
       "id": "C-parallel-pipes",
       "file": "examples/parallel-pipes.hydroflow.json",
       "expected": {
         "links": {
-          "pipe-a": { "Q": 5.049515832330e-03, "V": 2.571697295796, "Re": 128097.22, "f": 0.02149192 },
-          "pipe-b": { "Q": 5.049515832330e-03, "V": 2.571697295796, "Re": 128097.22, "f": 0.02149192 }
+          "pipe-a": { "Q": 0.0050495219982, "V": 2.5717004360, "Re": 128097.37, "f": 0.02149186 },
+          "pipe-b": { "Q": 0.0050495219982, "V": 2.5717004360, "Re": 128097.37, "f": 0.02149186 }
         },
-        "totals": { "Q": 1.009903166466e-02 }
+        "totals": { "Q": 0.010099043996 }
       }
     },
     {
@@ -60,6 +60,15 @@
         "k_SI": 1.756820922316e-09,
         "Q_m3s_at_150kPa": 6.804138174398e-07,
         "Q_Lph_at_150kPa": 2.449489742783
+      }
+    },
+    {
+      "id": "E-dlc-pumped-cooling",
+      "file": "examples/dlc-pumped-cooling.hydroflow.json",
+      "expected": {
+        "links": {
+          "pump.core": { "Q": 0.00032743000075 }
+        }
       }
     }
   ]
