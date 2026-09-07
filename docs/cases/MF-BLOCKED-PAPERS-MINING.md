@@ -1,6 +1,6 @@
 # Mining report: blocked / deferred / anchor papers
 
-Mined 2026-09-07 from `/tmp/mf-papers/MF*.txt` and `/tmp/mf-papers/inventory.md`. Status board: `docs/cases/MF-PAPER-CASES.md`. Scope is only papers still **blocked**, **deferred**, **anchors only**, plus the three open questions (MF03 R2 thermal, MF07 single-net, MF12 pure-FNM numbers).
+Mined 2026-09-07 from `/tmp/mf-papers/MF*.txt` and `/tmp/mf-papers/inventory.md`. **Authoritative status is `docs/cases/MF-PAPER-CASES.md`** — this file is the cited extract inventory for blockers. After mining, MF01/MF06/MF14 reconstructible slices were implemented on the paper-cases branch; table rows below may still say “deferred/anchors” as of the mine time.
 
 **Rules used here:** every number is quoted or cited from those extracts. OCR-garbled cells are flagged. Figure-only bars are not treated as goldens. Engine features considered: `pipe`/`duct` Darcy, `K`, `rQuad`/`rLin`, `emitter`, `fan`/`pump` polynomial points, `tee`, energy `rTh`/`q`, `mdotSource`, `geometry.A`, `parallelCount`, `hex` UA coupling.
 

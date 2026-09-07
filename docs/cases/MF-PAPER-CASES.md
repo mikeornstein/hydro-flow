@@ -8,6 +8,7 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 - Paper replays compare to digitized figures or published tables.
 - Digitization uncertainty is recorded in `tests/fixtures/paper/*-digitized.json`.
 - Do not special-case the solver to match a bar chart. Close gaps with handbook physics (tees, rectangular `A`+`Dh`) or document the remaining discrepancy here.
+- Cited extract mining for blocked/deferred papers: `docs/cases/MF-BLOCKED-PAPERS-MINING.md`.
 
 ## Status (MF01–MF15)
 
