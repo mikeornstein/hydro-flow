@@ -1,0 +1,4 @@
+level	n_parallel	paper_Q_gpm	hydroflow_Q_gpm	paper_dP_psig	drive_dP_psig	Q_rel_err	note
+lcm	1	0.12	0.1200	3.5	3.5	0.00%	pinned_quadratic_through_Table1_point
+row	28	3.4	3.3600	3	3.5	1.18%	parallel_LCMs_at_LCM_dP;_paper_row/system_dP_includes_manifold
+system	113	13.6	13.5600	2	3.5	0.29%	parallel_LCMs_at_LCM_dP;_paper_row/system_dP_includes_manifold

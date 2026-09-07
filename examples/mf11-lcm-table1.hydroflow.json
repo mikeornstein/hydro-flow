@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "meta": {
-    "name": "MF11 expanded LCM block",
+    "name": "MF11 single LCM at Table 1 point",
     "description": "MF11 hierarchical curve reuse / Table 1 LCM golden",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
@@ -48,7 +48,7 @@
       "y": 0,
       "z": 0,
       "fluid": "water-20C",
-      "pFixed": 150000,
+      "pFixed": 125456.6495,
       "tFixed": 293.15
     },
     {
@@ -64,51 +64,21 @@
   ],
   "links": [
     {
-      "id": "leg-1",
+      "id": "lcm",
       "from": "a",
       "to": "b",
       "fluid": "water-20C",
       "component": {
-        "type": "orifice",
-        "lossModel": "k-factor",
+        "type": "generic-resistance",
+        "lossModel": "quadratic",
         "geometry": {
           "L": 0,
           "D": 0.01,
           "eps": 0
         },
-        "K": 2
-      }
-    },
-    {
-      "id": "leg-2",
-      "from": "a",
-      "to": "b",
-      "fluid": "water-20C",
-      "component": {
-        "type": "orifice",
-        "lossModel": "k-factor",
-        "geometry": {
-          "L": 0,
-          "D": 0.01,
-          "eps": 0
-        },
-        "K": 3
-      }
-    },
-    {
-      "id": "leg-3",
-      "from": "a",
-      "to": "b",
-      "fluid": "water-20C",
-      "component": {
-        "type": "orifice",
-        "lossModel": "k-factor",
-        "geometry": {
-          "L": 0,
-          "D": 0.01,
-          "eps": 0
-        },
-        "K": 4
+        "K": 0,
+        "rQuad": 421018091225084.4,
+        "parallelCount": 1
       }
     }
   ],
