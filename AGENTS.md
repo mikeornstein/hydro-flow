@@ -8,10 +8,11 @@
 npm install
 npm run check
 npm test
+npm run build
 npm run dev
 ```
 
-`npm run check` is the schema/contract gate. GitHub Actions runs it on every pull request. `npm test` is Vitest: hydraulics, energy, HEX, DLC, and P0 goldens within 1% on flow. `npm run dev` starts the Vite canvas.
+`npm run check` is the schema/contract gate. `npm test` is Vitest. `npm run build` (`tsc -b && vite build`) is required for GitHub Pages — CI runs it on every PR so type errors cannot slip past green tests. `npm run dev` starts the Vite canvas.
 
 ## Process
 
