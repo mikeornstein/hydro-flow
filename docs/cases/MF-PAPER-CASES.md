@@ -2,6 +2,8 @@
 
 Inventory and side-by-side status for publication cases listed in `docs/MACROFLOW_RESEARCH.md` §7.
 
+Blocked / deferred / anchor extracts were re-mined in `docs/cases/MF-BLOCKED-PAPERS-MINING.md` (2026-09-07). That report quotes the `/tmp/mf-papers` text; it does not add solver cases.
+
 ## Policy
 
 - Analytic P0 goldens stay ≤1% on Q.
@@ -13,22 +15,22 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 
 | Paper | Status | Evidence | Notes |
 |---|---|---|---|
-| MF01 | deferred | — | Chassis B/fan tables OCR-unstable; do not invent missing cells. Pattern only (multiplicity). |
+| MF01 | deferred | mining: `MF-BLOCKED-PAPERS-MINING.md` | Table 2 fans clean (0.15 in / 66 SCFM; 0.28 in / 74 SCFM). Table 1 B OCR-flagged; Figs. 5–6 not tabulated. Pattern only (I8 ×4). |
 | MF02 | none | — | Methodology / process paper; no reconstructible network. |
 | MF03 R1 | implemented | `examples/mf03-cold-plate-header-*.hydroflow.json`, `tests/mf03Header.test.ts`, `out/mf03-fig3-comparison.tsv` | Friction-only replay: max rel err vs Fig 3 12.7% (7/16"), 4.9% (7/8"). Idelchik sharp-tee replay (`-tees` files): 21.7% (7/16"), flatter than the paper. Fig 3 is a MacroFlow prediction; see the MF03 tee section below. |
-| MF03 R2 | partial (flow-only) | `examples/mf03-orifice-balance-tuned.hydroflow.json`, `out/mf03-orifice-comparison.tsv` | Tuned orifices raise high-load branch share. T&lt;60°C needs energy + Rth(Q) without Lytron scrape. |
+| MF03 R2 | partial (flow-only) | `examples/mf03-orifice-balance-tuned.hydroflow.json`, `out/mf03-orifice-comparison.tsv` | Tuned orifices raise high-load branch share. Extract defines Rth as (T_component − T_inlet)/power and plots it only on Lytron Fig 5 — no formula, no Rth(Q) table. Ts < 60 °C stays blocked without a user-imported curve. |
 | MF04 | partial | `examples/mf04-orifice-balanced.hydroflow.json`, `out/mf04-orifice-energy.tsv`, `mf04-blocker.json` | fRe 57/62, loads 70/120/200 W, unbalanced bases 33.1/42.3/49.8 °C from PDF. Orifice rebalance + energy `rTh`/`q` implemented; manifold channel count / Nu / inlet T sparse → absolute T not a 1% golden. |
-| MF05 | blocked | — | Recirculation pattern only; sparse absolute Q. |
-| MF06 | deferred | — | Historical 10–18% hardware band; altitude density note; not a 1% golden. |
-| MF07 | blocked | — | Dual-network + HX handoff is P3+ product work. |
+| MF05 | blocked | mining: `MF-BLOCKED-PAPERS-MINING.md` | Tables 2–7 are rich (780/269 CFM model; measured A–N). Blocker is unpublished fan-tray / slot / filter meter curves, not missing Q. |
+| MF06 | deferred | mining: `MF-BLOCKED-PAPERS-MINING.md` | Tables 2–3 publish R (in H2O/CFM²); Table 4 is 338/398/398 and 158/163/180 CFM. Engine-feasible as `rQuad` + imposed section Q (Ellison n=2). Fan-intersection Q still needs vendor curves. Historical 10–18% band; not a 1% golden. |
+| MF07 | blocked | mining: `MF-BLOCKED-PAPERS-MINING.md` | No single-network Q subset. 1.7 kW / +52 °C / p=AQ²; A, fans, solar W, Figs. 5/7/8 unpublished. Engine `hex` can sit in one project; dual-graph UI is still P3+. |
 | MF08 | partial | `examples/mf08-server-fan-caseB.hydroflow.json`, `out/mf08-fan-impedance.tsv`, `mf08-table1.json` | Synthetic fan from goals + chassis/PCI/exhaust. Case B: proc avg 1.3% / total 10.6% vs Table 1; A→B→C processor direction holds. Not a vendor catalog. |
 | MF09 | implemented | `examples/mf09-heat-sink-bypass.hydroflow.json`, `out/mf09-fig4-comparison.tsv` | Monotonic sink-fraction decline. Mid-curve abs err ≤~0.25 vs digitized Fig 4. |
-| MF10 | blocked | — | Burn-in oven; sparse numeric extract. |
+| MF10 | blocked | mining: `MF-BLOCKED-PAPERS-MINING.md` | Tables 1–2 Q/T are complete for zones 1/3/4/6. Blocker is experimental BIB impedance + unpublished DUT heat, not missing tables. |
 | MF11 | implemented (pattern + Table 1 LCM) | `examples/mf11-lcm-table1.hydroflow.json`, `out/mf11-table1-hierarchy.tsv`, `mf11-table1.json` | LCM golden pinned at 0.12 gpm @ 3.50 psig. Hierarchy 1 / 28 / 113 parallel LCMs; row/system within ~2% of Table 1 Q at LCM ΔP. Hardware 10% band is the publication claim. |
-| MF12 | blocked | — | FNM+CFD workflow; not an FNM Q golden. |
+| MF12 | blocked | mining: `MF-BLOCKED-PAPERS-MINING.md` | Pure FNM numbers exist (344/359 first-pass; 383/397 final; 11.3 m/s; Table 1–2 FNM columns). AMD curves and areas unpublished — do not replay. |
 | MF13 | discrepancy documented | `examples/mf13-card-cabinet-*.hydroflow.json`, `mf13-figs-digitized.json`, `out/mf13-fig3-4-comparison.tsv`, `mf13-discrepancy.json` | Figs 3–4 digitized (±1.5 CFM). Friction-only near-flat. Idelchik tees: far/near ≈ 1.57 vs paper ≈ 10.6 (right direction, wrong magnitude). Design II taper + tees steepens rather than flattening Fig 4. No momentum hack. |
-| MF14 | anchors only | `mf14-totals.json` | FNM 65.8 vs test 66.6 recorded. Rejected lumped rQuad fit to the answer. |
-| MF15 | blocked | — | Power-supply internals; sparse tabulated Q. |
+| MF14 | anchors only | `mf14-totals.json`; mining: `MF-BLOCKED-PAPERS-MINING.md` | FNM 65.8 vs test 66.6 recorded. Reconstructible: 13 PCB @ 0.8", 17° ramp, EMI 51%/0.31", 2×(0.24 in / 45 CFM), bypass, 90° exit. Not reconstructible: Fig 3 Δp(Q), card L×W×H, Fig 5 branch CFM. Rejected lumped rQuad fit to the answer. |
+| MF15 | blocked | mining: `MF-BLOCKED-PAPERS-MINING.md` | 20 boards × 4 fans; 20×12×65 in; ~6 kW. Forward/reverse compact curves and Figs. 8–11 not tabulated. Combining-manifold inequalities only. |
 
 ## Physics upgrades landed for these cases
 
@@ -75,4 +77,4 @@ Tees move the profile in the paper's direction but stop far short of the spike. 
 1. **Tee correlation family for MF03 and MF13.** Idelchik sharp 90° tees are implemented (`node.tee`). On MF03 7/16" they flatten (21.7% vs 12.7% friction-only). On MF13 Design I they produce mild far-passage bias (far/near ≈ 1.57 vs digitized Fig 3 ≈ 10.6) — right direction, wrong magnitude — and Design II taper steepens rather than flattening Fig 4. See MF03 section and `mf13-discrepancy.json`. Next: Gardel / Rennels–Hudson, or rounded-entry wye if hardware supports it. No momentum hack.
 2. **MF09 clearance topology.** Paper uses distinct side and top bypass ducts; current model is one equivalent slot.
 3. **Vendor fan curves.** MF08/MF13 use synthetic curves from published max points / goals only, never MacroFlow binary catalogs. Absolute CFM still limited by missing full impedance maps.
-4. **Energy + Rth(Q)** for MF03 R2 thermal targets without scraping vendor catalogs. MF04 has an energy path with `rTh`/`q` but sparse manifold geometry.
+4. **Energy + Rth(Q)** for MF03 R2 thermal targets without scraping vendor catalogs. The extract only *defines* Rth (inlet-referenced, function of Q) and points at Lytron Fig 5. Engine `rTh` is a constant, mean-fluid resistance. MF04 has an energy path with `rTh`/`q` but sparse manifold geometry.
