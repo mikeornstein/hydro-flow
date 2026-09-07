@@ -399,8 +399,10 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   white-space: nowrap;
 }
 .compact-project {
-  min-width: 44px;
-  min-height: 44px;
+  font-size: 11px;
+  padding: 6px 10px;
+  min-height: 0;
+  line-height: 1.2;
 }
 
 .mobile-chrome {
