@@ -127,7 +127,7 @@ export function ResultsDock() {
               value={`${formatTempC(result.nodes.supplyManifold.T)}  →  ${formatTempC(result.nodes.returnManifold.T)}`}
             />
             <Kpi label="HEX effectiveness" value={hx.effectiveness.toFixed(3)} hint={`NTU ${hx.ntu.toFixed(2)}`} />
-            <Kpi label="GPU case" value={gpu?.T_surface ? formatTempC(gpu.T_surface) : "—"} hint="Rth × 700 W" />
+            <Kpi label="GPU case" value={gpu?.T_surface ? formatTempC(gpu.T_surface) : "—"} hint="case-to-coolant Rth" />
           </div>
         )}
         {tab === "charts" && (
