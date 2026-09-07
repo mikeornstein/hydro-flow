@@ -31,5 +31,5 @@
     "CFD": { "processor_avg": 18.0, "total": 151 }
   },
   "goals": { "processor_CFM": 14, "pci_CFM": 6 },
-  "reconstruction": "blocked_on_vendor_fan_curves_and_full_impedance_map"
+  "reconstruction": "partial_synthetic_fan_from_goals_plus_chassis_PCI_exhaust_impedance;_not_vendor_catalog"
 }

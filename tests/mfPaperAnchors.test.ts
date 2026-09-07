@@ -15,8 +15,8 @@ describe("MF08 / MF14 published quantitative anchors", () => {
     expect(rel).toBeLessThan(0.02);
   });
 
-  it("documents reconstruction blockers rather than inventing catalog curves", () => {
-    expect(mf08.reconstruction).toMatch(/blocked/);
+  it("documents reconstruction status rather than inventing catalog curves", () => {
+    expect(mf08.reconstruction).toMatch(/partial_synthetic_fan|blocked/);
     expect(mf14.reconstruction).toMatch(/partial/);
   });
 });
