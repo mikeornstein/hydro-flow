@@ -1,6 +1,6 @@
 # hydro-flow
 
-Browser **flow-network modeling** for thermal-hydraulic systems. A physical plant is a graph: junctions hold pressure and temperature, components hold a constitutive ΔP(Q) and optional heat transfer. The engine solves discrete mass, momentum, and energy — not 3-D CFD.
+Browser **flow-network modeling** for thermal-hydraulic systems. A physical plant is a graph: junctions hold pressure and temperature, components hold a constitutive ΔP(Q) and optional heat transfer. The engine solves discrete mass, momentum, and energy — not 3-D CFD. A live build is at https://mikeornstein.com/hydro-flow/.
 
 ## Docs
 
