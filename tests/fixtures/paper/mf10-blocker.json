@@ -1,0 +1,6 @@
+{
+  "paper": "MF10",
+  "status": "blocked",
+  "reason": "Burn-in oven / production FNM case study; PDF extract has methodology prose without reconstructible absolute Q tables.",
+  "missing": ["oven geometry", "heater/fan ratings", "tabulated flow or temperature results"]
+}

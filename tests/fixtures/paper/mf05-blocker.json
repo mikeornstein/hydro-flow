@@ -1,0 +1,16 @@
+{
+  "paper": "MF05",
+  "status": "blocked",
+  "have": [
+    "Bulk CFM anchors: Fan Inlet 780 (model) / 734 (measured); Recirculation 269 / 216",
+    "Table 4 sectional CFM A–N (e.g. A 462, C 734, I 351)",
+    "Slot velocity targets ~2.5 m/s; NEBS 50 °C / 1800 m",
+    "Recirculation-as-controlled-leak concept"
+  ],
+  "missing": [
+    "Fan tray curve endpoints (pressure–flow)",
+    "Duct / card-cage / recirculation geometry for reconstructible impedance",
+    "Filter ΔP vs clogging curve used in the MacroFlow model"
+  ],
+  "note": "Absolute CFM exist as results, not as enough inputs to rebuild the network without inventing fan/impedance data."
+}

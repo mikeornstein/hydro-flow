@@ -1,0 +1,6 @@
+{
+  "paper": "Gardel-Rennels-tee",
+  "status": "deferred",
+  "reason": "Optional tee.correlation=gardel not implemented this session: Rennels & Hudson Pipe Flow ch.16 / Gardel handbook identities are not present as text in the workspace, so handbook unit tests cannot be verified without inventing coefficients.",
+  "policy": "Do not scale Idelchik ζ to match MF03 Fig 3 or MF13 Fig 3. Next session needs a cited formula source before adding a correlation family."
+}
