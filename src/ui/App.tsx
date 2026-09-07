@@ -56,6 +56,15 @@ function Canvas({ layoutMode }: CanvasProps) {
     return () => window.clearTimeout(t);
   }, [exampleId, diagram.id, fitView, fitPadding, layoutMode]);
 
+  useEffect(() => {
+    if (!sheet) return;
+    const onResize = () => {
+      void fitView({ padding: fitPadding, duration: 180 });
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [sheet, fitView, fitPadding]);
+
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
       for (const ch of changes) {

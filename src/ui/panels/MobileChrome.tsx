@@ -196,7 +196,7 @@ export function MobileChrome({ layout }: MobileChromeProps) {
 
   return (
     <div className="mobile-chrome">
-      <MobileContextBar layout={layout} />
+      {layout.sheet.status === "closed" && <MobileContextBar layout={layout} />}
       <nav className="mobile-actions" aria-label="Network actions">
         <button
           type="button"

@@ -470,6 +470,8 @@ td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); }
 .sheet-dialog[open] {
   display: flex;
   flex-direction: column;
+  opacity: 1;
+  transform: none;
   animation: sheet-up 160ms ease-out;
 }
 .sheet-dialog::backdrop {
