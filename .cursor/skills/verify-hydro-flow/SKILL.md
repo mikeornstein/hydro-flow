@@ -5,7 +5,7 @@ description: Prove hydro-flow behavior. Today that is npm run check against the 
 
 # Verify hydro-flow
 
-There is no running app yet. The real artifact is `npm run check`. When `apps/web` exists, add a Launch/Drive path that opens the canvas. Do not fake a UI proof.
+There is no `hydroflow` binary yet. The real artifact is `npm run check`. When the CLI lands, add a Launch/Drive path that runs `hydroflow goldens` and `hydroflow solve`. When the canvas exists, it is a viewer of the same JSON. Do not fake a UI proof.
 
 ## Launch
 
@@ -35,7 +35,7 @@ The harness is the check script, not a browser.
 2. To prove a single example, keep that file under `examples/*.hydroflow.json` and re-run the check. The script validates every file in that directory against `docs/schema/hydroflow.project.schema.json` and walks node/link ids.
 3. To prove a golden still points at a real graph, edit `tests/fixtures/goldens.json` only with the example. The check fails if a named link or node is missing.
 
-Do not call internal setters or invent a solver run. Solver proof waits for `tests/solver`.
+Do not call internal setters or invent a solver run. Solver proof waits for `hydroflow goldens`.
 
 ## Evidence
 

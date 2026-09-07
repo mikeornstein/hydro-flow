@@ -5,15 +5,15 @@ alwaysApply: true
 
 # Hydro-Flow
 
-This repo is a 1-D flow-network modeling (FNM) web app. It is not 3-D CFD.
+This repo is a 1-D flow-network modeling (FNM) tool. It is not 3-D CFD. The canvas, when it exists, is a viewer of the same JSON the CLI writes.
 
 ## Product
 
 - Reimplement the published FNM method. Do not copy MacroFlow's name, artwork, vendor catalogs, or unpublished binary artifacts.
 - Do not invent a native MacroFlow file format. The project file is `docs/schema/hydroflow.project.schema.json`.
-- Store SI internally. Convert at the UI boundary.
+- Store SI internally. Convert at the display boundary.
 - Treat `tests/fixtures/goldens.json` as the P0 acceptance source. Solver flow must land within 1% of those Q values.
-- Do not trust the canvas until `tests/solver` exists and those goldens pass.
+- P0 is `hydroflow goldens` and `hydroflow solve`, not a browser click. Do not invent a second solver in the prompt. Until the binary lands, write docs, fixtures, and schema, and run `npm run check`.
 
 ## Process
 
