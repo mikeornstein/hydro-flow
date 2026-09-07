@@ -9,22 +9,26 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 - Digitization uncertainty is recorded in `tests/fixtures/paper/*-digitized.json`.
 - Do not special-case the solver to match a bar chart. Close gaps with handbook physics (tees, rectangular `A`+`Dh`) or document the remaining discrepancy here.
 
-## Status
+## Status (MF01–MF15)
 
-| Case | Paper | Status | Evidence | Notes |
-|---|---|---|---|---|
-| R1 header maldistribution | MF03 | implemented | `examples/mf03-cold-plate-header-*.hydroflow.json`, `tests/mf03Header.test.ts`, `tests/fixtures/paper/out/mf03-fig3-comparison.tsv` | Max rel err vs Fig 3 ≈12.7% on original 7/16" (passage 1). Modified 7/8" ≤4.4%. Gap attributed to missing Idelchik tee inertia (not yet in constitutive). Larger header flattens max/min as required. |
-| R6 bypass | MF09 | implemented | `examples/mf09-heat-sink-bypass.hydroflow.json`, `tests/mf09Bypass.test.ts`, `tests/fixtures/paper/out/mf09-fig4-comparison.tsv` | Monotonic sink-fraction decline passes. Mid-curve abs error up to ~0.25 vs digitized Fig 4 with slot `Dh=2·gap` + channel `A`. Further tee/orifice detail needed for tighter numeric match. |
-| R4/R5 server bypass | MF08 | partial | `examples/mf08-bypass-balance.hydroflow.json`, `tests/mf08Bypass.test.ts`, `out/mf08-bypass-comparison.tsv` | Fixed-total bypass K(σ) shows 36% open raises processor path vs 100% open (Table 1 direction). Absolute CFM needs full impedance + fan curves. |
-| R7 taper cabinet | MF13 | blocked | `tests/fixtures/paper/mf13-discrepancy.json` | Friction-only model gives near-inlet preference (opposite of paper). Tee inertia required; bad momentum attempt reverted. |
-| R8 telecom cabinet | MF14 | anchors only | `tests/fixtures/paper/mf14-totals.json` | Published FNM 65.8 vs test 66.6 CFM recorded. Full passage graph needs EMI/screen K; a lumped rQuad fit to 65.8 would be a special case and was rejected. |
-| R2 orifice loop | MF03 | partial (flow-only) | `examples/mf03-orifice-balance-tuned.hydroflow.json`, `out/mf03-orifice-comparison.tsv` | Tuned orifices raise high-load branch share vs identical. Surface T&lt;60°C needs energy + Rth(Q). |
-| R3 microchannel | MF04 | pending | | Energy pack. |
-| R10 manifold | MF11 | implemented (pattern) | `examples/mf11-composite-expanded.hydroflow.json`, `out/mf11-composite-comparison.tsv` | Expanded∥composite Q match within 1% (I6/R10 pattern). Hardware 10% band not claimed. |
-| R9 BTS dual net | MF07 | pending | | Multi-graph P3+. |
-| R11 / MF01 / MF06 | MF01/MF06 | deferred | | Sparse / altitude / historical accuracy bands; do not 1%-golden CFM tables. |
-| MF02 | MF02 | none | | Methodology only. |
-| MF05/10/12/15 | — | low | | Sparse absolute Q in extracts. |
+| Paper | Status | Evidence | Notes |
+|---|---|---|---|
+| MF01 | deferred | — | Chassis B/fan tables OCR-unstable; do not invent missing cells. Pattern only (multiplicity). |
+| MF02 | none | — | Methodology / process paper; no reconstructible network. |
+| MF03 R1 | implemented | `examples/mf03-cold-plate-header-*.hydroflow.json`, `tests/mf03Header.test.ts`, `out/mf03-fig3-comparison.tsv` | Max rel err vs Fig 3 ≈12.7% (7/16"); ≤4.4% (7/8"). Larger header flattens max/min. Tee inertia still open. |
+| MF03 R2 | partial (flow-only) | `examples/mf03-orifice-balance-tuned.hydroflow.json`, `out/mf03-orifice-comparison.tsv` | Tuned orifices raise high-load branch share. T&lt;60°C needs energy + Rth(Q) without Lytron scrape. |
+| MF04 | blocked | — | Microchannel + energy + Nu(aspect); confirm PDF loads before coding. |
+| MF05 | blocked | — | Recirculation pattern only; sparse absolute Q. |
+| MF06 | deferred | — | Historical 10–18% hardware band; altitude density note; not a 1% golden. |
+| MF07 | blocked | — | Dual-network + HX handoff is P3+ product work. |
+| MF08 | partial | `examples/mf08-bypass-balance.hydroflow.json`, `out/mf08-bypass-comparison.tsv`, `mf08-table1.json` | 36% open raises processor-path flow (Table 1 direction). Absolute CFM needs full map + fan curves. |
+| MF09 | implemented | `examples/mf09-heat-sink-bypass.hydroflow.json`, `out/mf09-fig4-comparison.tsv` | Monotonic sink-fraction decline. Mid-curve abs err ≤~0.25 vs digitized Fig 4. |
+| MF10 | blocked | — | Burn-in oven; sparse numeric extract. |
+| MF11 | implemented (pattern) | `examples/mf11-composite-expanded.hydroflow.json`, `out/mf11-composite-comparison.tsv` | Expanded vs composite Q within 1%. Hardware 10% band not claimed. |
+| MF12 | blocked | — | FNM+CFD workflow; not an FNM Q golden. |
+| MF13 | blocked | `mf13-discrepancy.json` | Needs tee inertia for far-passage bias; friction-only is opposite; bad momentum attempt reverted. |
+| MF14 | anchors only | `mf14-totals.json` | FNM 65.8 vs test 66.6 recorded. Rejected lumped rQuad fit to the answer. |
+| MF15 | blocked | — | Power-supply internals; sparse tabulated Q. |
 
 ## Physics upgrades landed for these cases
 
@@ -35,3 +39,4 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 1. **Tee inertia / Idelchik dividing–combining K(q).** Required for MF03 original-header severity and MF13 Design I far-passage bias. A Bajura-style header momentum experiment worsened MF03 (~200% error) and was reverted.
 2. **MF09 clearance topology.** Paper uses distinct side and top bypass ducts; current model is one equivalent slot.
 3. **Vendor fan curves.** MF08/MF13/MF14 need published max points plus a documented curve shape, never MacroFlow binary catalogs.
+4. **Energy + Rth(Q)** for MF03 R2 / MF04 thermal targets without scraping vendor catalogs.
