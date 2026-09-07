@@ -10,3 +10,5 @@ export * from "./examples/dlcPumpedCooling";
 export * from "./examples/mf03ColdPlateHeader";
 export * from "./examples/mf09HeatSinkBypass";
 export * from "./examples/mf08BypassBalance";
+export * from "./examples/mf03OrificeBalance";
+export * from "./examples/mf11Composite";

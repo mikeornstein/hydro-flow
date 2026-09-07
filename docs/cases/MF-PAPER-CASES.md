@@ -18,9 +18,9 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 | R4/R5 server bypass | MF08 | partial | `examples/mf08-bypass-balance.hydroflow.json`, `tests/mf08Bypass.test.ts`, `out/mf08-bypass-comparison.tsv` | Fixed-total bypass K(σ) shows 36% open raises processor path vs 100% open (Table 1 direction). Absolute CFM needs full impedance + fan curves. |
 | R7 taper cabinet | MF13 | blocked | `tests/fixtures/paper/mf13-discrepancy.json` | Friction-only model gives near-inlet preference (opposite of paper). Tee inertia required; bad momentum attempt reverted. |
 | R8 telecom cabinet | MF14 | anchors only | `tests/fixtures/paper/mf14-totals.json` | Published FNM 65.8 vs test 66.6 CFM recorded. Full passage graph needs EMI/screen K; a lumped rQuad fit to 65.8 would be a special case and was rejected. |
-| R2 orifice loop | MF03 | pending | 6.8 gpm; loads; T&lt;60°C | Needs energy + cold-plate `Rth(Q)` without scraping Lytron catalogs. |
+| R2 orifice loop | MF03 | partial (flow-only) | `examples/mf03-orifice-balance-tuned.hydroflow.json`, `out/mf03-orifice-comparison.tsv` | Tuned orifices raise high-load branch share vs identical. Surface T&lt;60°C needs energy + Rth(Q). |
 | R3 microchannel | MF04 | pending | | Energy pack. |
-| R10 manifold | MF11 | pending | | Composite curve reuse. |
+| R10 manifold | MF11 | implemented (pattern) | `examples/mf11-composite-expanded.hydroflow.json`, `out/mf11-composite-comparison.tsv` | Expanded∥composite Q match within 1% (I6/R10 pattern). Hardware 10% band not claimed. |
 | R9 BTS dual net | MF07 | pending | | Multi-graph P3+. |
 | R11 / MF01 / MF06 | MF01/MF06 | deferred | | Sparse / altitude / historical accuracy bands; do not 1%-golden CFM tables. |
 | MF02 | MF02 | none | | Methodology only. |

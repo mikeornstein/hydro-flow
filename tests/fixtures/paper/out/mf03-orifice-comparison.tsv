@@ -1,0 +1,11 @@
+mode	branch	share	target_share	abs_err
+identical	1	0.206	0.037	0.169
+identical	2	0.201	0.049	0.153
+identical	3	0.199	0.061	0.138
+identical	4	0.197	0.366	0.169
+identical	5	0.197	0.488	0.291
+tuned	1	0.110	0.037	0.073
+tuned	2	0.118	0.049	0.069
+tuned	3	0.129	0.061	0.068
+tuned	4	0.298	0.366	0.068
+tuned	5	0.345	0.488	0.143
