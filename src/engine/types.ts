@@ -116,17 +116,40 @@ export interface NodeDef {
   tee?: TeeSpec;
 }
 
+/** One sample of a user H(Q) table. Q in m³/s (≥ 0), H in m. */
+export interface HeadPoint {
+  Q: number;
+  H: number;
+}
+
+/** One sample of a user Δp(Q) table. Q in m³/s (≥ 0), dP in Pa. */
+export interface PressurePoint {
+  Q: number;
+  dP: number;
+}
+
 export interface PumpCurve {
-  /** Head H(Q) = c0 + c1 Q + c2 Q² + … with Q in m³/s, H in m. */
-  coeffs: number[];
+  /**
+   * Head H(Q) = c0 + c1 Q + c2 Q² + … with Q in m³/s, H in m. Required unless
+   * `table` is given.
+   */
+  coeffs?: number[];
   /** Optional shutoff clamp, m. */
   hMin?: number;
+  /**
+   * Sampled H(Q) that takes precedence over `coeffs` when present. Linear
+   * between sorted Q; held at the first/last sample outside the range, and
+   * the solver reports that clamp in `SolveResult.warnings`.
+   */
+  table?: HeadPoint[];
 }
 
 export interface FanCurve {
-  /** Pressure rise ΔP(Q) = c0 + c1 Q + c2 Q² + … Pa, Q in m³/s. */
-  coeffs: number[];
+  /** Pressure rise ΔP(Q) = c0 + c1 Q + c2 Q² + … Pa, Q in m³/s. Required unless `table` is given. */
+  coeffs?: number[];
   dpMin?: number;
+  /** Sampled ΔP(Q), Pa. Same precedence and clamp rules as `PumpCurve.table`. */
+  table?: PressurePoint[];
 }
 
 export interface EmitterLaw {
@@ -159,6 +182,13 @@ export interface LinkComponent {
   pump?: PumpCurve;
   fan?: FanCurve;
   emitter?: EmitterLaw;
+  /**
+   * Imported loss Δp(Q) per parallel path (CFD or lab impedance), Pa vs m³/s.
+   * Adds to the other losses and is odd in Q. Linear between sorted Q; held at
+   * the last sample above the range (solver warns), linear to the origin below
+   * the first sample so the loss stays continuous through Q = 0.
+   */
+  dpTable?: PressurePoint[];
   /** Heat into the fluid, W (cold plates, heaters). */
   q?: number;
   /** Case-to-coolant thermal resistance, K/W. */

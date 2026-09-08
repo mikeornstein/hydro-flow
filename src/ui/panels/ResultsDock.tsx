@@ -154,6 +154,13 @@ export function ResultsDock() {
             />
           </div>
         )}
+        {tab === "summary" && result && result.warnings.length > 0 && (
+          <ul className="warnings" aria-label="Solver warnings">
+            {result.warnings.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+          </ul>
+        )}
         {tab === "charts" && isDlc && (
           <div className="charts-row">
             <div>

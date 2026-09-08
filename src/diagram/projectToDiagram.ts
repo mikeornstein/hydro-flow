@@ -47,6 +47,7 @@ function componentParams(c: LinkComponent): DiagramNode["params"] {
     lossModel: c.lossModel,
     pump: c.pump,
     fan: c.fan,
+    dpTable: c.dpTable,
   };
 }
 
@@ -103,6 +104,7 @@ export function projectToDiagram(project: Project, title?: string, description?:
           eps: c.geometry.eps ?? 1.5e-6,
           K: c.K ?? 0,
         },
+        dpTable: c.dpTable,
       });
       continue;
     }

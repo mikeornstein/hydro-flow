@@ -1,4 +1,6 @@
-import type { HexArrangement } from "./types";
+import { interpTable, pressureOf } from "./curve";
+import type { FanCurve, HeadPoint, HexArrangement, PumpCurve } from "./types";
+
 export function polyval(coeffs: number[], x: number): number {
   let y = 0;
   let p = 1;
@@ -20,6 +22,34 @@ export function fanRisePa(coeffs: number[], Q: number, dpMin = 0): number {
   if (Q >= 0) return Math.max(dpMin, polyval(coeffs, Q));
   const dp0 = Math.max(dpMin, polyval(coeffs, 0));
   return dp0 - 2e6 * Q * Q;
+}
+
+const headOf = (p: HeadPoint): number => p.H;
+
+/** Head at Q, m. A sampled `table` takes precedence over the polynomial. */
+export function pumpCurveHeadM(curve: PumpCurve, Q: number): number {
+  const hMin = curve.hMin ?? 0;
+  const table = curve.table;
+  if (!table?.length) {
+    if (!curve.coeffs) throw new Error("Pump curve needs coeffs or a table");
+    return pumpHeadM(curve.coeffs, Q, hMin);
+  }
+  const at = (q: number) => Math.max(hMin, interpTable(table, headOf, q).y);
+  if (Q >= 0) return at(Q);
+  return at(0) - 8e8 * Q * Q;
+}
+
+/** Pressure rise at Q, Pa. A sampled `table` takes precedence over the polynomial. */
+export function fanCurveRisePa(curve: FanCurve, Q: number): number {
+  const dpMin = curve.dpMin ?? 0;
+  const table = curve.table;
+  if (!table?.length) {
+    if (!curve.coeffs) throw new Error("Fan curve needs coeffs or a table");
+    return fanRisePa(curve.coeffs, Q, dpMin);
+  }
+  const at = (q: number) => Math.max(dpMin, interpTable(table, pressureOf, q).y);
+  if (Q >= 0) return at(Q);
+  return at(0) - 2e6 * Q * Q;
 }
 
 export interface EpsilonNtu {
