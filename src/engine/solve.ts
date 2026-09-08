@@ -1,5 +1,5 @@
 import { solveLinear } from "./linalg";
-import { dDp_dQ, linkDeltaP } from "./constitutive";
+import { curveTableNotes, dDp_dQ, linkDeltaP } from "./constitutive";
 import { hexHeat, epsilonNtu } from "./thermo";
 import { areaFromD } from "./friction";
 import { teeLegDrops, type TeeCorrelation, type TeeLegFlow } from "./tee";
@@ -527,6 +527,11 @@ export function solveSteady(project: Project): SolveResult {
     }
     const tee = flowDir(hyd.Q[k]) * teeDrop[k];
     const loss = ev.loss + tee;
+    const notes = curveTableNotes(link, hyd.Q[k]);
+    if (notes.length) {
+      const label = link.name && link.name !== link.id ? `${link.name} [${link.id}]` : link.id;
+      warnings.push(`Link ${label}: ${notes.join("; ")}`);
+    }
     links[link.id] = {
       Q: hyd.Q[k],
       mdot,

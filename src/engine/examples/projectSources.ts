@@ -11,6 +11,7 @@ import { mf09HeatSinkBypass } from "./mf09HeatSinkBypass";
 import { mf11ExpandedBlock, mf11LcmAtPublishedPoint } from "./mf11Composite";
 import { mf13CardCabinet } from "./mf13CardCabinet";
 import { mf14Enclosure } from "./mf14Enclosure";
+import { userCurveTables } from "./userCurveTables";
 
 export interface ProjectExampleSource {
   /** Basename under examples/. */
@@ -66,6 +67,10 @@ export const PROJECT_EXAMPLE_SOURCES: readonly ProjectExampleSource[] = [
   {
     file: "mf14-enclosure.hydroflow.json",
     build: () => mf14Enclosure(),
+  },
+  {
+    file: "user-curve-tables.hydroflow.json",
+    build: () => userCurveTables("table"),
   },
   {
     file: "mf03-cold-plate-header-7_16.hydroflow.json",

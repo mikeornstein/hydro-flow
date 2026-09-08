@@ -170,6 +170,7 @@ function equipmentLinks(n: DiagramNode): { links: LinkDef[]; couplings: HexCoupl
       opening: n.params.opening,
       pump: n.params.pump,
       fan: n.params.fan,
+      dpTable: n.params.dpTable,
       q: n.params.q,
       rTh: n.params.rTh,
     },
@@ -221,6 +222,7 @@ export function compileDiagram(diagram: Diagram, opts: CompileOptions = {}): Pro
           eps: connector ? 0 : e.geometry.eps,
         },
         K: lossless ? 0.05 : e.geometry.K,
+        dpTable: e.dpTable,
       },
     });
   }

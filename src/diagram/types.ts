@@ -1,4 +1,4 @@
-import type { Fluid, LossModel } from "../engine/types";
+import type { Fluid, HeadPoint, LossModel, PressurePoint } from "../engine/types";
 
 export type EquipmentKind =
   | "junction"
@@ -22,13 +22,17 @@ export type PortId =
   | "airOut";
 
 export interface PumpParams {
-  coeffs: number[];
+  coeffs?: number[];
   hMin?: number;
+  /** Pasted H(Q) samples; override `coeffs` when present. */
+  table?: HeadPoint[];
 }
 
 export interface FanParams {
-  coeffs: number[];
+  coeffs?: number[];
   dpMin?: number;
+  /** Pasted ΔP(Q) samples; override `coeffs` when present. */
+  table?: PressurePoint[];
 }
 
 export interface EquipmentParams {
@@ -49,6 +53,8 @@ export interface EquipmentParams {
   lossModel?: LossModel;
   pump?: PumpParams;
   fan?: FanParams;
+  /** Pasted Δp(Q) loss samples added to the equipment's own loss. */
+  dpTable?: PressurePoint[];
   ua?: number;
   arrangement?: "counterflow" | "parallel" | "crossflow-unmixed";
   liquidK?: number;
@@ -84,6 +90,8 @@ export interface DiagramEdge {
   kind: "pipe" | "duct" | "connector";
   fluid: string;
   geometry: { L: number; D: number; eps: number; K: number };
+  /** Pasted Δp(Q) loss samples added to the run's friction and K. */
+  dpTable?: PressurePoint[];
 }
 
 export interface Diagram {

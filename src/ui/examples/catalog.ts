@@ -147,6 +147,13 @@ export const EXAMPLE_CATALOG: ExampleEntry[] = [
     file: "mf14-enclosure.hydroflow.json",
   },
   {
+    id: "user-curve-tables",
+    title: "Fan and heat sink from pasted tables",
+    description: "Fan ΔP(Q) and heat-sink Δp(Q) entered as tables; bypass slot as a K-factor.",
+    group: "Air cooling",
+    file: "user-curve-tables.hydroflow.json",
+  },
+  {
     id: "mf03-cold-plate-header-7_16",
     title: "Cold-plate manifold — narrow headers",
     description: "U-manifold distributing flow across seven passages (friction only).",

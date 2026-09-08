@@ -1,7 +1,8 @@
+import { dpTableLossPa, sortedByQ, tableRange, type QPoint } from "./curve";
 import { darcyWeisbach } from "./friction";
 import { G } from "./types";
 import type { EmitterLaw, Fluid, LinkDef, NodeDef } from "./types";
-import { fanRisePa, pumpHeadM } from "./thermo";
+import { fanCurveRisePa, pumpCurveHeadM } from "./thermo";
 
 /** Inverse of Q = k ΔP^x. Odd in Q so reverse flow meets the same resistance. */
 export function emitterDropPa(law: EmitterLaw, Q: number): number {
@@ -102,16 +103,54 @@ export function linkDeltaP(
   }
 
   if (c.emitter) loss += emitterDropPa(c.emitter, Q);
+  if (c.dpTable) loss += dpTableLossPa(c.dpTable, Q);
 
   let rise = 0;
-  if (c.pump) {
-    rise += fluid.rho * G * pumpHeadM(c.pump.coeffs, Q, c.pump.hMin ?? 0);
-  }
-  if (c.fan) {
-    rise += fanRisePa(c.fan.coeffs, Q, c.fan.dpMin ?? 0);
-  }
+  if (c.pump) rise += fluid.rho * G * pumpCurveHeadM(c.pump, Q);
+  if (c.fan) rise += fanCurveRisePa(c.fan, Q);
 
   return { dP: loss + elev - rise, loss, elev, rise, f, Re, V, D };
+}
+
+function fmtQ(Q: number): string {
+  return `${Q.toPrecision(3)} m³/s`;
+}
+
+/**
+ * One note per user table on this link that the solved per-path flow left
+ * outside its samples. Empty when every table covers Q. Evaluated once after
+ * the solve so Newton iterates never produce warnings.
+ */
+export function curveTableNotes(link: LinkDef, Qtotal: number): string[] {
+  const c = link.component;
+  const Q = Qtotal / pathCount(link);
+  const notes: string[] = [];
+  const clampNote = (label: string, table: readonly QPoint[], q: number, held: string) => {
+    const range = tableRange(table, q);
+    if (range === "in") return;
+    if (q < 0) {
+      notes.push(`${label}: Q = ${fmtQ(q)} runs the machine backwards; shutoff value plus a quadratic reverse loss applied`);
+      return;
+    }
+    const sorted = sortedByQ(table);
+    const edge = range === "below" ? sorted[0] : sorted[sorted.length - 1];
+    const which = range === "below" ? "first" : "last";
+    notes.push(
+      `${label}: Q = ${fmtQ(q)} is ${range} its ${which} sample (${fmtQ(edge.Q)}); ${held}`,
+    );
+  };
+  if (c.pump?.table) clampNote("pump table", c.pump.table, Q, "head held at that sample");
+  if (c.fan?.table) clampNote("fan table", c.fan.table, Q, "rise held at that sample");
+  if (c.dpTable) {
+    const q = Math.abs(Q);
+    const range = tableRange(c.dpTable, q);
+    if (range === "above") {
+      clampNote("Δp table", c.dpTable, q, "loss held at that sample");
+    } else if (range === "below") {
+      clampNote("Δp table", c.dpTable, q, "loss taken linear to the origin");
+    }
+  }
+  return notes;
 }
 
 export function dDp_dQ(

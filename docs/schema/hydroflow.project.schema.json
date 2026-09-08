@@ -156,7 +156,7 @@
               "opening": { "type": "number" },
               "pump": {
                 "type": "object",
-                "required": ["coeffs"],
+                "anyOf": [{ "required": ["coeffs"] }, { "required": ["table"] }],
                 "additionalProperties": false,
                 "properties": {
                   "coeffs": {
@@ -164,12 +164,26 @@
                     "items": { "type": "number" },
                     "minItems": 1
                   },
-                  "hMin": { "type": "number" }
+                  "hMin": { "type": "number" },
+                  "table": {
+                    "type": "array",
+                    "description": "Sampled head H(Q): Q in m³/s (≥ 0), H in m. Takes precedence over coeffs. Linear between sorted Q; held at the first/last sample outside the range and the solver warns.",
+                    "minItems": 2,
+                    "items": {
+                      "type": "object",
+                      "required": ["Q", "H"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "Q": { "type": "number", "minimum": 0 },
+                        "H": { "type": "number" }
+                      }
+                    }
+                  }
                 }
               },
               "fan": {
                 "type": "object",
-                "required": ["coeffs"],
+                "anyOf": [{ "required": ["coeffs"] }, { "required": ["table"] }],
                 "additionalProperties": false,
                 "properties": {
                   "coeffs": {
@@ -177,7 +191,35 @@
                     "items": { "type": "number" },
                     "minItems": 1
                   },
-                  "dpMin": { "type": "number" }
+                  "dpMin": { "type": "number" },
+                  "table": {
+                    "type": "array",
+                    "description": "Sampled pressure rise ΔP(Q): Q in m³/s (≥ 0), dP in Pa. Takes precedence over coeffs. Linear between sorted Q; held at the first/last sample outside the range and the solver warns.",
+                    "minItems": 2,
+                    "items": {
+                      "type": "object",
+                      "required": ["Q", "dP"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "Q": { "type": "number", "minimum": 0 },
+                        "dP": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              },
+              "dpTable": {
+                "type": "array",
+                "description": "Imported loss Δp(Q) per parallel path (CFD or lab impedance): Q in m³/s (≥ 0), dP in Pa. Adds to the other losses and is odd in Q. Linear between sorted Q; held at the last sample above the range (solver warns), linear to the origin below the first sample.",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "required": ["Q", "dP"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "Q": { "type": "number", "minimum": 0 },
+                    "dP": { "type": "number" }
+                  }
                 }
               },
               "emitter": {

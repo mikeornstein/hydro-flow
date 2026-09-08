@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { DiagramEdge, DiagramNode } from "../../diagram/types";
 import { useStore } from "../store";
 import {
@@ -8,6 +9,87 @@ import {
   formatTempC,
   KtoC,
 } from "../../engine/units";
+import {
+  formatCurveTable,
+  headRows,
+  parseCurveTable,
+  pressureRows,
+  toHeadTable,
+  toPressureTable,
+  type CurveRow,
+} from "../curveTable";
+
+/**
+ * Paste or upload a two-column "Q, value" table in SI. Valid text commits on
+ * every edit; invalid text shows the parse error and leaves the stored table
+ * untouched. Empty text removes the table. Keyed by the selection so local
+ * text resets when another item is inspected.
+ */
+function CurveTableField({
+  label,
+  hint,
+  rows,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  rows: CurveRow[];
+  onChange: (rows: CurveRow[] | null) => void;
+}) {
+  const [text, setText] = useState(() => formatCurveTable(rows));
+  const [error, setError] = useState<string | null>(null);
+
+  const apply = (next: string) => {
+    setText(next);
+    if (next.trim() === "") {
+      setError(null);
+      onChange(null);
+      return;
+    }
+    const parsed = parseCurveTable(next);
+    setError(parsed.error);
+    if (!parsed.error) onChange(parsed.rows);
+  };
+
+  const upload = (file: File | undefined) => {
+    if (!file) return;
+    void file.text().then(apply);
+  };
+
+  const summary =
+    rows.length >= 2
+      ? `${rows.length} points · Q ${rows[0][0]} – ${rows[rows.length - 1][0]} m³/s`
+      : "No table — built-in law applies";
+
+  return (
+    <div className="field curve-field">
+      <span>{label}</span>
+      <textarea
+        className="curve-text"
+        rows={5}
+        spellCheck={false}
+        placeholder={hint}
+        aria-label={label}
+        value={text}
+        onChange={(e) => apply(e.target.value)}
+      />
+      <div className="curve-meta">
+        <span className={error ? "curve-error" : "muted"}>{error ?? summary}</span>
+        <label className="curve-upload">
+          Upload CSV
+          <input
+            type="file"
+            accept=".csv,.txt,.tsv,text/csv,text/plain,text/tab-separated-values"
+            onChange={(e) => {
+              upload(e.target.files?.[0]);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
 
 function Field({
   label,
@@ -64,24 +146,38 @@ function NodeForm({ node }: { node: DiagramNode }) {
       )}
       {node.kind === "pump" && (
         <>
-          <Field label="Shutoff head (m)" value={p.pump?.coeffs[0] ?? 0} onChange={(v) => set({ pump: { coeffs: [v, 0, p.pump?.coeffs[2] ?? -1e8] } })} />
+          <Field label="Shutoff head (m)" value={p.pump?.coeffs?.[0] ?? 0} onChange={(v) => set({ pump: { ...p.pump, coeffs: [v, 0, p.pump?.coeffs?.[2] ?? -1e8] } })} />
           <Field
             label="Quadratic coeff (m / (m³/s)²)"
-            value={p.pump?.coeffs[2] ?? 0}
-            onChange={(v) => set({ pump: { coeffs: [p.pump?.coeffs[0] ?? 20, 0, v] } })}
+            value={p.pump?.coeffs?.[2] ?? 0}
+            onChange={(v) => set({ pump: { ...p.pump, coeffs: [p.pump?.coeffs?.[0] ?? 20, 0, v] } })}
             step={1e6}
           />
           <Field label="Internal K" value={p.K ?? 0} onChange={(K) => set({ K })} />
+          <CurveTableField
+            key={`${node.id}:pump`}
+            label="H(Q) table — overrides the polynomial"
+            hint={"Q (m³/s), H (m) per line\n0,16\n0.0002,12\n0.0004,0"}
+            rows={headRows(p.pump?.table)}
+            onChange={(rows) => set({ pump: { ...p.pump, table: rows ? toHeadTable(rows) : undefined } })}
+          />
         </>
       )}
       {node.kind === "fan" && (
         <>
-          <Field label="Stall ΔP (Pa)" value={p.fan?.coeffs[0] ?? 0} onChange={(v) => set({ fan: { coeffs: [v, 0, p.fan?.coeffs[2] ?? -5000] } })} step={1} />
+          <Field label="Stall ΔP (Pa)" value={p.fan?.coeffs?.[0] ?? 0} onChange={(v) => set({ fan: { ...p.fan, coeffs: [v, 0, p.fan?.coeffs?.[2] ?? -5000] } })} step={1} />
           <Field
             label="Quadratic coeff (Pa / (m³/s)²)"
-            value={p.fan?.coeffs[2] ?? 0}
-            onChange={(v) => set({ fan: { coeffs: [p.fan?.coeffs[0] ?? 200, 0, v] } })}
+            value={p.fan?.coeffs?.[2] ?? 0}
+            onChange={(v) => set({ fan: { ...p.fan, coeffs: [p.fan?.coeffs?.[0] ?? 200, 0, v] } })}
             step={10}
+          />
+          <CurveTableField
+            key={`${node.id}:fan`}
+            label="ΔP(Q) table — overrides the polynomial"
+            hint={"Q (m³/s), ΔP (Pa) per line\n0,200\n0.1,120\n0.18,0"}
+            rows={pressureRows(p.fan?.table)}
+            onChange={(rows) => set({ fan: { ...p.fan, table: rows ? toPressureTable(rows) : undefined } })}
           />
         </>
       )}
@@ -110,6 +206,18 @@ function NodeForm({ node }: { node: DiagramNode }) {
           )}
         </>
       )}
+      {(node.kind === "coldPlate" ||
+        node.kind === "valve" ||
+        node.kind === "filter" ||
+        node.kind === "orifice") && (
+        <CurveTableField
+          key={`${node.id}:dp`}
+          label="Δp(Q) loss table — adds to K"
+          hint={"Q (m³/s), Δp (Pa) per line\n0,0\n0.004,16\n0.008,48"}
+          rows={pressureRows(p.dpTable)}
+          onChange={(rows) => set({ dpTable: rows ? toPressureTable(rows) : undefined })}
+        />
+      )}
     </>
   );
 }
@@ -127,6 +235,13 @@ function EdgeForm({ edge }: { edge: DiagramEdge }) {
       <Field label="Diameter (m)" value={g.D} onChange={(D) => patchEdge(edge.id, { geometry: { ...g, D } })} step={0.001} />
       <Field label="Roughness ε (m)" value={g.eps} onChange={(eps) => patchEdge(edge.id, { geometry: { ...g, eps } })} step={1e-6} />
       <Field label="Minor-loss K" value={g.K} onChange={(K) => patchEdge(edge.id, { geometry: { ...g, K } })} />
+      <CurveTableField
+        key={`${edge.id}:dp`}
+        label="Δp(Q) loss table — adds to friction and K"
+        hint={"Q (m³/s), Δp (Pa) per line\n0,0\n0.004,16\n0.008,48"}
+        rows={pressureRows(edge.dpTable)}
+        onChange={(rows) => patchEdge(edge.id, { dpTable: rows ? toPressureTable(rows) : undefined })}
+      />
     </>
   );
 }
