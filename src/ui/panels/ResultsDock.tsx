@@ -8,7 +8,9 @@ import {
 } from "../../engine/units";
 import { DLC_PUMP_COEFFS, DLC_TOTAL_HEAT_W } from "../../engine/examples/dlcPumpedCooling";
 import { WATER_30C } from "../../engine/fluids";
-import { G } from "../../engine/types";
+import { DEFAULT_UNITS, G } from "../../engine/types";
+import { downloadTextFile } from "../download";
+import { buildResultsTable, resultsTableCsv } from "../results/table";
 
 const TABS: { id: DockTab; label: string }[] = [
   { id: "summary", label: "Summary" },
@@ -97,6 +99,7 @@ export function ResultsDock() {
   const report = useStore((s) => s.report);
   const project = useStore((s) => s.project);
   const exampleId = useStore((s) => s.exampleId);
+  const diagram = useStore((s) => s.diagram);
 
   const hx = result?.couplings["hex.hx"];
   const pump = result?.links["pump.core"];
@@ -109,6 +112,16 @@ export function ResultsDock() {
     ? Math.max(...Object.values(result.links).map((l) => Math.abs(l.Q)), 0)
     : 0;
   const airish = project?.links.some((l) => l.fluid.includes("air")) ?? false;
+
+  const displayUnits = project?.units ?? DEFAULT_UNITS;
+  const table =
+    result && project ? buildResultsTable(project, result, displayUnits) : null;
+
+  function exportCsv() {
+    if (!table || !project) return;
+    const name = diagram.id || project.meta.name || "hydro-flow";
+    downloadTextFile(`${name}-results.csv`, resultsTableCsv(table), "text/csv;charset=utf-8");
+  }
 
   return (
     <section className="dock">
@@ -169,43 +182,71 @@ export function ResultsDock() {
         {tab === "charts" && !isDlc && (
           <p className="muted">Curve charts are available on the GPU rack liquid-cooling example. Use Table for link flows.</p>
         )}
-        {tab === "table" && result && project && (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Link</th>
-                  <th>Q</th>
-                  <th title="Friction, K, emitter, and tee. Excludes elevation and pump/fan rise.">
-                    Loss kPa
-                  </th>
-                  <th>Rise kPa</th>
-                  <th>Re</th>
-                  <th>T in</th>
-                  <th>T out</th>
-                  <th>q</th>
-                </tr>
-              </thead>
-              <tbody>
-                {project.links.map((l) => {
-                  const r = result.links[l.id];
-                  const air = l.fluid.includes("air");
-                  const machine = !!(l.component.pump || l.component.fan);
-                  return (
-                    <tr key={l.id}>
-                      <td>{l.name ?? l.id}</td>
-                      <td>{air ? formatFlowAir(r.Q) : formatFlowLiquid(r.Q)}</td>
-                      <td>{(r.loss / 1000).toFixed(2)}</td>
-                      <td>{machine ? (r.rise / 1000).toFixed(2) : "—"}</td>
-                      <td>{r.Re.toFixed(0)}</td>
-                      <td>{r.T_in ? formatTempC(r.T_in) : "—"}</td>
-                      <td>{r.T_out ? formatTempC(r.T_out) : "—"}</td>
-                      <td>{r.q ? formatPower(r.q) : "—"}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        {tab === "table" && table && (
+          <div className="table-panel">
+            <div className="table-toolbar">
+              <button type="button" className="ghost" onClick={exportCsv}>
+                Export CSV
+              </button>
+            </div>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Link</th>
+                    <th>Q</th>
+                    <th title="Net ΔP = P_from − P_to (loss + elev − rise).">
+                      Δp {table.rows[0]?.dPUnit ?? displayUnits.pressure}
+                    </th>
+                    <th>V</th>
+                    <th>Re</th>
+                    <th title="Friction, K, emitter, and tee. Excludes elevation and pump/fan rise.">
+                      Loss
+                    </th>
+                    <th>Rise</th>
+                    {table.includeEnergy && (
+                      <>
+                        <th>T in</th>
+                        <th>T out</th>
+                        <th>q</th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((row) => {
+                    const link = project!.links.find((l) => l.id === row.id);
+                    const machine = !!(link?.component.pump || link?.component.fan);
+                    return (
+                      <tr key={row.id}>
+                        <td>{row.name}</td>
+                        <td>
+                          {row.Q.toFixed(row.QUnit === "cfm" ? 1 : 2)} {row.QUnit}
+                        </td>
+                        <td>{row.dP.toFixed(2)}</td>
+                        <td>
+                          {row.V.toFixed(3)} {row.VUnit}
+                        </td>
+                        <td>{row.Re.toFixed(0)}</td>
+                        <td>{(row.loss ?? 0).toFixed(2)}</td>
+                        <td>{machine ? (row.rise ?? 0).toFixed(2) : "—"}</td>
+                        {table.includeEnergy && (
+                          <>
+                            <td>
+                              {row.T_in !== undefined ? `${row.T_in.toFixed(2)} ${row.TUnit}` : "—"}
+                            </td>
+                            <td>
+                              {row.T_out !== undefined ? `${row.T_out.toFixed(2)} ${row.TUnit}` : "—"}
+                            </td>
+                            <td>{row.q ? formatPower(row.q) : "—"}</td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
         {tab === "proof" && report && (
