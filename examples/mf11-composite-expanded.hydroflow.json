@@ -54,7 +54,7 @@
     {
       "id": "b",
       "kind": "boundary",
-      "x": 200,
+      "x": 240,
       "y": 0,
       "z": 0,
       "fluid": "water-20C",

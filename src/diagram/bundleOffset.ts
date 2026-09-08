@@ -12,7 +12,16 @@ export interface BundleSlot {
   offset: number;
 }
 
-export const BUNDLE_SPACING_PX = 28;
+/** Perpendicular gap between adjacent parallel strokes. Sized for edge labels. */
+export const BUNDLE_SPACING_PX = 72;
+
+/**
+ * Lane gap for equipment mid-nodes on parallel links. Must clear ~74–88 px cards.
+ */
+export const EQUIP_BUNDLE_SPACING_PX = 100;
+
+/** Bundles larger than this omit default edge labels (selected edge still labels). */
+export const BUNDLE_LABEL_MAX = 4;
 
 /** Directed pair key. */
 export function pairKey(from: string, to: string): string {

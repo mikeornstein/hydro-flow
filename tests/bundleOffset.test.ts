@@ -24,8 +24,8 @@ describe("bundleSlots", () => {
     const b = slots.get("b")!;
     expect(a).toEqual({ index: 0, size: 2, offset: -BUNDLE_SPACING_PX / 2 });
     expect(b).toEqual({ index: 1, size: 2, offset: BUNDLE_SPACING_PX / 2 });
-    expect(a.offset).toBe(-14);
-    expect(b.offset).toBe(14);
+    expect(a.offset).toBe(-BUNDLE_SPACING_PX / 2);
+    expect(b.offset).toBe(BUNDLE_SPACING_PX / 2);
     expect(a.offset).toBe(-b.offset);
   });
 

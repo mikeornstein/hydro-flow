@@ -1,5 +1,5 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from "@xyflow/react";
-import { offsetQuadPath } from "../../diagram/bundleOffset";
+import { BUNDLE_LABEL_MAX, offsetQuadPath } from "../../diagram/bundleOffset";
 import type { DiagramEdge } from "../../diagram/types";
 import type { SolveResult } from "../../engine/types";
 import { tempColor } from "../color";
@@ -10,6 +10,7 @@ export type FlowEdgeData = {
   result: SolveResult | null;
   selected: boolean;
   bundleOffset: number;
+  bundleSize: number;
 };
 
 export function FlowEdge({
@@ -23,7 +24,8 @@ export function FlowEdge({
   data,
   markerEnd,
 }: EdgeProps) {
-  const { edge, result, selected, bundleOffset = 0 } = (data ?? {}) as FlowEdgeData;
+  const { edge, result, selected, bundleOffset = 0, bundleSize = 1 } = (data ??
+    {}) as FlowEdgeData;
   let path: string;
   let labelX: number;
   let labelY: number;
@@ -51,6 +53,7 @@ export function FlowEdge({
   const label = link
     ? `${air ? formatFlowAir(link.Q) : formatFlowLiquid(link.Q)}${link.T_out ? " · " + formatTempC(link.T_out) : ""}`
     : edge?.name ?? "";
+  const showLabel = Boolean(label) && (selected || bundleSize <= BUNDLE_LABEL_MAX);
 
   return (
     <>
@@ -64,16 +67,18 @@ export function FlowEdge({
           opacity: 0.92,
         }}
       />
-      <EdgeLabelRenderer>
-        <div
-          className={`edge-label ${selected ? "is-selected" : ""}`}
-          style={{
-            transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
-          }}
-        >
-          {label}
-        </div>
-      </EdgeLabelRenderer>
+      {showLabel && (
+        <EdgeLabelRenderer>
+          <div
+            className={`edge-label ${selected ? "is-selected" : ""}`}
+            style={{
+              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+            }}
+          >
+            {label}
+          </div>
+        </EdgeLabelRenderer>
+      )}
     </>
   );
 }

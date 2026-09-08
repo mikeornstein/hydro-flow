@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import { EXAMPLE_SPAN_X } from "./canvasPitch";
 
 const CFM = 1 / 2118.8799727597;
 const IN_H2O = 249.08891;
@@ -72,7 +73,7 @@ export function mf01MultiplicityChassis(): Project {
       {
         id: "plenum",
         kind: "junction",
-        x: 100,
+        x: EXAMPLE_SPAN_X / 2,
         y: 0,
         z: 0,
         fluid: "air-25C",
@@ -80,7 +81,7 @@ export function mf01MultiplicityChassis(): Project {
       {
         id: "exit",
         kind: "boundary",
-        x: 200,
+        x: EXAMPLE_SPAN_X,
         y: 0,
         z: 0,
         fluid: "air-25C",

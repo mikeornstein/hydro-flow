@@ -29,6 +29,7 @@ export function toFlow(diagram: Diagram, result: SolveResult | null, selectedId:
       result,
       selected: selectedId === e.id,
       bundleOffset: slots.get(e.id)?.offset ?? 0,
+      bundleSize: slots.get(e.id)?.size ?? 1,
     },
     selected: selectedId === e.id,
   }));
