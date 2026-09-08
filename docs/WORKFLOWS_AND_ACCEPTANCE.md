@@ -361,6 +361,16 @@ Call a phase done only when the matching tests exist and pass, not when the UI l
 
 ## 9. Open questions to resolve in later docs, not in code guesses
 
+**Resolved (ORN-37):** see `docs/OPEN_PHYSICS_DECISIONS.md`. Short form:
+
+1. Node pressures are **static** absolute P. Do not reinterpret as stagnation.
+2. Tee K: published Idelchik subset (default) + optional Gardel; citations locked in `src/engine/tee.ts`.
+3. Pipe friction: **Churchill** for all Re (no 2300 hard cut). WORKFLOWS §3.1 Swamee–Jain form is pedagogical.
+4. Fan/pump stall or reverse: **allow** with `hMin`/`dpMin` floor; **warn** under S5 (ORN-31), do not crash.
+5. Multiplicity: add schema `multiplicity` before S6 (ORN-32); copied links stay valid for maldistribution.
+
+Historical open wording kept for archaeology:
+
 1. Are node pressures **static** or **stagnation**? Papers are sloppy. Hydro-Flow P0 should document static $P$ + separate $\rho V^2/2$ only if we add it.
 2. Tee $K$ as a function of flow ratio: implement a published Idelchik subset and cite the chart numbers we use.
 3. Transition $2300 < \mathrm{Re} < 4000$: goldens use a hard switch at 2300. MF08 interpolates $K$ between laminar and turbulent. Pick one and test it.
