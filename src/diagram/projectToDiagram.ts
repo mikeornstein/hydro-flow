@@ -121,6 +121,7 @@ export function projectToDiagram(project: Project, title?: string, description?:
       z: (a.z + b.z) / 2,
       fluid: link.fluid,
       params: componentParams(c),
+      sourceLinkId: link.id,
     });
     edges.push({
       id: `${link.id}:in`,
@@ -148,5 +149,6 @@ export function projectToDiagram(project: Project, title?: string, description?:
     description: description ?? project.meta.description,
     nodes,
     edges,
+    fluids: structuredClone(project.fluids),
   };
 }

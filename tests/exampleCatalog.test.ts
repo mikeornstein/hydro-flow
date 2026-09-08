@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EXAMPLE_CATALOG, loadExamplePayload } from "../src/ui/examples/catalog";
+import { compileDiagram } from "../src/diagram/compile";
 import { solveSteady } from "../src/engine/solve";
 
 describe("example catalog", () => {
@@ -17,13 +18,9 @@ describe("example catalog", () => {
     for (const entry of EXAMPLE_CATALOG) {
       const { diagram, pinnedProject } = loadExamplePayload(entry.id);
       expect(diagram.nodes.length).toBeGreaterThan(0);
-      const project = pinnedProject ?? null;
-      if (project) {
-        const result = solveSteady(project);
-        expect(result.status).toBe("converged");
-      } else {
-        expect(diagram.id).toBeTruthy();
-      }
+      const project = pinnedProject ?? compileDiagram(diagram);
+      const result = solveSteady(project);
+      expect(result.status, entry.id).toBe("converged");
     }
   }, 60_000);
 });

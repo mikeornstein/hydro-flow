@@ -220,7 +220,11 @@ export function compileDiagram(diagram: Diagram, opts: CompileOptions = {}): Pro
     });
   }
 
-  const fluids = { [WATER_30C.id]: WATER_30C, [AIR_25C.id]: AIR_25C };
+  const fluids = {
+    [WATER_30C.id]: WATER_30C,
+    [AIR_25C.id]: AIR_25C,
+    ...(diagram.fluids ?? {}),
+  };
   const now = opts.createdAt ?? new Date().toISOString();
 
   return {

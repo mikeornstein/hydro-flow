@@ -121,7 +121,13 @@ function defaults(kind: EquipmentKind): Pick<DiagramNode, "name" | "fluid" | "pa
 }
 
 function clearPin() {
-  return { pinnedProject: null as Project | null, exampleId: "custom" };
+  return {
+    pinnedProject: null as Project | null,
+    exampleId: "custom",
+    result: null as SolveResult | null,
+    report: null as VerificationReport | null,
+    error: null as string | null,
+  };
 }
 
 function opened(
