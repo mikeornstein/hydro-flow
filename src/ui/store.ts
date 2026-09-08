@@ -6,6 +6,7 @@ import { solveSteady } from "../engine/solve";
 import { verifySolution, type VerificationReport } from "../engine/verify";
 import type { Project, SolveResult } from "../engine/types";
 import { AIR_25C, WATER_30C } from "../engine/fluids";
+import { cloneSlot, type CompareSlot } from "./compare";
 import { EXAMPLE_CATALOG, loadExamplePayload } from "./examples/catalog";
 import { diagramFingerprint, type DiagramFingerprint } from "./unsaved";
 
@@ -20,6 +21,8 @@ interface AppState {
   project: Project | null;
   result: SolveResult | null;
   report: VerificationReport | null;
+  /** Frozen baseline for what-if compare (W9 / E7). Null when not comparing. */
+  compare: CompareSlot | null;
   selectedId: string | null;
   selectedKind: "node" | "edge" | null;
   solving: boolean;
@@ -29,6 +32,9 @@ interface AppState {
   markSaved: () => void;
   loadExample: (id: string) => void;
   solve: () => void;
+  duplicateForCompare: () => void;
+  swapCompare: () => void;
+  clearCompare: () => void;
   select: (id: string | null, kind: "node" | "edge" | null) => void;
   moveNode: (id: string, x: number, y: number) => void;
   patchNode: (id: string, patch: Partial<DiagramNode> & { params?: DiagramNode["params"] }) => void;
@@ -144,6 +150,7 @@ function opened(
   | "result"
   | "report"
   | "error"
+  | "compare"
 > {
   const solved = fields.pinnedProject
     ? runPinned(fields.pinnedProject)
@@ -155,6 +162,7 @@ function opened(
     baseline: diagramFingerprint(fields.diagram),
     selectedId: null,
     selectedKind: null,
+    compare: null,
     ...solved,
   };
 }
@@ -172,6 +180,7 @@ export const useStore = create<AppState>((set, get) => ({
   solving: false,
   tab: "summary",
   pendingKind: null,
+  compare: null,
 
   markSaved: () => set((s) => ({ baseline: diagramFingerprint(s.diagram) })),
 
@@ -192,6 +201,76 @@ export const useStore = create<AppState>((set, get) => ({
     const out = pinnedProject ? runPinned(pinnedProject) : runSolve(diagram);
     set({ ...out, solving: false });
   },
+
+  duplicateForCompare: () => {
+    const s = get();
+    let project = s.project;
+    let result = s.result;
+    let report = s.report;
+    let error = s.error;
+    if (!result) {
+      const out = s.pinnedProject ? runPinned(s.pinnedProject) : runSolve(s.diagram);
+      project = out.project;
+      result = out.result;
+      report = out.report;
+      error = out.error;
+    }
+    if (!result) {
+      set({ project, result, report, error });
+      return;
+    }
+    const baseName = s.diagram.name || "Network";
+    const compare = cloneSlot({
+      label: baseName,
+      diagram: s.diagram,
+      pinnedProject: s.pinnedProject,
+      project,
+      result,
+      report,
+      exampleId: s.exampleId,
+    });
+    set({
+      project,
+      result,
+      report,
+      error,
+      compare,
+      diagram: {
+        ...s.diagram,
+        name: baseName.includes("(what-if)") ? baseName : `${baseName} (what-if)`,
+      },
+      tab: "table",
+    });
+  },
+
+  swapCompare: () => {
+    const s = get();
+    if (!s.compare) return;
+    const nextLive: CompareSlot = {
+      label: s.diagram.name,
+      diagram: s.diagram,
+      pinnedProject: s.pinnedProject,
+      project: s.project,
+      result: s.result,
+      report: s.report,
+      exampleId: s.exampleId,
+    };
+    const other = s.compare;
+    set({
+      compare: nextLive,
+      diagram: other.diagram,
+      pinnedProject: other.pinnedProject,
+      project: other.project,
+      result: other.result,
+      report: other.report,
+      exampleId: other.exampleId,
+      selectedId: null,
+      selectedKind: null,
+      error: null,
+    });
+  },
+
+  clearCompare: () => set({ compare: null }),
 
   select: (id, kind) => set({ selectedId: id, selectedKind: kind }),
 

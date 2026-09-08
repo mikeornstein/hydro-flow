@@ -160,6 +160,25 @@ body {
 .pill.ok { color: var(--ok); border-color: rgba(157, 255, 196, 0.25); }
 .pill.warn { color: var(--heat); }
 .pill.danger { color: var(--danger); }
+.pill.compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--brass);
+  border-color: rgba(212, 168, 75, 0.35);
+}
+.pill-action {
+  font: inherit;
+  font-size: 11px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--line);
+  padding: 0 0 0 6px;
+  cursor: pointer;
+}
+.pill-action:hover { text-decoration: underline; }
+td.delta { color: var(--brass); font-variant-numeric: tabular-nums; }
 
 .workspace {
   display: grid;
