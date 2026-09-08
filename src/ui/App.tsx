@@ -21,6 +21,7 @@ import { Palette } from "./panels/Palette";
 import { ResultsDock } from "./panels/ResultsDock";
 import { Toolbar } from "./panels/Toolbar";
 import { useStore } from "./store";
+import { isDirty, useUnloadWarning } from "./unsaved";
 
 const nodeTypes = { equipment: EquipmentNode };
 const edgeTypes = { flow: FlowEdge };
@@ -129,6 +130,7 @@ function Canvas({ layoutMode }: CanvasProps) {
 
 function AppBody() {
   const layout = useLayout();
+  useUnloadWarning(() => isDirty(useStore.getState()));
   const removeSelected = useStore((s) => s.removeSelected);
   const solve = useStore((s) => s.solve);
   const setPendingKind = useStore((s) => s.setPendingKind);

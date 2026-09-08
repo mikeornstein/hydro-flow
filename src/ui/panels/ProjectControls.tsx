@@ -1,5 +1,6 @@
 import { useStore } from "../store";
 import { exampleGroups } from "../examples/catalog";
+import { DISCARD_MESSAGE, isDirty } from "../unsaved";
 
 export interface ProjectControlsProps {
   /** Runs after a successful example load or file import, not after Save. */
@@ -20,6 +21,7 @@ export function ProjectControls({ onProjectLoaded }: ProjectControlsProps) {
     a.href = URL.createObjectURL(blob);
     a.download = `${diagram.id || "hydro-flow"}.json`;
     a.click();
+    useStore.getState().markSaved();
   }
 
   function open() {
@@ -29,7 +31,20 @@ export function ProjectControls({ onProjectLoaded }: ProjectControlsProps) {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-      importJson(await file.text());
+      const text = await file.text();
+      let parsed: { nodes?: unknown; edges?: unknown };
+      try {
+        parsed = JSON.parse(text) as { nodes?: unknown; edges?: unknown };
+      } catch (e) {
+        window.alert(e instanceof Error ? e.message : String(e));
+        return;
+      }
+      if (!parsed.nodes || !parsed.edges) {
+        window.alert("Not a hydro-flow diagram");
+        return;
+      }
+      if (isDirty(useStore.getState()) && !window.confirm(DISCARD_MESSAGE)) return;
+      importJson(text);
       onProjectLoaded?.();
     };
     input.click();
@@ -45,10 +60,10 @@ export function ProjectControls({ onProjectLoaded }: ProjectControlsProps) {
           aria-label="Load example network"
           onChange={(e) => {
             const id = e.target.value;
-            if (id && id !== "custom") {
-              loadExample(id);
-              onProjectLoaded?.();
-            }
+            if (!id || id === "custom") return;
+            if (isDirty(useStore.getState()) && !window.confirm(DISCARD_MESSAGE)) return;
+            loadExample(id);
+            onProjectLoaded?.();
           }}
         >
           {exampleId === "custom" && <option value="custom">Custom network</option>}
