@@ -172,12 +172,20 @@ export function Inspector() {
           <dl className="kv">
             <dt>Flow</dt>
             <dd>{(node?.fluid ?? edge?.fluid ?? "").includes("air") ? formatFlowAir(live.Q) : formatFlowLiquid(live.Q)}</dd>
-            {"dP" in live && live.dP !== undefined && (
+            {"loss" in live && live.loss !== undefined && (
               <>
-                <dt>ΔP</dt>
-                <dd>{formatPressure(Math.abs(live.dP))}</dd>
+                <dt>Loss</dt>
+                <dd>{formatPressure(Math.abs(live.loss))}</dd>
               </>
             )}
+            {"rise" in live &&
+              live.rise !== undefined &&
+              (node?.kind === "pump" || node?.kind === "fan") && (
+                <>
+                  <dt>Rise</dt>
+                  <dd>{formatPressure(live.rise)}</dd>
+                </>
+              )}
             {"T_in" in live && live.T_in !== undefined && (
               <>
                 <dt>T in / out</dt>
