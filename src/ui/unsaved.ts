@@ -42,7 +42,6 @@ export function runReplace(opts: {
   return true;
 }
 
-/** Read isDirtyNow at the event, not at render, so drags do not re-subscribe. */
 export function useUnloadWarning(isDirtyNow: () => boolean): void {
   const latest = useRef(isDirtyNow);
   latest.current = isDirtyNow;

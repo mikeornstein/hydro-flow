@@ -16,7 +16,6 @@ interface AppState {
   /** When set, Solve uses this Project instead of compiling the canvas. */
   pinnedProject: Project | null;
   diagram: Diagram;
-  /** Clean mark of the last opened or saved diagram. Mutations never write this. */
   baseline: DiagramFingerprint;
   project: Project | null;
   result: SolveResult | null;
