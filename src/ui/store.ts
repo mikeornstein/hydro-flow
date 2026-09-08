@@ -7,6 +7,7 @@ import { verifySolution, type VerificationReport } from "../engine/verify";
 import type { Project, SolveResult } from "../engine/types";
 import { AIR_25C, WATER_30C } from "../engine/fluids";
 import { EXAMPLE_CATALOG, loadExamplePayload } from "./examples/catalog";
+import { diagramFingerprint, type DiagramFingerprint } from "./unsaved";
 
 export type DockTab = "summary" | "charts" | "table" | "proof";
 
@@ -15,6 +16,7 @@ interface AppState {
   /** When set, Solve uses this Project instead of compiling the canvas. */
   pinnedProject: Project | null;
   diagram: Diagram;
+  baseline: DiagramFingerprint;
   project: Project | null;
   result: SolveResult | null;
   report: VerificationReport | null;
@@ -24,6 +26,7 @@ interface AppState {
   error: string | null;
   tab: DockTab;
   pendingKind: EquipmentKind | null;
+  markSaved: () => void;
   loadExample: (id: string) => void;
   solve: () => void;
   select: (id: string | null, kind: "node" | "edge" | null) => void;
@@ -121,40 +124,60 @@ function clearPin() {
   return { pinnedProject: null as Project | null, exampleId: "custom" };
 }
 
+function opened(
+  fields: Pick<AppState, "diagram" | "pinnedProject" | "exampleId">,
+): Pick<
+  AppState,
+  | "exampleId"
+  | "pinnedProject"
+  | "diagram"
+  | "baseline"
+  | "selectedId"
+  | "selectedKind"
+  | "project"
+  | "result"
+  | "report"
+  | "error"
+> {
+  const solved = fields.pinnedProject
+    ? runPinned(fields.pinnedProject)
+    : runSolve(fields.diagram);
+  return {
+    exampleId: fields.exampleId,
+    pinnedProject: fields.pinnedProject,
+    diagram: fields.diagram,
+    baseline: diagramFingerprint(fields.diagram),
+    selectedId: null,
+    selectedKind: null,
+    ...solved,
+  };
+}
+
 const DEFAULT_EXAMPLE =
   EXAMPLE_CATALOG.find((e) => e.id === "dlc-pumped-cooling")?.id ?? EXAMPLE_CATALOG[0].id;
 const initialPayload = loadExamplePayload(DEFAULT_EXAMPLE);
-const initialSolve = initialPayload.pinnedProject
-  ? runPinned(initialPayload.pinnedProject)
-  : runSolve(initialPayload.diagram);
 
 export const useStore = create<AppState>((set, get) => ({
-  exampleId: DEFAULT_EXAMPLE,
-  pinnedProject: initialPayload.pinnedProject,
-  diagram: initialPayload.diagram,
-  project: initialSolve.project,
-  result: initialSolve.result,
-  report: initialSolve.report,
-  selectedId: null,
-  selectedKind: null,
+  ...opened({
+    exampleId: DEFAULT_EXAMPLE,
+    pinnedProject: initialPayload.pinnedProject,
+    diagram: initialPayload.diagram,
+  }),
   solving: false,
-  error: initialSolve.error,
   tab: "summary",
   pendingKind: null,
 
+  markSaved: () => set((s) => ({ baseline: diagramFingerprint(s.diagram) })),
+
   loadExample: (id) => {
     const payload = loadExamplePayload(id);
-    const solved = payload.pinnedProject
-      ? runPinned(payload.pinnedProject)
-      : runSolve(payload.diagram);
-    set({
-      exampleId: id,
-      pinnedProject: payload.pinnedProject,
-      diagram: payload.diagram,
-      selectedId: null,
-      selectedKind: null,
-      ...solved,
-    });
+    set(
+      opened({
+        exampleId: id,
+        pinnedProject: payload.pinnedProject,
+        diagram: payload.diagram,
+      }),
+    );
   },
 
   solve: () => {
@@ -282,13 +305,7 @@ export const useStore = create<AppState>((set, get) => ({
   importJson: (text) => {
     const parsed = JSON.parse(text) as Diagram;
     if (!parsed.nodes || !parsed.edges) throw new Error("Not a hydro-flow diagram");
-    set({
-      ...clearPin(),
-      diagram: parsed,
-      selectedId: null,
-      selectedKind: null,
-      ...runSolve(parsed),
-    });
+    set(opened({ diagram: parsed, pinnedProject: null, exampleId: "custom" }));
   },
 
   exportJson: () => JSON.stringify(get().diagram, null, 2),
