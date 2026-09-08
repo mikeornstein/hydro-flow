@@ -3,16 +3,17 @@ import { dDp_dQ, linkDeltaP } from "./constitutive";
 import { hexHeat, epsilonNtu } from "./thermo";
 import { areaFromD } from "./friction";
 import { teeLegDrops, type TeeCorrelation, type TeeLegFlow } from "./tee";
-import type {
-  CouplingResult,
-  Fluid,
-  HexCoupling,
-  LinkDef,
-  LinkResult,
-  NodeDef,
-  NodeResult,
-  Project,
-  SolveResult,
+import {
+  linkMultiplicity,
+  type CouplingResult,
+  type Fluid,
+  type HexCoupling,
+  type LinkDef,
+  type LinkResult,
+  type NodeDef,
+  type NodeResult,
+  type Project,
+  type SolveResult,
 } from "./types";
 
 interface TeeJunction {
@@ -40,7 +41,7 @@ interface Network {
 function linkArea(link: LinkDef): number {
   const g = link.component.geometry;
   const A = g.A ?? (g.D > 0 ? areaFromD(g.D) : 0);
-  return A * Math.max(1, link.component.parallelCount ?? 1);
+  return A * linkMultiplicity(link);
 }
 
 function assembleTees(project: Project): TeeJunction[] {
@@ -186,7 +187,7 @@ function initState(net: Network): { P: number[]; Q: number[] } {
   const Q = net.links.map((l) => {
     const D = l.component.geometry.D || 0.02;
     const V = fluidOf(net, l.fluid).phase === "gas" ? 3 : 1;
-    return V * areaFromD(D) * Math.max(1, l.component.parallelCount ?? 1);
+    return V * areaFromD(D) * linkMultiplicity(l);
   });
   return { P, Q };
 }

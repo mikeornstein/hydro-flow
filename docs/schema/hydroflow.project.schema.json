@@ -124,6 +124,12 @@
           "from": { "type": "string" },
           "to": { "type": "string" },
           "fluid": { "type": "string" },
+          "multiplicity": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "default": 1,
+            "description": "Identical parallel instances of this link's constitutive law. Link Q is the bundle total; each instance sees Q/N. Omitted defaults to 1."
+          },
           "component": {
             "type": "object",
             "required": ["type", "lossModel", "geometry", "K"],

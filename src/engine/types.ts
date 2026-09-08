@@ -163,7 +163,10 @@ export interface LinkComponent {
   q?: number;
   /** Case-to-coolant thermal resistance, K/W. */
   rTh?: number;
-  /** Parallel identical paths. Flow on the link is the total. */
+  /**
+   * Deprecated alias for `LinkDef.multiplicity`. Prefer the link-level field.
+   * Solver still honors this when `multiplicity` is omitted.
+   */
   parallelCount?: number;
 }
 
@@ -174,6 +177,17 @@ export interface LinkDef {
   to: string;
   fluid: string;
   component: LinkComponent;
+  /**
+   * Identical parallel instances of this link's constitutive law.
+   * Link Q is the bundle total; each instance sees Q/N. Default 1.
+   */
+  multiplicity?: number;
+}
+
+/** Positive instance count. Prefers `link.multiplicity`, else `component.parallelCount`. */
+export function linkMultiplicity(link: LinkDef): number {
+  const n = link.multiplicity ?? link.component.parallelCount ?? 1;
+  return n > 0 ? n : 1;
 }
 
 export interface HexCoupling {

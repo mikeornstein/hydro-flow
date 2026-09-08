@@ -14,7 +14,7 @@ Inventory and side-by-side status for publication cases listed in `docs/MACROFLO
 
 | Paper | Status | Evidence | Notes |
 |---|---|---|---|
-| MF01 | partial (multiplicity) | `examples/mf01-multiplicity-chassis.hydroflow.json`, `out/mf01-multiplicity-comparison.tsv`, `mf01-table1.json`, `mf01-blocker.json` | Table 2 fans clean; `parallelCount=4` matches expanded 4 links ≤1%. OCR Table 1 B decades recorded but rejected as SI rQuad (ΔP ≪ fan head). No invented exponents. |
+| MF01 | partial (multiplicity) | `examples/mf01-multiplicity-chassis.hydroflow.json`, `out/mf01-multiplicity-comparison.tsv`, `mf01-table1.json`, `mf01-blocker.json` | Table 2 fans clean; link `multiplicity=4` matches expanded 4 links ≤1%. OCR Table 1 B decades recorded but rejected as SI rQuad (ΔP ≪ fan head). No invented exponents. |
 | MF02 | none | `mf02-blocker.json` | Methodology / process paper; no reconstructible network. |
 | MF03 R1 | implemented | `examples/mf03-cold-plate-header-*.hydroflow.json`, `tests/mf03Header.test.ts`, `out/mf03-fig3-comparison.tsv` | Friction 12.7% / Idelchik 21.7% / Gardel 10.4% max rel on 7/16" vs Fig 3. Gardel overshoots max/min (2.61 vs 2.12). See MF03 tee section. |
 | MF03 R2 | partial (flow + fixed-rTh energy) | `examples/mf03-orifice-balance-*.hydroflow.json`, `out/mf03-orifice-comparison.tsv`, `out/mf03-orifice-energy.tsv` | Tuned orifices raise high-load share; fixed rTh energy shows identical max T&gt;60 °C and tuned ≤60 °C. Not Lytron Rth(Q). |
