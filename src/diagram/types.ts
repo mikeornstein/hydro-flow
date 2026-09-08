@@ -1,3 +1,5 @@
+import type { Fluid } from "../engine/types";
+
 export type EquipmentKind =
   | "junction"
   | "boundary"
@@ -65,6 +67,11 @@ export interface DiagramNode {
   z: number;
   fluid: string;
   params: EquipmentParams;
+  /**
+   * When this canvas node was expanded from a Project link, the original link
+   * id used in pinned SolveResult.links (e.g. "hs-1" for node "eq:hs-1").
+   */
+  sourceLinkId?: string;
 }
 
 export interface DiagramEdge {
@@ -83,4 +90,6 @@ export interface Diagram {
   description: string;
   nodes: DiagramNode[];
   edges: DiagramEdge[];
+  /** Custom fluids carried from a Project so recompile after unpin still resolves. */
+  fluids?: Record<string, Fluid>;
 }
