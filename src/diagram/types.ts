@@ -1,4 +1,4 @@
-import type { Fluid } from "../engine/types";
+import type { Fluid, LossModel } from "../engine/types";
 
 export type EquipmentKind =
   | "junction"
@@ -43,8 +43,10 @@ export interface EquipmentParams {
   L?: number;
   D?: number;
   eps?: number;
+  A?: number;
   rQuad?: number;
   rLin?: number;
+  lossModel?: LossModel;
   pump?: PumpParams;
   fan?: FanParams;
   ua?: number;

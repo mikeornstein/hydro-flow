@@ -63,4 +63,17 @@ describe("catalog examples solve end-to-end", () => {
     expect(outlet).toBeTruthy();
     expect(equipmentReadout(outlet!, result)).toMatch(/°C/);
   });
+
+  it("recompiles mf04 within 5% of pinned branch flows", () => {
+    const { diagram, pinnedProject } = loadExamplePayload("mf04-orifice-balanced");
+    const pinned = solveSteady(pinnedProject!);
+    const compiled = solveSteady(compileDiagram(diagram));
+    expect(compiled.status).toBe("converged");
+    for (const id of ["hs-1", "hs-2", "hs-3"] as const) {
+      const qPin = pinned.links[id]!.Q;
+      const qComp = compiled.links[`eq:${id}.core`]!.Q;
+      const rel = Math.abs(qComp - qPin) / Math.abs(qPin);
+      expect(rel, id).toBeLessThan(0.05);
+    }
+  });
 });

@@ -197,7 +197,6 @@ export const useStore = create<AppState>((set, get) => ({
 
   moveNode: (id, x, y) =>
     set((s) => ({
-      ...clearPin(),
       diagram: {
         ...s.diagram,
         nodes: s.diagram.nodes.map((n) => (n.id === id ? { ...n, x, y } : n)),
