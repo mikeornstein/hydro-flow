@@ -60,7 +60,9 @@ describe("diagramFingerprint", () => {
     const missing = { ...base };
     delete (missing as { description?: string }).description;
     const withUndef = { ...missing, description: undefined };
-    expect(diagramFingerprint(withUndef as Diagram)).toBe(diagramFingerprint(missing));
+    expect(diagramFingerprint(withUndef as unknown as Diagram)).toBe(
+      diagramFingerprint(missing),
+    );
   });
 });
 
