@@ -525,10 +525,15 @@ export function solveSteady(project: Project): SolveResult {
       const Tmean = 0.5 * (T_in + T_out);
       T_surface = Tmean + (link.component.q ?? 0) * link.component.rTh;
     }
+    const tee = flowDir(hyd.Q[k]) * teeDrop[k];
+    const loss = ev.loss + tee;
     links[link.id] = {
       Q: hyd.Q[k],
       mdot,
-      dP: ev.dP + flowDir(hyd.Q[k]) * teeDrop[k],
+      dP: loss + ev.elev - ev.rise,
+      loss,
+      elev: ev.elev,
+      rise: ev.rise,
       V: ev.V,
       Re: ev.Re,
       f: ev.f,

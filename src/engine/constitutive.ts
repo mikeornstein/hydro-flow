@@ -9,7 +9,12 @@ export function emitterDropPa(law: EmitterLaw, Q: number): number {
 }
 
 export interface ConstitutiveEval {
+  /** P_from − P_to = loss + elev − rise, Pa. */
   dP: number;
+  /** Friction, K, lumped R, emitter. No tee (solver adds that). */
+  loss: number;
+  elev: number;
+  rise: number;
   f?: number;
   Re: number;
   V: number;
@@ -106,7 +111,7 @@ export function linkDeltaP(
     rise += fanRisePa(c.fan.coeffs, Q, c.fan.dpMin ?? 0);
   }
 
-  return { dP: loss + elev - rise, f, Re, V, D };
+  return { dP: loss + elev - rise, loss, elev, rise, f, Re, V, D };
 }
 
 export function dDp_dQ(

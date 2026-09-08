@@ -176,7 +176,10 @@ export function ResultsDock() {
                 <tr>
                   <th>Link</th>
                   <th>Q</th>
-                  <th>ΔP kPa</th>
+                  <th title="Friction, K, emitter, and tee. Excludes elevation and pump/fan rise.">
+                    Loss kPa
+                  </th>
+                  <th>Rise kPa</th>
                   <th>Re</th>
                   <th>T in</th>
                   <th>T out</th>
@@ -187,11 +190,13 @@ export function ResultsDock() {
                 {project.links.map((l) => {
                   const r = result.links[l.id];
                   const air = l.fluid.includes("air");
+                  const machine = !!(l.component.pump || l.component.fan);
                   return (
                     <tr key={l.id}>
                       <td>{l.name ?? l.id}</td>
                       <td>{air ? formatFlowAir(r.Q) : formatFlowLiquid(r.Q)}</td>
-                      <td>{(r.dP / 1000).toFixed(2)}</td>
+                      <td>{(r.loss / 1000).toFixed(2)}</td>
+                      <td>{machine ? (r.rise / 1000).toFixed(2) : "—"}</td>
                       <td>{r.Re.toFixed(0)}</td>
                       <td>{r.T_in ? formatTempC(r.T_in) : "—"}</td>
                       <td>{r.T_out ? formatTempC(r.T_out) : "—"}</td>

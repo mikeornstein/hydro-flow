@@ -213,8 +213,21 @@ export interface NodeResult {
 export interface LinkResult {
   Q: number;
   mdot: number;
-  /** P_from − P_to, Pa. Includes tee-junction drops at either end. */
+  /**
+   * P_from − P_to, Pa. Equals `loss + elev − rise` by construction.
+   * Includes tee-junction drops at either end. Momentum residual is Pf − Pt − dP.
+   */
   dP: number;
+  /**
+   * Dissipative drop along the link orientation, Pa: friction, K, lumped R,
+   * emitter, plus tee static drops at either end. Excludes elevation and
+   * pump/fan rise. This is the quantity Results labels "Loss".
+   */
+  loss: number;
+  /** Hydrostatic ρ g Δz, Pa. Exactly 0 with gravity off. */
+  elev: number;
+  /** Pump/fan curve rise at Q, Pa. Exactly 0 on passive links. */
+  rise: number;
   V: number;
   Re: number;
   f?: number;
