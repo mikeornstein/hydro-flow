@@ -31,6 +31,9 @@ function assertNever(value: never): never {
 export function CompactHeader({ layout }: { layout: SheetLayout }) {
   const diagram = useStore((s) => s.diagram);
   const error = useStore((s) => s.error);
+  const compare = useStore((s) => s.compare);
+  const swapCompare = useStore((s) => s.swapCompare);
+  const clearCompare = useStore((s) => s.clearCompare);
   const projectOpen = layout.sheet.status === "open" && layout.sheet.id === "project";
 
   return (
@@ -48,6 +51,17 @@ export function CompactHeader({ layout }: { layout: SheetLayout }) {
         {error && (
           <span className="pill danger" title={error}>
             {error.length > 48 ? `${error.slice(0, 45)}…` : error}
+          </span>
+        )}
+        {compare && (
+          <span className="pill compare" title={`Baseline: ${compare.label}`}>
+            Compare
+            <button type="button" className="pill-action" onClick={() => swapCompare()}>
+              Swap
+            </button>
+            <button type="button" className="pill-action" onClick={() => clearCompare()}>
+              Clear
+            </button>
           </span>
         )}
         <button

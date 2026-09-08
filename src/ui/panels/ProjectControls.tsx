@@ -13,6 +13,7 @@ export function ProjectControls({ onProjectLoaded }: ProjectControlsProps) {
   const loadExample = useStore((s) => s.loadExample);
   const exportJson = useStore((s) => s.exportJson);
   const importJson = useStore((s) => s.importJson);
+  const duplicateForCompare = useStore((s) => s.duplicateForCompare);
   const groups = exampleGroups();
 
   function save() {
@@ -83,6 +84,14 @@ export function ProjectControls({ onProjectLoaded }: ProjectControlsProps) {
       </button>
       <button type="button" className="btn ghost" onClick={save}>
         Save
+      </button>
+      <button
+        type="button"
+        className="btn ghost"
+        title="Keep a baseline and edit a what-if copy"
+        onClick={() => duplicateForCompare()}
+      >
+        Duplicate
       </button>
     </div>
   );

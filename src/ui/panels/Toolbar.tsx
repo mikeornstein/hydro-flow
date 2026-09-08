@@ -6,7 +6,10 @@ export function Toolbar() {
   const result = useStore((s) => s.result);
   const solving = useStore((s) => s.solving);
   const error = useStore((s) => s.error);
+  const compare = useStore((s) => s.compare);
   const solve = useStore((s) => s.solve);
+  const swapCompare = useStore((s) => s.swapCompare);
+  const clearCompare = useStore((s) => s.clearCompare);
 
   return (
     <header className="toolbar">
@@ -25,6 +28,17 @@ export function Toolbar() {
       </div>
       <div className="toolbar-actions">
         {error && <span className="pill danger">{error}</span>}
+        {compare && (
+          <span className="pill compare" title={`Baseline: ${compare.label}`}>
+            Comparing · {compare.label} ↔ live
+            <button type="button" className="pill-action" onClick={() => swapCompare()}>
+              Swap
+            </button>
+            <button type="button" className="pill-action" onClick={() => clearCompare()}>
+              Clear
+            </button>
+          </span>
+        )}
         {result && (
           <span className={`pill ${result.status === "converged" ? "ok" : "warn"}`}>
             {result.status} · {result.iterations} iter · {result.elapsedMs.toFixed(0)} ms

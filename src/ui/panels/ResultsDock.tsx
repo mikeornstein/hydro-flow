@@ -9,6 +9,7 @@ import {
 import { DLC_PUMP_COEFFS, DLC_TOTAL_HEAT_W } from "../../engine/examples/dlcPumpedCooling";
 import { WATER_30C } from "../../engine/fluids";
 import { DEFAULT_UNITS, G } from "../../engine/types";
+import { diffLinkResults } from "../compare";
 import { downloadTextFile } from "../download";
 import { buildResultsTable, resultsTableCsv } from "../results/table";
 
@@ -100,6 +101,7 @@ export function ResultsDock() {
   const project = useStore((s) => s.project);
   const exampleId = useStore((s) => s.exampleId);
   const diagram = useStore((s) => s.diagram);
+  const compare = useStore((s) => s.compare);
 
   const hx = result?.couplings["hex.hx"];
   const pump = result?.links["pump.core"];
@@ -116,6 +118,16 @@ export function ResultsDock() {
   const displayUnits = project?.units ?? DEFAULT_UNITS;
   const table =
     result && project ? buildResultsTable(project, result, displayUnits) : null;
+  const compareRows =
+    compare?.result && result
+      ? diffLinkResults(
+          compare.result,
+          result,
+          compare.project,
+          project,
+          displayUnits,
+        )
+      : null;
 
   function exportCsv() {
     if (!table || !project) return;
@@ -182,7 +194,58 @@ export function ResultsDock() {
         {tab === "charts" && !isDlc && (
           <p className="muted">Curve charts are available on the GPU rack liquid-cooling example. Use Table for link flows.</p>
         )}
-        {tab === "table" && table && (
+        {tab === "table" && compareRows && (
+          <div className="table-panel">
+            <div className="table-toolbar">
+              <span className="muted">
+                A = {compare?.label ?? "baseline"} · B = live · Δ = B − A
+              </span>
+            </div>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Link</th>
+                    <th>Q A</th>
+                    <th>Q B</th>
+                    <th>ΔQ</th>
+                    <th>Δp A</th>
+                    <th>Δp B</th>
+                    <th>ΔΔp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {compareRows.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.name}</td>
+                      <td>
+                        {row.Qa.toFixed(2)} {row.QUnit}
+                      </td>
+                      <td>
+                        {row.Qb.toFixed(2)} {row.QUnit}
+                      </td>
+                      <td className={row.dQ === 0 ? "" : "delta"}>
+                        {row.dQ >= 0 ? "+" : ""}
+                        {row.dQ.toFixed(2)}
+                      </td>
+                      <td>
+                        {row.dPa.toFixed(2)} {row.dPUnit}
+                      </td>
+                      <td>
+                        {row.dPb.toFixed(2)} {row.dPUnit}
+                      </td>
+                      <td className={row.dDP === 0 ? "" : "delta"}>
+                        {row.dDP >= 0 ? "+" : ""}
+                        {row.dDP.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+        {tab === "table" && table && !compareRows && (
           <div className="table-panel">
             <div className="table-toolbar">
               <button type="button" className="ghost" onClick={exportCsv}>
