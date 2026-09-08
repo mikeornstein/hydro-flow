@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "meta": {
     "name": "MF01 multiplicity chassis pattern",
-    "description": "MF01 Table 2 fans + parallelCount=4 card stack. Table 1 OCR B decades physically inconsistent with fan head — placeholders only.",
+    "description": "MF01 Table 2 fans + link multiplicity=4 card stack. Table 1 OCR B decades physically inconsistent with fan head — placeholders only.",
     "createdAt": "2026-09-07T00:00:00Z",
     "updatedAt": "2026-09-07T00:00:00Z"
   },
@@ -119,6 +119,7 @@
       "from": "plenum",
       "to": "exit",
       "fluid": "air-25C",
+      "multiplicity": 4,
       "component": {
         "type": "duct",
         "lossModel": "darcy-weisbach",
@@ -127,8 +128,7 @@
           "D": 0.03,
           "eps": 0.0001
         },
-        "K": 4,
-        "parallelCount": 4
+        "K": 4
       }
     },
     {

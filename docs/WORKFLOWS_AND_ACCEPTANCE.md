@@ -365,7 +365,7 @@ Call a phase done only when the matching tests exist and pass, not when the UI l
 2. Tee $K$ as a function of flow ratio: implement a published Idelchik subset and cite the chart numbers we use.
 3. Transition $2300 < \mathrm{Re} < 4000$: goldens use a hard switch at 2300. MF08 interpolates $K$ between laminar and turbulent. Pick one and test it.
 4. Fan stalled / running backwards: warn vs. allow. Papers assume forward on-curve operation.
-5. Multiplicity vs copied links: MF01 used a multiplier of 4. Schema does not yet have `multiplicity`; add it before S6.
+5. Multiplicity vs copied links: MF01 used a multiplier of 4. Links now carry optional `multiplicity` (default 1): N identical parallel instances of that link's constitutive law. S6 can reuse the same lever on a branch, or copy the sub-graph, when headers are not generous.
 
 ---
 

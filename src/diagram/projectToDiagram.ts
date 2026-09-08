@@ -52,7 +52,7 @@ function componentParams(c: LinkComponent): DiagramNode["params"] {
 
 /**
  * Canvas view of a solver Project. Equipment living on links becomes mid-edge
- * nodes. Tee / emitter / parallelCount details stay on the pinned Project used
+ * nodes. Tee / emitter / multiplicity details stay on the pinned Project used
  * for solving — this diagram is for layout and readout only.
  */
 export function projectToDiagram(project: Project, title?: string, description?: string): Diagram {

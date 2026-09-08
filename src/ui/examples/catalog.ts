@@ -100,7 +100,7 @@ export const EXAMPLE_CATALOG: ExampleEntry[] = [
   {
     id: "mf01-multiplicity-chassis",
     title: "Chassis with repeated card stacks",
-    description: "Shows parallelCount collapsing four identical card paths into one link.",
+    description: "Shows link multiplicity collapsing four identical card paths into one link.",
     group: "Air cooling",
     file: "mf01-multiplicity-chassis.hydroflow.json",
   },

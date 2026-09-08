@@ -1,6 +1,6 @@
 import { darcyWeisbach } from "./friction";
 import { G } from "./types";
-import type { EmitterLaw, Fluid, LinkDef, NodeDef } from "./types";
+import { linkMultiplicity, type EmitterLaw, type Fluid, type LinkDef, type NodeDef } from "./types";
 import { fanRisePa, pumpHeadM } from "./thermo";
 
 /** Inverse of Q = k ΔP^x. Odd in Q so reverse flow meets the same resistance. */
@@ -22,7 +22,7 @@ export interface ConstitutiveEval {
 }
 
 function pathCount(link: LinkDef): number {
-  return Math.max(1, link.component.parallelCount ?? 1);
+  return linkMultiplicity(link);
 }
 
 function openingK(link: LinkDef): number {
