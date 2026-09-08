@@ -58,8 +58,9 @@ describe("diagramFingerprint", () => {
   it("treats an undefined property and a missing property alike", () => {
     const base = stock("series-pipes");
     const missing = { ...base };
-    const withUndef = { ...base, description: undefined as unknown as string };
-    expect(diagramFingerprint(withUndef)).toBe(diagramFingerprint(missing));
+    delete (missing as { description?: string }).description;
+    const withUndef = { ...missing, description: undefined };
+    expect(diagramFingerprint(withUndef as Diagram)).toBe(diagramFingerprint(missing));
   });
 });
 
