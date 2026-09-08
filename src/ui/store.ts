@@ -121,7 +121,13 @@ function defaults(kind: EquipmentKind): Pick<DiagramNode, "name" | "fluid" | "pa
 }
 
 function clearPin() {
-  return { pinnedProject: null as Project | null, exampleId: "custom" };
+  return {
+    pinnedProject: null as Project | null,
+    exampleId: "custom",
+    result: null as SolveResult | null,
+    report: null as VerificationReport | null,
+    error: null as string | null,
+  };
 }
 
 function opened(
@@ -191,7 +197,6 @@ export const useStore = create<AppState>((set, get) => ({
 
   moveNode: (id, x, y) =>
     set((s) => ({
-      ...clearPin(),
       diagram: {
         ...s.diagram,
         nodes: s.diagram.nodes.map((n) => (n.id === id ? { ...n, x, y } : n)),

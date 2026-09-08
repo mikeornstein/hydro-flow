@@ -37,12 +37,14 @@ function componentParams(c: LinkComponent): DiagramNode["params"] {
     L: c.geometry.L,
     D: c.geometry.D,
     eps: c.geometry.eps,
+    A: c.geometry.A,
     K: c.K,
     rQuad: c.rQuad,
     rLin: c.rLin,
     opening: c.opening,
     q: c.q,
     rTh: c.rTh,
+    lossModel: c.lossModel,
     pump: c.pump,
     fan: c.fan,
   };
@@ -121,6 +123,7 @@ export function projectToDiagram(project: Project, title?: string, description?:
       z: (a.z + b.z) / 2,
       fluid: link.fluid,
       params: componentParams(c),
+      sourceLinkId: link.id,
     });
     edges.push({
       id: `${link.id}:in`,
@@ -148,5 +151,6 @@ export function projectToDiagram(project: Project, title?: string, description?:
     description: description ?? project.meta.description,
     nodes,
     edges,
+    fluids: structuredClone(project.fluids),
   };
 }

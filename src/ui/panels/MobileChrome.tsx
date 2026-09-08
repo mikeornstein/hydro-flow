@@ -47,7 +47,7 @@ export function CompactHeader({ layout }: { layout: SheetLayout }) {
       <div className="compact-header-status">
         {error && (
           <span className="pill danger" title={error}>
-            error
+            {error.length > 48 ? `${error.slice(0, 45)}…` : error}
           </span>
         )}
         <button

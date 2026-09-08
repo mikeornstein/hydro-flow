@@ -2,12 +2,7 @@ import { Handle, Position, type NodeProps } from "@xyflow/react";
 import type { DiagramNode, PortId } from "../../diagram/types";
 import type { SolveResult } from "../../engine/types";
 import { domainOf } from "../color";
-import {
-  formatFlowAir,
-  formatFlowLiquid,
-  formatPower,
-  formatTempC,
-} from "../../engine/units";
+import { equipmentReadout } from "./equipmentReadout";
 
 export type EquipData = {
   node: DiagramNode;
@@ -143,31 +138,6 @@ function Glyph({ kind }: { kind: string }) {
   }
 }
 
-function readout(node: DiagramNode, result: SolveResult | null): string {
-  if (!result) return "unsolved";
-  if (node.kind === "coldPlate") {
-    const L = result.links[`${node.id}.core`];
-    if (!L?.T_surface) return "—";
-    return `${formatTempC(L.T_surface)}  ·  ${formatPower(L.q ?? 0)}`;
-  }
-  if (node.kind === "heatExchanger") {
-    const hx = result.couplings[`${node.id}.hx`];
-    if (!hx) return "—";
-    return `${formatPower(hx.q)}  ·  ε ${hx.effectiveness.toFixed(2)}`;
-  }
-  if (node.kind === "pump") {
-    const L = result.links[`${node.id}.core`];
-    return L ? formatFlowLiquid(L.Q) : "—";
-  }
-  if (node.kind === "fan") {
-    const L = result.links[`${node.id}.core`];
-    return L ? formatFlowAir(L.Q) : "—";
-  }
-  const n = result.nodes[node.id] ?? result.nodes[`${node.id}.in`];
-  if (n) return formatTempC(n.T);
-  return "—";
-}
-
 export function EquipmentNode({ data }: NodeProps) {
   const { node, result, selected } = data as EquipData;
   const domain = domainOf(node.kind, node.fluid);
@@ -192,7 +162,7 @@ export function EquipmentNode({ data }: NodeProps) {
           <div className="equip-name">{node.name}</div>
         </div>
       </div>
-      <div className="equip-readout">{readout(node, result)}</div>
+      <div className="equip-readout">{equipmentReadout(node, result)}</div>
     </div>
   );
 }

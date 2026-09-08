@@ -160,8 +160,10 @@ function equipmentLinks(n: DiagramNode): { links: LinkDef[]; couplings: HexCoupl
     fluid: n.fluid,
     component: {
       type,
-      lossModel: n.params.rQuad ? "quadratic" : "darcy-weisbach",
-      geometry: { L, D, eps },
+      lossModel:
+        n.params.lossModel ??
+        (n.params.rQuad ? "quadratic" : n.params.rLin ? "linear" : "darcy-weisbach"),
+      geometry: { L, D, eps, A: n.params.A },
       K,
       rQuad: n.params.rQuad,
       rLin: n.params.rLin,
@@ -200,7 +202,10 @@ export function compileDiagram(diagram: Diagram, opts: CompileOptions = {}): Pro
     if (!a || !b) throw new Error(`Edge ${e.id} has a dangling end`);
     const from = solverNodeId(a, e.from.port);
     const to = solverNodeId(b, e.to.port);
-    const lossless = e.kind === "connector" || (e.geometry.L === 0 && e.geometry.K === 0);
+    const connector = e.kind === "connector";
+    const lossless = connector || (e.geometry.L === 0 && e.geometry.K === 0);
+    // Connectors are layout stubs. Never inherit microchannel D from equipment.
+    const D = connector ? Math.max(e.geometry.D, 0.02) : e.geometry.D;
     links.push({
       id: e.id,
       name: e.name ?? e.id,
@@ -212,15 +217,19 @@ export function compileDiagram(diagram: Diagram, opts: CompileOptions = {}): Pro
         lossModel: "darcy-weisbach",
         geometry: {
           L: lossless ? 0.02 : e.geometry.L,
-          D: e.geometry.D,
-          eps: e.geometry.eps,
+          D,
+          eps: connector ? 0 : e.geometry.eps,
         },
         K: lossless ? 0.05 : e.geometry.K,
       },
     });
   }
 
-  const fluids = { [WATER_30C.id]: WATER_30C, [AIR_25C.id]: AIR_25C };
+  const fluids = {
+    [WATER_30C.id]: WATER_30C,
+    [AIR_25C.id]: AIR_25C,
+    ...(diagram.fluids ?? {}),
+  };
   const now = opts.createdAt ?? new Date().toISOString();
 
   return {
