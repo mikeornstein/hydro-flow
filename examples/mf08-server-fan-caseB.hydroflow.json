@@ -54,7 +54,7 @@
     {
       "id": "after-fan",
       "kind": "junction",
-      "x": 40,
+      "x": 80,
       "y": 0,
       "z": 0,
       "fluid": "air-25C"
@@ -62,7 +62,7 @@
     {
       "id": "after-cpu",
       "kind": "junction",
-      "x": 120,
+      "x": 200,
       "y": 0,
       "z": 0,
       "fluid": "air-25C"
@@ -70,7 +70,7 @@
     {
       "id": "after-pci",
       "kind": "junction",
-      "x": 200,
+      "x": 320,
       "y": 0,
       "z": 0,
       "fluid": "air-25C"
@@ -78,7 +78,7 @@
     {
       "id": "exit",
       "kind": "boundary",
-      "x": 280,
+      "x": 440,
       "y": 0,
       "z": 0,
       "fluid": "air-25C",

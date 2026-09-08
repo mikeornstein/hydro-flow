@@ -45,7 +45,7 @@
       "id": "inlet",
       "kind": "junction",
       "name": "Inlet",
-      "x": -40,
+      "x": -80,
       "y": 0,
       "z": 0,
       "fluid": "water-20C",
@@ -55,8 +55,8 @@
       "id": "outlet",
       "kind": "boundary",
       "name": "Outlet",
-      "x": -40,
-      "y": 80,
+      "x": -80,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C",
       "pFixed": 101325,
@@ -76,7 +76,7 @@
       "kind": "junction",
       "name": "Collect tee 1",
       "x": 0,
-      "y": 80,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     },
@@ -84,7 +84,7 @@
       "id": "F1",
       "kind": "junction",
       "name": "Feed tee 2",
-      "x": 40,
+      "x": 80,
       "y": 0,
       "z": 0,
       "fluid": "water-20C"
@@ -93,8 +93,8 @@
       "id": "C1",
       "kind": "junction",
       "name": "Collect tee 2",
-      "x": 40,
-      "y": 80,
+      "x": 80,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     },
@@ -102,7 +102,7 @@
       "id": "F2",
       "kind": "junction",
       "name": "Feed tee 3",
-      "x": 80,
+      "x": 160,
       "y": 0,
       "z": 0,
       "fluid": "water-20C"
@@ -111,8 +111,8 @@
       "id": "C2",
       "kind": "junction",
       "name": "Collect tee 3",
-      "x": 80,
-      "y": 80,
+      "x": 160,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     },
@@ -120,7 +120,7 @@
       "id": "F3",
       "kind": "junction",
       "name": "Feed tee 4",
-      "x": 120,
+      "x": 240,
       "y": 0,
       "z": 0,
       "fluid": "water-20C"
@@ -129,8 +129,8 @@
       "id": "C3",
       "kind": "junction",
       "name": "Collect tee 4",
-      "x": 120,
-      "y": 80,
+      "x": 240,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     },
@@ -138,7 +138,7 @@
       "id": "F4",
       "kind": "junction",
       "name": "Feed tee 5",
-      "x": 160,
+      "x": 320,
       "y": 0,
       "z": 0,
       "fluid": "water-20C"
@@ -147,8 +147,8 @@
       "id": "C4",
       "kind": "junction",
       "name": "Collect tee 5",
-      "x": 160,
-      "y": 80,
+      "x": 320,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     },
@@ -156,7 +156,7 @@
       "id": "F5",
       "kind": "junction",
       "name": "Feed tee 6",
-      "x": 200,
+      "x": 400,
       "y": 0,
       "z": 0,
       "fluid": "water-20C"
@@ -165,8 +165,8 @@
       "id": "C5",
       "kind": "junction",
       "name": "Collect tee 6",
-      "x": 200,
-      "y": 80,
+      "x": 400,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     },
@@ -174,7 +174,7 @@
       "id": "F6",
       "kind": "junction",
       "name": "Feed tee 7",
-      "x": 240,
+      "x": 480,
       "y": 0,
       "z": 0,
       "fluid": "water-20C"
@@ -183,8 +183,8 @@
       "id": "C6",
       "kind": "junction",
       "name": "Collect tee 7",
-      "x": 240,
-      "y": 80,
+      "x": 480,
+      "y": 180,
       "z": 0,
       "fluid": "water-20C"
     }

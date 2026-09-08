@@ -1,5 +1,6 @@
 import type { Project, TeeCorrelation } from "../types";
 import { GPM } from "../units";
+import { EXAMPLE_PITCH_X, EXAMPLE_SPAN_Y } from "./canvasPitch";
 
 const IN = 0.0254;
 /** 5 gal/min → m³/s */
@@ -51,7 +52,7 @@ export function mf03ColdPlateHeader(
       id: "inlet",
       kind: "junction",
       name: "Inlet",
-      x: -40,
+      x: -EXAMPLE_PITCH_X,
       y: 0,
       z: 0,
       fluid: "water-20C",
@@ -61,8 +62,8 @@ export function mf03ColdPlateHeader(
       id: "outlet",
       kind: "boundary",
       name: "Outlet",
-      x: -40,
-      y: 80,
+      x: -EXAMPLE_PITCH_X,
+      y: EXAMPLE_SPAN_Y,
       z: 0,
       fluid: "water-20C",
       pFixed: 101325,
@@ -79,7 +80,7 @@ export function mf03ColdPlateHeader(
       id: `F${i}`,
       kind: "junction",
       name: `Feed tee ${i + 1}`,
-      x: i * 40,
+      x: i * EXAMPLE_PITCH_X,
       y: 0,
       z: 0,
       fluid: "water-20C",
@@ -89,8 +90,8 @@ export function mf03ColdPlateHeader(
       id: `C${i}`,
       kind: "junction",
       name: `Collect tee ${i + 1}`,
-      x: i * 40,
-      y: 80,
+      x: i * EXAMPLE_PITCH_X,
+      y: EXAMPLE_SPAN_Y,
       z: 0,
       fluid: "water-20C",
       ...tee,

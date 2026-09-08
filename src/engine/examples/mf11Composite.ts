@@ -1,6 +1,7 @@
 import type { Project } from "../types";
 import { solveSteady } from "../solve";
 import { GPM } from "../units";
+import { EXAMPLE_SPAN_X } from "./canvasPitch";
 
 const PSI = 6894.757;
 
@@ -30,7 +31,7 @@ export function mf11ExpandedBlock(): Project {
     {
       id: "b",
       kind: "boundary",
-      x: 100,
+      x: EXAMPLE_SPAN_X,
       y: 0,
       z: 0,
       fluid: "water-20C",
@@ -95,7 +96,7 @@ export function mf11CompositeFromCurve(
       {
         id: "b",
         kind: "boundary",
-        x: 100,
+        x: EXAMPLE_SPAN_X,
         y: 0,
         z: 0,
         fluid: "water-20C",
@@ -174,7 +175,7 @@ function lcmProject(nParallel: number, dP: number, name: string): Project {
       {
         id: "b",
         kind: "boundary",
-        x: 100,
+        x: EXAMPLE_SPAN_X,
         y: 0,
         z: 0,
         fluid: "water-20C",

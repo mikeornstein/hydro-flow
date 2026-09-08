@@ -54,7 +54,7 @@
     {
       "id": "plenum",
       "kind": "junction",
-      "x": 100,
+      "x": 120,
       "y": 0,
       "z": 0,
       "fluid": "air-25C"
@@ -62,7 +62,7 @@
     {
       "id": "exit",
       "kind": "boundary",
-      "x": 200,
+      "x": 240,
       "y": 0,
       "z": 0,
       "fluid": "air-25C",

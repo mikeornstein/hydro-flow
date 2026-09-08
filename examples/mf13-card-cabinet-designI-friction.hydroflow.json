@@ -65,7 +65,7 @@
       "id": "exit",
       "kind": "boundary",
       "name": "Screened exit",
-      "x": 200,
+      "x": 1800,
       "y": 120,
       "z": 0,
       "fluid": "air-27C",
@@ -86,7 +86,7 @@
       "kind": "junction",
       "name": "Plenum 1",
       "x": 0,
-      "y": 80,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -94,7 +94,7 @@
       "id": "T1",
       "kind": "junction",
       "name": "Tee 2",
-      "x": 40,
+      "x": 200,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -103,8 +103,8 @@
       "id": "P1",
       "kind": "junction",
       "name": "Plenum 2",
-      "x": 40,
-      "y": 80,
+      "x": 200,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -112,7 +112,7 @@
       "id": "T2",
       "kind": "junction",
       "name": "Tee 3",
-      "x": 80,
+      "x": 400,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -121,8 +121,8 @@
       "id": "P2",
       "kind": "junction",
       "name": "Plenum 3",
-      "x": 80,
-      "y": 80,
+      "x": 400,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -130,7 +130,7 @@
       "id": "T3",
       "kind": "junction",
       "name": "Tee 4",
-      "x": 120,
+      "x": 600,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -139,8 +139,8 @@
       "id": "P3",
       "kind": "junction",
       "name": "Plenum 4",
-      "x": 120,
-      "y": 80,
+      "x": 600,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -148,7 +148,7 @@
       "id": "T4",
       "kind": "junction",
       "name": "Tee 5",
-      "x": 160,
+      "x": 800,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -157,8 +157,8 @@
       "id": "P4",
       "kind": "junction",
       "name": "Plenum 5",
-      "x": 160,
-      "y": 80,
+      "x": 800,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -166,7 +166,7 @@
       "id": "T5",
       "kind": "junction",
       "name": "Tee 6",
-      "x": 200,
+      "x": 1000,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -175,8 +175,8 @@
       "id": "P5",
       "kind": "junction",
       "name": "Plenum 6",
-      "x": 200,
-      "y": 80,
+      "x": 1000,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -184,7 +184,7 @@
       "id": "T6",
       "kind": "junction",
       "name": "Tee 7",
-      "x": 240,
+      "x": 1200,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -193,8 +193,8 @@
       "id": "P6",
       "kind": "junction",
       "name": "Plenum 7",
-      "x": 240,
-      "y": 80,
+      "x": 1200,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -202,7 +202,7 @@
       "id": "T7",
       "kind": "junction",
       "name": "Tee 8",
-      "x": 280,
+      "x": 1400,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -211,8 +211,8 @@
       "id": "P7",
       "kind": "junction",
       "name": "Plenum 8",
-      "x": 280,
-      "y": 80,
+      "x": 1400,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -220,7 +220,7 @@
       "id": "T8",
       "kind": "junction",
       "name": "Tee 9",
-      "x": 320,
+      "x": 1600,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -229,8 +229,8 @@
       "id": "P8",
       "kind": "junction",
       "name": "Plenum 9",
-      "x": 320,
-      "y": 80,
+      "x": 1600,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     },
@@ -238,7 +238,7 @@
       "id": "T9",
       "kind": "junction",
       "name": "Tee 10",
-      "x": 360,
+      "x": 1800,
       "y": 0,
       "z": 0,
       "fluid": "air-27C"
@@ -247,8 +247,8 @@
       "id": "P9",
       "kind": "junction",
       "name": "Plenum 10",
-      "x": 360,
-      "y": 80,
+      "x": 1800,
+      "y": 180,
       "z": 0,
       "fluid": "air-27C"
     }

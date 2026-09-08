@@ -1,4 +1,5 @@
 import type { Fluid, Project } from "../types";
+import { EXAMPLE_SPAN_X } from "./canvasPitch";
 
 const CFM = 1 / 2118.8799727597;
 const IN_H2O = 249.08891;
@@ -116,7 +117,7 @@ export function mf06AltitudeDensity(altitudeFt: 0 | 5000): Project {
       {
         id: "exit",
         kind: "boundary",
-        x: 200,
+        x: EXAMPLE_SPAN_X,
         y: 0,
         z: 0,
         fluid: fluidId,

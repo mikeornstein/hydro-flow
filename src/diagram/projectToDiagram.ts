@@ -1,5 +1,6 @@
 import type { Diagram, DiagramEdge, DiagramNode, EquipmentKind, PortId } from "./types";
 import type { LinkComponent, LinkType, Project } from "../engine/types";
+import { bundleSlots, EQUIP_BUNDLE_SPACING_PX, offsetAlongChord } from "./bundleOffset";
 
 const EQUIP_KINDS: Partial<Record<LinkType, EquipmentKind>> = {
   pump: "pump",
@@ -67,6 +68,10 @@ export function projectToDiagram(project: Project, title?: string, description?:
   }));
 
   const edges: DiagramEdge[] = [];
+  const slots = bundleSlots(
+    project.links.map((l) => ({ id: l.id, from: l.from, to: l.to })),
+    EQUIP_BUNDLE_SPACING_PX,
+  );
 
   for (const link of project.links) {
     const a = byId.get(link.from);
@@ -101,12 +106,18 @@ export function projectToDiagram(project: Project, title?: string, description?:
     }
 
     const midId = `eq:${link.id}`;
+    const mid = offsetAlongChord(
+      { x: (ax + bx) / 2, y: (ay + by) / 2 },
+      { x: ax, y: ay },
+      { x: bx, y: by },
+      slots.get(link.id)?.offset ?? 0,
+    );
     nodes.push({
       id: midId,
       kind: equipKind,
       name: link.name ?? link.id,
-      x: (ax + bx) / 2,
-      y: (ay + by) / 2,
+      x: mid.x,
+      y: mid.y,
       z: (a.z + b.z) / 2,
       fluid: link.fluid,
       params: componentParams(c),
