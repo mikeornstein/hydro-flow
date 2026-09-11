@@ -12,6 +12,7 @@ const EQUIP_KINDS: Partial<Record<LinkType, EquipmentKind>> = {
   filter: "filter",
   orifice: "orifice",
   "cold-plate": "coldPlate",
+  radiator: "radiator",
 };
 
 function portFor(kind: EquipmentKind, end: "from" | "to"): PortId {
@@ -54,6 +55,7 @@ function componentParams(c: LinkComponent): DiagramNode["params"] {
     lossModel: c.lossModel,
     pump: c.pump,
     fan: c.fan,
+    radiator: c.radiator,
   };
 }
 

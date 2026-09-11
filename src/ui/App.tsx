@@ -118,6 +118,7 @@ function Canvas({ layoutMode }: CanvasProps) {
           nodeColor={(n) => {
             const kind = (n.data as { node?: { kind?: string } })?.node?.kind;
             if (kind === "coldPlate") return "#e08a4f";
+            if (kind === "radiator") return "#c4603a";
             if (kind === "fan" || kind === "boundary") return "#7eb3ff";
             if (kind === "heatExchanger") return "#d4a574";
             return "#3ad7b7";

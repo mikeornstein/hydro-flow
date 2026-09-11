@@ -12,6 +12,7 @@ import { mf09HeatSinkBypass } from "./mf09HeatSinkBypass";
 import { mf11ExpandedBlock, mf11LcmAtPublishedPoint } from "./mf11Composite";
 import { mf13CardCabinet } from "./mf13CardCabinet";
 import { mf14Enclosure } from "./mf14Enclosure";
+import { pumpedRadiatorLoopDiagram } from "./pumpedRadiatorLoop";
 
 export interface ProjectExampleSource {
   /** Basename under examples/. */
@@ -120,5 +121,10 @@ export const PROJECT_EXAMPLE_SOURCES: readonly ProjectExampleSource[] = [
   {
     file: "instanced-cold-plates.hydroflow.json",
     build: () => instancedColdPlates(),
+  },
+  {
+    file: "pumped-radiator-loop.hydroflow.json",
+    build: () =>
+      compileDiagram(pumpedRadiatorLoopDiagram(), { createdAt: "2026-09-11T00:00:00Z" }),
   },
 ];

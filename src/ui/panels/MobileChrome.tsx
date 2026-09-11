@@ -21,6 +21,7 @@ const KIND_LABEL: Record<EquipmentKind, string> = {
   filter: "Filter",
   orifice: "Orifice",
   coldPlate: "Cold plate",
+  radiator: "Radiator",
   heatExchanger: "Air–liquid HEX",
 };
 

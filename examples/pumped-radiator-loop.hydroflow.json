@@ -1,0 +1,257 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "Pumped loop — cold plate to radiator panel",
+    "description": "One cold plate on a closed water loop, circulated by a small pump through a radiator panel that rejects the heat to a fixed-temperature sink.",
+    "createdAt": "2026-09-11T00:00:00Z",
+    "updatedAt": "2026-09-11T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "kPa",
+    "flow": "L/min",
+    "temperature": "C",
+    "power": "W"
+  },
+  "fluids": {
+    "water-30C": {
+      "id": "water-30C",
+      "name": "Water (30 °C)",
+      "phase": "liquid",
+      "rho": 995.65,
+      "mu": 0.0007977,
+      "cp": 4178,
+      "k": 0.6155,
+      "beta": 0.000303,
+      "Tref": 303.15
+    },
+    "air-25C": {
+      "id": "air-25C",
+      "name": "Dry air (25 °C)",
+      "phase": "gas",
+      "rho": 1.184,
+      "mu": 0.00001849,
+      "cp": 1007,
+      "k": 0.0263,
+      "beta": 0.0033540164346805303,
+      "Tref": 298.15
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": true,
+    "gravity": true,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 80,
+      "relaxationP": 0.85,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "tank",
+      "kind": "tank",
+      "name": "Expansion tank",
+      "x": 40,
+      "y": 320,
+      "z": 0.5,
+      "fluid": "water-30C",
+      "pFixed": 151325
+    },
+    {
+      "id": "pump.in",
+      "kind": "junction",
+      "name": "Loop pump in",
+      "x": 280,
+      "y": 320,
+      "z": 0.2,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "pump.out",
+      "kind": "junction",
+      "name": "Loop pump out",
+      "x": 280,
+      "y": 320,
+      "z": 0.2,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "load.in",
+      "kind": "junction",
+      "name": "Compute cold plate in",
+      "x": 540,
+      "y": 320,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "load.out",
+      "kind": "junction",
+      "name": "Compute cold plate out",
+      "x": 540,
+      "y": 320,
+      "z": 0.3,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "rad.in",
+      "kind": "junction",
+      "name": "Radiator panel in",
+      "x": 800,
+      "y": 120,
+      "z": 1.5,
+      "fluid": "water-30C"
+    },
+    {
+      "id": "rad.out",
+      "kind": "junction",
+      "name": "Radiator panel out",
+      "x": 800,
+      "y": 120,
+      "z": 1.5,
+      "fluid": "water-30C"
+    }
+  ],
+  "links": [
+    {
+      "id": "pump.core",
+      "name": "Loop pump",
+      "from": "pump.in",
+      "to": "pump.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pump",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.016,
+          "eps": 0.0000015
+        },
+        "K": 1.2,
+        "pump": {
+          "coeffs": [
+            5,
+            0,
+            -500000000
+          ],
+          "hMin": 0
+        }
+      }
+    },
+    {
+      "id": "load.core",
+      "name": "Compute cold plate",
+      "from": "load.in",
+      "to": "load.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.25,
+          "D": 0.008,
+          "eps": 0.0000015
+        },
+        "K": 4,
+        "q": 1500,
+        "rTh": 0.02
+      }
+    },
+    {
+      "id": "rad.core",
+      "name": "Radiator panel",
+      "from": "rad.in",
+      "to": "rad.out",
+      "fluid": "water-30C",
+      "component": {
+        "type": "radiator",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 4,
+          "D": 0.008,
+          "eps": 0.0000015,
+          "A": 0.000402
+        },
+        "K": 3,
+        "radiator": {
+          "ua": 180,
+          "tSink": 288.15
+        }
+      }
+    },
+    {
+      "id": "e-tank-pump",
+      "name": "Suction",
+      "from": "tank",
+      "to": "pump.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.6,
+          "D": 0.016,
+          "eps": 0.0000015
+        },
+        "K": 0.5
+      }
+    },
+    {
+      "id": "e-pump-load",
+      "name": "Discharge",
+      "from": "pump.out",
+      "to": "load.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1.2,
+          "D": 0.012,
+          "eps": 0.0000015
+        },
+        "K": 0.8
+      }
+    },
+    {
+      "id": "e-load-rad",
+      "name": "Riser to panel",
+      "from": "load.out",
+      "to": "rad.in",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 2,
+          "D": 0.012,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "e-rad-tank",
+      "name": "Cooled return",
+      "from": "rad.out",
+      "to": "tank",
+      "fluid": "water-30C",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 2.4,
+          "D": 0.016,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    }
+  ],
+  "couplings": []
+}

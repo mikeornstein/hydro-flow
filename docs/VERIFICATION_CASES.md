@@ -246,6 +246,10 @@ Four identical parallel channels represented as one link with multiplicity 4 vs 
 
 Clone a solved project, change one `D` or one `K`, re-solve. Both result sets remain available. `Q` moves in the expected direction (larger `D` → larger `Q` for a fixed head).
 
+### I10. Pumped radiator loop
+
+`examples/pumped-radiator-loop.hydroflow.json`: tank → pump → cold plate → radiator panel → tank. One fluid, no air stream, no `tFixed` on any node. The solve converges with no energy-mismatch warning, `energy-global` passes with the radiator counted as the sink, `−q` at the panel equals the cold-plate load within 0.2 %, and the loop ΔT equals `load / (ṁ cp)`. The radiator inlet floats to `tSink + load / (ε ṁ cp)`. Tests: `tests/pumpedRadiatorExample.test.ts`.
+
 ---
 
 ## 5. Essential end-to-end tests (product)

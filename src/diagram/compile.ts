@@ -2,22 +2,33 @@ import type { Diagram, DiagramNode, PortId } from "./types";
 import type {
   HexCoupling,
   LinkDef,
+  LinkType,
   NodeDef,
   Project,
+  RadiatorLaw,
   UnitPrefs,
   AnalysisSettings,
 } from "../engine/types";
 import { DEFAULT_CONVERGENCE, DEFAULT_UNITS } from "../engine/types";
 import { AIR_25C, WATER_30C } from "../engine/fluids";
 
-const TWO_PORT: Record<string, [PortId, PortId]> = {
-  pump: ["in", "out"],
-  fan: ["in", "out"],
-  valve: ["in", "out"],
-  filter: ["in", "out"],
-  orifice: ["in", "out"],
-  coldPlate: ["in", "out"],
+const TWO_PORT: Record<string, { ports: [PortId, PortId]; type: LinkType }> = {
+  pump: { ports: ["in", "out"], type: "pump" },
+  fan: { ports: ["in", "out"], type: "fan" },
+  valve: { ports: ["in", "out"], type: "valve" },
+  filter: { ports: ["in", "out"], type: "filter" },
+  orifice: { ports: ["in", "out"], type: "orifice" },
+  coldPlate: { ports: ["in", "out"], type: "cold-plate" },
+  radiator: { ports: ["in", "out"], type: "radiator" },
 };
+
+function radiatorLaw(n: DiagramNode): RadiatorLaw | undefined {
+  if (n.kind !== "radiator") return undefined;
+  if (!n.params.radiator) {
+    throw new Error(`Radiator ${n.id} needs params.radiator { ua, tSink }`);
+  }
+  return n.params.radiator;
+}
 
 function solverNodeId(node: DiagramNode, port: PortId): string {
   if (node.kind === "junction" || node.kind === "boundary" || node.kind === "tank") {
@@ -63,7 +74,7 @@ function equipmentSolverNodes(n: DiagramNode): NodeDef[] {
       fluid: p.startsWith("air") ? AIR_25C.id : n.fluid,
     }));
   }
-  const [a, b] = TWO_PORT[n.kind];
+  const [a, b] = TWO_PORT[n.kind].ports;
   return [
     {
       id: `${n.id}.${a}`,
@@ -134,23 +145,9 @@ function equipmentLinks(n: DiagramNode): { links: LinkDef[]; couplings: HexCoupl
     return { links: [liq, air], couplings: [coupling] };
   }
 
-  const pair = TWO_PORT[n.kind];
-  if (!pair) return { links: [], couplings: [] };
-  const [a, b] = pair;
-  const type =
-    n.kind === "coldPlate"
-      ? "cold-plate"
-      : n.kind === "pump"
-        ? "pump"
-        : n.kind === "fan"
-          ? "fan"
-          : n.kind === "valve"
-            ? "valve"
-            : n.kind === "filter"
-              ? "filter"
-              : n.kind === "orifice"
-                ? "orifice"
-                : "logical";
+  const twoPort = TWO_PORT[n.kind];
+  if (!twoPort) return { links: [], couplings: [] };
+  const [a, b] = twoPort.ports;
 
   const link: LinkDef = {
     id: `${n.id}.core`,
@@ -159,7 +156,7 @@ function equipmentLinks(n: DiagramNode): { links: LinkDef[]; couplings: HexCoupl
     to: `${n.id}.${b}`,
     fluid: n.fluid,
     component: {
-      type,
+      type: twoPort.type,
       lossModel:
         n.params.lossModel ??
         (n.params.rQuad ? "quadratic" : n.params.rLin ? "linear" : "darcy-weisbach"),
@@ -170,6 +167,7 @@ function equipmentLinks(n: DiagramNode): { links: LinkDef[]; couplings: HexCoupl
       opening: n.params.opening,
       pump: n.params.pump,
       fan: n.params.fan,
+      radiator: radiatorLaw(n),
       q: n.params.q,
       rTh: n.params.rTh,
     },

@@ -2,6 +2,7 @@ import type { Diagram } from "../../diagram/types";
 import { projectToDiagram } from "../../diagram/projectToDiagram";
 import type { Project } from "../../engine/types";
 import { dlcPumpedCoolingDiagram } from "../../engine/examples/dlcPumpedCooling";
+import { pumpedRadiatorLoopDiagram } from "../../engine/examples/pumpedRadiatorLoop";
 
 export type ExampleGroup =
   | "Getting started"
@@ -9,14 +10,19 @@ export type ExampleGroup =
   | "Air cooling"
   | "Manifolds & cabinets";
 
-export interface ExampleEntry {
+/**
+ * A catalog entry is backed either by a pinned project file under examples/
+ * or by a hand-authored canvas builder, never neither.
+ */
+export type ExampleEntry = {
   id: string;
   title: string;
   description: string;
   group: ExampleGroup;
-  /** File under examples/, or null when the canvas diagram is hand-authored. */
-  file: string | null;
-}
+} & (
+  | { file: string; diagram?: undefined }
+  | { file: null; diagram: () => Diagram }
+);
 
 const GROUP_ORDER: ExampleGroup[] = [
   "Getting started",
@@ -61,6 +67,15 @@ export const EXAMPLE_CATALOG: ExampleEntry[] = [
     description: "CDU pump loop, four cold plates, and an air–liquid heat exchanger.",
     group: "Liquid cooling",
     file: null,
+    diagram: dlcPumpedCoolingDiagram,
+  },
+  {
+    id: "pumped-radiator-loop",
+    title: "Pumped loop rejecting heat through a radiator panel",
+    description: "One cold plate, a pump, and a radiator panel to a fixed-temperature sink.",
+    group: "Liquid cooling",
+    file: null,
+    diagram: pumpedRadiatorLoopDiagram,
   },
   {
     id: "mf03-orifice-balance-tuned",
@@ -264,8 +279,8 @@ export function loadExamplePayload(id: string): {
   pinnedProject: Project | null;
 } {
   const entry = getExample(id);
-  if (entry.id === "dlc-pumped-cooling" || entry.file === null) {
-    const diagram = dlcPumpedCoolingDiagram();
+  if (entry.file === null) {
+    const diagram = entry.diagram();
     diagram.name = entry.title;
     diagram.description = entry.description;
     return { entry, diagram, pinnedProject: null };

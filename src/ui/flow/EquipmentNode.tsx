@@ -47,6 +47,10 @@ const PORTS: Record<string, { id: PortId; type: "source" | "target"; pos: Positi
     { id: "in", type: "target", pos: Position.Left },
     { id: "out", type: "source", pos: Position.Right },
   ],
+  radiator: [
+    { id: "in", type: "target", pos: Position.Left },
+    { id: "out", type: "source", pos: Position.Right },
+  ],
   heatExchanger: [
     { id: "liqIn", type: "target", pos: Position.Left },
     { id: "liqOut", type: "source", pos: Position.Bottom },
@@ -90,6 +94,19 @@ function Glyph({ kind }: { kind: string }) {
         <svg {...s}>
           <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
           <path d="M7 8 V16 M10 8 V16 M13 8 V16 M16 8 V16" stroke="currentColor" strokeWidth="1.2" />
+        </svg>
+      );
+    case "radiator":
+      return (
+        <svg {...s}>
+          <rect x="3.5" y="6" width="17" height="13" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+          <path
+            d="M1.5 9 H15.5 a1.75 1.75 0 0 1 0 3.5 H8.5 a1.75 1.75 0 0 0 0 3.5 H22.5"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
+          <path d="M8 2.5 q1 1 0 2 M12 2.5 q1 1 0 2 M16 2.5 q1 1 0 2" stroke="currentColor" strokeWidth="1" opacity="0.6" />
         </svg>
       );
     case "tank":

@@ -30,6 +30,11 @@ export function equipmentReadout(node: DiagramNode, result: SolveResult | null):
     if (L) return formatFlowLiquid(L.Q);
     return "—";
   }
+  if (node.kind === "radiator") {
+    const L = linkResultForEquipment(node, result);
+    if (L?.q === undefined || L.T_out === undefined) return "—";
+    return `${formatPower(-L.q)} → sink  ·  ${formatTempC(L.T_out)}`;
+  }
   if (node.kind === "heatExchanger") {
     const hx = result.couplings[`${node.id}.hx`];
     if (!hx) return "—";
