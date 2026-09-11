@@ -132,7 +132,7 @@
               "type": {
                 "enum": [
                   "pipe", "duct", "orifice", "valve", "pump", "fan",
-                  "filter", "generic-resistance", "cold-plate", "hex-stream", "emitter", "logical"
+                  "filter", "generic-resistance", "cold-plate", "hex-stream", "radiator", "emitter", "logical"
                 ]
               },
               "lossModel": {
@@ -189,10 +189,42 @@
                   "x": { "type": "number", "exclusiveMinimum": 0 }
                 }
               },
+              "radiator": {
+                "type": "object",
+                "description": "Cr=0 ε-NTU rejection to a fixed-temperature sink. Linearized, so ua is constant over the solve. Present iff type is radiator.",
+                "required": ["ua", "tSink"],
+                "additionalProperties": false,
+                "properties": {
+                  "ua": { "type": "number", "exclusiveMinimum": 0 },
+                  "tSink": { "type": "number", "exclusiveMinimum": 0 }
+                }
+              },
               "q": { "type": "number" },
               "rTh": { "type": "number" },
               "parallelCount": { "type": "integer", "minimum": 1 }
-            }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "type": { "const": "radiator" } }, "required": ["type"] },
+                "then": {
+                  "required": ["radiator"],
+                  "not": {
+                    "anyOf": [
+                      { "required": ["q"] },
+                      { "required": ["rTh"] },
+                      { "required": ["pump"] },
+                      { "required": ["fan"] },
+                      { "required": ["emitter"] },
+                      { "required": ["opening"] }
+                    ]
+                  }
+                }
+              },
+              {
+                "if": { "required": ["radiator"] },
+                "then": { "properties": { "type": { "const": "radiator" } } }
+              }
+            ]
           }
         }
       }

@@ -3,6 +3,7 @@ export * from "./fluids";
 export * from "./friction";
 export * from "./thermo";
 export * from "./constitutive";
+export * from "./radiator";
 export * from "./solve";
 export * from "./verify";
 export * from "./units";

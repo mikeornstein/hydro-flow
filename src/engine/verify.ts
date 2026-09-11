@@ -1,6 +1,7 @@
 import { ModuleNetwork } from "./moduleNetwork";
 import { hexHeat } from "./thermo";
-import { massImbalance } from "./solve";
+import { Radiator } from "./radiator";
+import { energyBalance, massImbalance } from "./solve";
 import type { Project, SolveResult } from "./types";
 
 export interface Check {
@@ -71,12 +72,9 @@ export function verifySolution(project: Project, result: SolveResult): Verificat
   checks.push(check("momentum", "Max link momentum residual", maxMom, 0, 0.05, "Pa"));
 
   if (projectFlat.analysis.energy) {
-    let qSrc = 0;
-    for (const l of projectFlat.links) qSrc += l.component.q ?? 0;
-    let qHex = 0;
-    for (const c of Object.values(result.couplings)) qHex += c.q;
+    const bal = energyBalance(projectFlat, result.links, result.couplings);
     checks.push(
-      check("energy-global", "HEX rejects source heat", qHex, qSrc, 0.002, "", true),
+      check("energy-global", "Sinks reject source heat", bal.sinks, bal.sources, 0.002, "", true),
     );
 
     for (const c of projectFlat.couplings) {
@@ -100,6 +98,28 @@ export function verifySolution(project: Project, result: SolveResult): Verificat
       const expectedDT = hx.q / (Math.abs(hot.mdot) * fH.cp);
       checks.push(
         check(`hex-dT-${c.id}`, "Hot-stream ΔT from q/(ṁ cp)", dT_hot, expectedDT, 1e-4, "K", true),
+      );
+    }
+
+    for (const l of projectFlat.links) {
+      const law = Radiator.lawOf(l);
+      if (!law) continue;
+      const r = result.links[l.id];
+      const f = projectFlat.fluids[l.fluid];
+      const indep = Radiator.evaluate(law, Math.abs(r.mdot) * f.cp, r.T_in ?? 0);
+      checks.push(
+        check(`radiator-q-${l.id}`, `ε-NTU rejection ${l.name ?? l.id}`, -(r.q ?? 0), indep.q, 1e-6, "W", true),
+      );
+      checks.push(
+        check(
+          `radiator-dT-${l.id}`,
+          "Coolant ΔT from q/(ṁ cp)",
+          (r.T_in ?? 0) - (r.T_out ?? 0),
+          indep.T_in - indep.T_out,
+          1e-4,
+          "K",
+          true,
+        ),
       );
     }
 

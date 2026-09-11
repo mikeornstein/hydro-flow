@@ -190,6 +190,10 @@ Same geometry, `ρ` reduced to a 5000 ft air density, `Q` must change. Prevents 
 
 Reverse `from`/`to` on a single pipe between two reservoirs. `Q` flips sign (or the solver reports a positive `Q` with swapped ends — pick one convention and test it). Loop `ΣΔp` around a closed cycle is 0.
 
+### U17. Radiator identity (Cr = 0 ε-NTU)
+
+One link with `type: "radiator"` and `component.radiator = { ua, tSink }` between a fixed-temperature inlet and an outlet. At the solved `ṁ`: `ε = 1 − exp(−ua / (ṁ cp))`, `−LinkResult.q = ε ṁ cp (T_in − tSink)`, and `T_out = (1 − ε) T_in + ε tSink`, each within 1e-6 relative. Reverse `from`/`to`: same `q` and `T_out`. `ṁ → 0`: `q = 0` and `T_out = T_in` with no NaN. A `radiator` type without the law, the law on any other type, `ua ≤ 0`, `tSink ≤ 0`, or the law beside `q` fails the schema and throws in the solver. Tests: `tests/radiator.test.ts`.
+
 ---
 
 ## 4. Essential integration tests (engine, no UI)
