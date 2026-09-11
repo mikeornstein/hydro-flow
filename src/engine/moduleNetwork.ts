@@ -1,4 +1,3 @@
-import { EXAMPLE_PITCH_X, EXAMPLE_PITCH_Y, EXAMPLE_SPAN_Y } from "./examples/canvasPitch";
 import type {
   ChannelPackParams,
   LinkDef,
@@ -7,9 +6,17 @@ import type {
   Project,
 } from "./types";
 
+const PACK_TEE_DX = 80;
+const PACK_SPAN_DY = 80;
+const PACK_COPY_DY = PACK_SPAN_DY + PACK_TEE_DX;
+
 export class ModuleNetwork {
   static copyPrefix(instanceId: string, copyIndex: number): string {
     return `${instanceId}#${copyIndex}:`;
+  }
+
+  static inletLinkId(instanceId: string, copyIndex: number): string {
+    return `${ModuleNetwork.copyPrefix(instanceId, copyIndex)}in-F0`;
   }
 
   static expand(project: Project): Project {
@@ -20,10 +27,15 @@ export class ModuleNetwork {
     const modules = new Map<string, ModuleDef>();
     for (const mod of project.modules ?? []) {
       if (modules.has(mod.id)) throw new Error(`Duplicate module id ${mod.id}`);
+      if (mod.kind !== "u-manifold-pack") {
+        throw new Error(`Module ${mod.id}: unsupported kind ${mod.kind}`);
+      }
+      if (!Number.isInteger(mod.params.nChannels) || mod.params.nChannels < 2) {
+        throw new Error(`Module ${mod.id}: nChannels must be an integer >= 2`);
+      }
       modules.set(mod.id, mod);
     }
     const hostNodeIds = new Set(project.nodes.map((n) => n.id));
-    const hostLinkIds = new Set(project.links.map((l) => l.id));
     const out: Project = structuredClone(project);
     delete out.modules;
     delete out.instances;
@@ -45,12 +57,6 @@ export class ModuleNetwork {
       if (!project.fluids[inst.fluid]) {
         throw new Error(`Instance ${inst.id}: unknown fluid ${inst.fluid}`);
       }
-      if (mod.kind !== "u-manifold-pack") {
-        throw new Error(`Module ${mod.id}: unsupported kind ${mod.kind}`);
-      }
-      if (!Number.isInteger(mod.params.nChannels) || mod.params.nChannels < 2) {
-        throw new Error(`Module ${mod.id}: nChannels must be an integer >= 2`);
-      }
 
       for (let i = 0; i < inst.count; i++) {
         const prefix = ModuleNetwork.copyPrefix(inst.id, i);
@@ -61,16 +67,16 @@ export class ModuleNetwork {
           inlet: inst.ports.inlet,
           outlet: inst.ports.outlet,
           originX: inst.x,
-          originY: inst.y + i * (EXAMPLE_SPAN_Y + EXAMPLE_PITCH_Y),
+          originY: inst.y + i * PACK_COPY_DY,
         });
         for (const node of pack.nodes) {
-          if (hostNodeIds.has(node.id) || out.nodes.some((n) => n.id === node.id)) {
+          if (out.nodes.some((n) => n.id === node.id)) {
             throw new Error(`Expanded node id collides: ${node.id}`);
           }
           out.nodes.push(node);
         }
         for (const link of pack.links) {
-          if (hostLinkIds.has(link.id) || out.links.some((l) => l.id === link.id)) {
+          if (out.links.some((l) => l.id === link.id)) {
             throw new Error(`Expanded link id collides: ${link.id}`);
           }
           out.links.push(link);
@@ -106,7 +112,7 @@ export class ModuleNetwork {
         id: `${prefix}F${i}`,
         kind: "junction",
         name: `Feed tee ${i + 1}`,
-        x: originX + i * EXAMPLE_PITCH_X,
+        x: originX + i * PACK_TEE_DX,
         y: originY,
         z: 0,
         fluid,
@@ -116,8 +122,8 @@ export class ModuleNetwork {
         id: `${prefix}C${i}`,
         kind: "junction",
         name: `Collect tee ${i + 1}`,
-        x: originX + i * EXAMPLE_PITCH_X,
-        y: originY + EXAMPLE_SPAN_Y,
+        x: originX + i * PACK_TEE_DX,
+        y: originY + PACK_SPAN_DY,
         z: 0,
         fluid,
         ...tee,

@@ -8,7 +8,7 @@ import { solveSteady } from "../src/engine/solve";
 const DEMO_FILE = "examples/instanced-cold-plates.hydroflow.json";
 
 function inletFlows(result: { links: Record<string, { Q: number }> }, count: number): number[] {
-  return Array.from({ length: count }, (_, i) => result.links[`plates#${i}:in-F0`]?.Q ?? 0);
+  return Array.from({ length: count }, (_, i) => result.links[ModuleNetwork.inletLinkId("plates", i)]?.Q ?? 0);
 }
 
 describe("parametric modules + instances", () => {
@@ -71,9 +71,9 @@ describe("parametric modules + instances", () => {
     expect(plates).toHaveLength(3);
     expect(diagram.nodes.some((n) => n.id === "F0" || n.id === "plates#0:F0")).toBe(false);
     expect(plates.map((n) => n.sourceLinkId)).toEqual([
-      "plates#0:in-F0",
-      "plates#1:in-F0",
-      "plates#2:in-F0",
+      ModuleNetwork.inletLinkId("plates", 0),
+      ModuleNetwork.inletLinkId("plates", 1),
+      ModuleNetwork.inletLinkId("plates", 2),
     ]);
   });
 

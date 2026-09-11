@@ -1,5 +1,6 @@
 import type { Diagram, DiagramEdge, DiagramNode, EquipmentKind, PortId } from "./types";
 import type { LinkComponent, LinkType, Project } from "../engine/types";
+import { ModuleNetwork } from "../engine/moduleNetwork";
 import { bundleSlots, EQUIP_BUNDLE_SPACING_PX, offsetAlongChord } from "./bundleOffset";
 
 const INSTANCE_COPY_DY = 80;
@@ -168,7 +169,7 @@ export function projectToDiagram(project: Project, title?: string, description?:
         z: inlet.z,
         fluid: inst.fluid,
         params: {},
-        sourceLinkId: `${inst.id}#${i}:in-F0`,
+        sourceLinkId: ModuleNetwork.inletLinkId(inst.id, i),
       });
       edges.push({
         id: `${inst.id}#${i}:host-in`,

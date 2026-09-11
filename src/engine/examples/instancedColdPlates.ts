@@ -27,10 +27,6 @@ const WATER = {
   Tref: 293.15,
 };
 
-/**
- * N identical U-manifold cold-plate packs sharing one module definition.
- * Host headers stay in the deck; pack internals exist only after expand.
- */
 export function instancedColdPlates(count: number = INSTANCED_PLATE_COUNT): Project {
   const midY = EXAMPLE_PITCH_Y;
   return {
