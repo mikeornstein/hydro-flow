@@ -128,7 +128,6 @@ export class ModuleNetwork {
       id,
       name: `${prefix}${name}`,
       from,
-      from,
       to,
       fluid,
       component: {
