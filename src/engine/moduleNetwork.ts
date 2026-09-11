@@ -126,7 +126,8 @@ export class ModuleNetwork {
 
     const pipe = (id: string, name: string, from: string, to: string, L: number, D: number, K: number): LinkDef => ({
       id,
-      name,
+      name: `${prefix}${name}`,
+      from,
       from,
       to,
       fluid,
