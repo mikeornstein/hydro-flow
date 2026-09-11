@@ -91,6 +91,14 @@ export const EXAMPLE_CATALOG: ExampleEntry[] = [
     file: "mf11-lcm-table1.hydroflow.json",
   },
   {
+    id: "instanced-cold-plates",
+    title: "Three identical cold-plate channel packs",
+    description:
+      "Three packs share one module's parameters. No copy-paste deck of laterals.",
+    group: "Liquid cooling",
+    file: "instanced-cold-plates.hydroflow.json",
+  },
+  {
     id: "mf11-composite-expanded",
     title: "Many liquid-cooling modules in parallel",
     description: "Composite curve built from identical parallel modules.",

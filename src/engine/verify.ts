@@ -1,3 +1,4 @@
+import { ModuleNetwork } from "./moduleNetwork";
 import { hexHeat } from "./thermo";
 import { massImbalance } from "./solve";
 import type { Project, SolveResult } from "./types";
@@ -41,6 +42,7 @@ function check(
 }
 
 export function verifySolution(project: Project, result: SolveResult): VerificationReport {
+  const projectFlat = ModuleNetwork.expand(project);
   const checks: Check[] = [];
 
   checks.push(
@@ -54,13 +56,13 @@ export function verifySolution(project: Project, result: SolveResult): Verificat
     ),
   );
 
-  const imb = massImbalance(project, result);
+  const imb = massImbalance(projectFlat, result);
   const maxImb = Object.values(imb).reduce((m, v) => Math.max(m, Math.abs(v)), 0);
   checks.push(check("mass", "Max nodal volume imbalance", maxImb, 0, 1e-9, "m³/s"));
 
   // Momentum: P_from − P_to should match constitutive Δp
   let maxMom = 0;
-  for (const l of project.links) {
+  for (const l of projectFlat.links) {
     const Pf = result.nodes[l.from].P;
     const Pt = result.nodes[l.to].P;
     const dP = result.links[l.id].dP;
@@ -68,21 +70,21 @@ export function verifySolution(project: Project, result: SolveResult): Verificat
   }
   checks.push(check("momentum", "Max link momentum residual", maxMom, 0, 0.05, "Pa"));
 
-  if (project.analysis.energy) {
+  if (projectFlat.analysis.energy) {
     let qSrc = 0;
-    for (const l of project.links) qSrc += l.component.q ?? 0;
+    for (const l of projectFlat.links) qSrc += l.component.q ?? 0;
     let qHex = 0;
     for (const c of Object.values(result.couplings)) qHex += c.q;
     checks.push(
       check("energy-global", "HEX rejects source heat", qHex, qSrc, 0.002, "", true),
     );
 
-    for (const c of project.couplings) {
+    for (const c of projectFlat.couplings) {
       const hx = result.couplings[c.id];
       const hot = result.links[c.hotLinkId];
       const cold = result.links[c.coldLinkId];
-      const fH = project.fluids[project.links.find((l) => l.id === c.hotLinkId)!.fluid];
-      const fC = project.fluids[project.links.find((l) => l.id === c.coldLinkId)!.fluid];
+      const fH = projectFlat.fluids[projectFlat.links.find((l) => l.id === c.hotLinkId)!.fluid];
+      const fC = projectFlat.fluids[projectFlat.links.find((l) => l.id === c.coldLinkId)!.fluid];
       const indep = hexHeat({
         UA: c.ua,
         C_hot: Math.abs(hot.mdot) * fH.cp,
@@ -101,10 +103,10 @@ export function verifySolution(project: Project, result: SolveResult): Verificat
       );
     }
 
-    for (const l of project.links) {
+    for (const l of projectFlat.links) {
       if (!(l.component.q ?? 0)) continue;
       const r = result.links[l.id];
-      const f = project.fluids[l.fluid];
+      const f = projectFlat.fluids[l.fluid];
       const dT = (r.T_out ?? 0) - (r.T_in ?? 0);
       const expect = (l.component.q ?? 0) / (Math.abs(r.mdot) * f.cp);
       checks.push(

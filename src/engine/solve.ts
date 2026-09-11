@@ -3,6 +3,7 @@ import { dDp_dQ, linkDeltaP } from "./constitutive";
 import { hexHeat, epsilonNtu } from "./thermo";
 import { areaFromD } from "./friction";
 import { teeLegDrops, type TeeCorrelation, type TeeLegFlow } from "./tee";
+import { ModuleNetwork } from "./moduleNetwork";
 import type {
   CouplingResult,
   Fluid,
@@ -493,7 +494,8 @@ function evalHex(
 export function solveSteady(project: Project): SolveResult {
   const t0 = performance.now?.() ?? Date.now();
   const warnings: string[] = [];
-  const net = assemble(project);
+  const flat = ModuleNetwork.expand(project);
+  const net = assemble(flat);
   const hyd = solveHydraulics(net);
   if (hyd.status === "singular") warnings.push("Hydraulic Jacobian was singular.");
   if (hyd.status === "max-iter") warnings.push("Hydraulics hit max iterations.");
@@ -545,10 +547,10 @@ export function solveSteady(project: Project): SolveResult {
   }
 
   // Closed-loop energy check
-  if (project.analysis.energy) {
+  if (flat.analysis.energy) {
     let qIn = 0;
     let qHex = 0;
-    for (const l of project.links) {
+    for (const l of flat.links) {
       if ((l.component.q ?? 0) !== 0) qIn += l.component.q ?? 0;
     }
     for (const c of Object.values(energy.couplings)) qHex += c.q;
@@ -579,12 +581,13 @@ export function massImbalance(
   project: Project,
   result: SolveResult,
 ): Record<string, number> {
+  const flat = ModuleNetwork.expand(project);
   const imb: Record<string, number> = {};
-  for (const n of project.nodes) {
+  for (const n of flat.nodes) {
     if (n.kind !== "junction") continue;
-    const rho = project.fluids[n.fluid]?.rho ?? 1;
+    const rho = flat.fluids[n.fluid]?.rho ?? 1;
     let s = (n.mdotSource ?? 0) / rho;
-    for (const l of project.links) {
+    for (const l of flat.links) {
       const Q = result.links[l.id].Q;
       if (l.to === n.id) s += Q;
       if (l.from === n.id) s -= Q;

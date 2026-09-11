@@ -205,6 +205,33 @@ function checkProject(rel, project) {
       fail(`${rel} coupling ${coupling.id} unknown cold link ${coupling.coldLinkId}`);
     }
   }
+
+  const moduleIds = new Set();
+  for (const mod of project.modules ?? []) {
+    if (moduleIds.has(mod.id)) fail(`${rel} duplicate module id ${mod.id}`);
+    moduleIds.add(mod.id);
+  }
+  const instanceIds = new Set();
+  for (const inst of project.instances ?? []) {
+    if (instanceIds.has(inst.id)) fail(`${rel} duplicate instance id ${inst.id}`);
+    instanceIds.add(inst.id);
+    if (!moduleIds.has(inst.module)) {
+      fail(`${rel} instance ${inst.id} unknown module ${inst.module}`);
+    }
+    if (inst.ports?.inlet && !nodeIds.has(inst.ports.inlet)) {
+      fail(`${rel} instance ${inst.id} inlet unknown node ${inst.ports.inlet}`);
+    }
+    if (inst.ports?.outlet && !nodeIds.has(inst.ports.outlet)) {
+      fail(`${rel} instance ${inst.id} outlet unknown node ${inst.ports.outlet}`);
+    }
+    if (inst.fluid && !fluidIds.has(inst.fluid)) {
+      fail(`${rel} instance ${inst.id} unknown fluid ${inst.fluid}`);
+    }
+  }
+  if (moduleIds.size || instanceIds.size) {
+    ok(`${rel} module instance ids resolve`);
+  }
+
   ok(`${rel} graph ids resolve`);
   return { nodeIds, linkIds };
 }
