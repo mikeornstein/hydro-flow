@@ -325,6 +325,8 @@ Handbook dependencies the unit suite should eventually exercise (P1+):
 
 Call a phase done only when the matching tests exist and pass, not when the UI looks right.
 
+P0 coverage map (ORN-24): `docs/P0_ACCEPTANCE_AUDIT.md`. Under this checklist P0 is **not** done; AGENTS.md’s goldens 1% Q bar is a narrower gate.
+
 **P0 — hydro engine**
 
 - Unit U1–U20

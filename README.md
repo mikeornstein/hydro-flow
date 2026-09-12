@@ -7,6 +7,7 @@ Browser **flow-network modeling** for thermal-hydraulic systems. A physical plan
 - [docs/MACROFLOW_RESEARCH.md](docs/MACROFLOW_RESEARCH.md) — product research
 - [docs/WORKFLOWS_AND_ACCEPTANCE.md](docs/WORKFLOWS_AND_ACCEPTANCE.md) — user workflows
 - [docs/VERIFICATION_CASES.md](docs/VERIFICATION_CASES.md) — test catalog
+- [docs/P0_ACCEPTANCE_AUDIT.md](docs/P0_ACCEPTANCE_AUDIT.md) — WORKFLOWS §8 P0 coverage map
 - [docs/schema/hydroflow.project.schema.json](docs/schema/hydroflow.project.schema.json) — `.hydroflow.json` schema
 - [AGENTS.md](AGENTS.md) — agent contract
 - [CONTRIBUTING.md](CONTRIBUTING.md) — branching and pull-request rules

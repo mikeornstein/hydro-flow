@@ -1,6 +1,6 @@
 # Agent notes for hydro-flow
 
-1-D flow-network modeling in the browser. The engine lives in `src/engine`, the canvas in `src/ui`. Research lives in `docs/MACROFLOW_RESEARCH.md`. Workflows live in `docs/WORKFLOWS_AND_ACCEPTANCE.md`. Verification cases live in `docs/VERIFICATION_CASES.md`. The project file schema is `docs/schema/hydroflow.project.schema.json` and matches `src/engine/types.ts`.
+1-D flow-network modeling in the browser. The engine lives in `src/engine`, the canvas in `src/ui`. Research lives in `docs/MACROFLOW_RESEARCH.md`. Workflows live in `docs/WORKFLOWS_AND_ACCEPTANCE.md`. Verification cases live in `docs/VERIFICATION_CASES.md`. P0 WORKFLOWS §8 coverage map lives in `docs/P0_ACCEPTANCE_AUDIT.md`. The project file schema is `docs/schema/hydroflow.project.schema.json` and matches `src/engine/types.ts`.
 
 ## Commands
 
