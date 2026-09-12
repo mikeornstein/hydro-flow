@@ -26,8 +26,9 @@ export function equipmentReadout(node: DiagramNode, result: SolveResult | null):
   if (!result) return "unsolved";
   if (node.kind === "coldPlate") {
     const L = linkResultForEquipment(node, result);
-    if (!L?.T_surface) return "—";
-    return `${formatTempC(L.T_surface)}  ·  ${formatPower(L.q ?? 0)}`;
+    if (L?.T_surface) return `${formatTempC(L.T_surface)}  ·  ${formatPower(L.q ?? 0)}`;
+    if (L) return formatFlowLiquid(L.Q);
+    return "—";
   }
   if (node.kind === "heatExchanger") {
     const hx = result.couplings[`${node.id}.hx`];

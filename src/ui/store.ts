@@ -3,6 +3,7 @@ import type { Connection } from "@xyflow/react";
 import type { Diagram, DiagramEdge, DiagramNode, EquipmentKind, PortId } from "../diagram/types";
 import { compileDiagram } from "../diagram/compile";
 import { solveSteady } from "../engine/solve";
+import { ModuleNetwork } from "../engine/moduleNetwork";
 import { verifySolution, type VerificationReport } from "../engine/verify";
 import type { Project, SolveResult } from "../engine/types";
 import { AIR_25C, WATER_30C } from "../engine/fluids";
@@ -44,9 +45,10 @@ interface AppState {
 
 function runPinned(project: Project): Pick<AppState, "project" | "result" | "report" | "error"> {
   try {
-    const result = solveSteady(project);
-    const report = verifySolution(project, result);
-    return { project, result, report, error: null };
+    const flat = ModuleNetwork.expand(project);
+    const result = solveSteady(flat);
+    const report = verifySolution(flat, result);
+    return { project: flat, result, report, error: null };
   } catch (e) {
     return {
       project,

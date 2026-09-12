@@ -1,6 +1,9 @@
 import type { Diagram, DiagramEdge, DiagramNode, EquipmentKind, PortId } from "./types";
 import type { LinkComponent, LinkType, Project } from "../engine/types";
+import { ModuleNetwork } from "../engine/moduleNetwork";
 import { bundleSlots, EQUIP_BUNDLE_SPACING_PX, offsetAlongChord } from "./bundleOffset";
+
+const INSTANCE_COPY_DY = 80;
 
 const EQUIP_KINDS: Partial<Record<LinkType, EquipmentKind>> = {
   pump: "pump",
@@ -19,6 +22,10 @@ function portFor(kind: EquipmentKind, end: "from" | "to"): PortId {
 function layoutScale(project: Project): { sx: number; sy: number; ox: number; oy: number } {
   const xs = project.nodes.map((n) => n.x);
   const ys = project.nodes.map((n) => n.y);
+  for (const inst of project.instances ?? []) {
+    xs.push(inst.x);
+    ys.push(inst.y);
+  }
   const minX = Math.min(...xs, 0);
   const maxX = Math.max(...xs, 1);
   const minY = Math.min(...ys, 0);
@@ -143,6 +150,46 @@ export function projectToDiagram(project: Project, title?: string, description?:
       fluid: link.fluid,
       geometry: { L: 0, D: c.geometry.D || 0.02, eps: 0, K: 0 },
     });
+  }
+
+  for (const inst of project.instances ?? []) {
+    const inlet = byId.get(inst.ports.inlet);
+    const outlet = byId.get(inst.ports.outlet);
+    if (!inlet || !outlet) continue;
+    for (let i = 0; i < inst.count; i++) {
+      const nodeId = `inst:${inst.id}#${i}`;
+      const x = inst.x * sx + ox;
+      const y = inst.y * sy + oy + i * INSTANCE_COPY_DY;
+      nodes.push({
+        id: nodeId,
+        kind: "coldPlate",
+        name: `${inst.name ?? inst.id} ${i + 1}`,
+        x,
+        y,
+        z: inlet.z,
+        fluid: inst.fluid,
+        params: {},
+        sourceLinkId: ModuleNetwork.inletLinkId(inst.id, i),
+      });
+      edges.push({
+        id: `${inst.id}#${i}:host-in`,
+        name: `${inst.name ?? inst.id} ${i + 1} in`,
+        from: { node: inst.ports.inlet, port: portFor(inlet.kind, "from") },
+        to: { node: nodeId, port: "in" },
+        kind: "connector",
+        fluid: inst.fluid,
+        geometry: { L: 0, D: 0.02, eps: 0, K: 0 },
+      });
+      edges.push({
+        id: `${inst.id}#${i}:host-out`,
+        name: `${inst.name ?? inst.id} ${i + 1} out`,
+        from: { node: nodeId, port: "out" },
+        to: { node: inst.ports.outlet, port: portFor(outlet.kind, "to") },
+        kind: "connector",
+        fluid: inst.fluid,
+        geometry: { L: 0, D: 0.02, eps: 0, K: 0 },
+      });
+    }
   }
 
   return {

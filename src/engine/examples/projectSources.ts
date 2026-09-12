@@ -1,6 +1,7 @@
 import { compileDiagram } from "../../diagram/compile";
 import type { Project } from "../types";
 import { dlcPumpedCoolingDiagram } from "./dlcPumpedCooling";
+import { instancedColdPlates } from "./instancedColdPlates";
 import { mf01MultiplicityChassis } from "./mf01Multiplicity";
 import { mf03ColdPlateHeader } from "./mf03ColdPlateHeader";
 import { mf03OrificeBalance } from "./mf03OrificeBalance";
@@ -115,5 +116,9 @@ export const PROJECT_EXAMPLE_SOURCES: readonly ProjectExampleSource[] = [
     file: "dlc-pumped-cooling.hydroflow.json",
     build: () =>
       compileDiagram(dlcPumpedCoolingDiagram(), { createdAt: "2026-09-07T00:00:00Z" }),
+  },
+  {
+    file: "instanced-cold-plates.hydroflow.json",
+    build: () => instancedColdPlates(),
   },
 ];

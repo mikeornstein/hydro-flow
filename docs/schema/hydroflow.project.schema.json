@@ -213,6 +213,62 @@
           "arrangement": { "enum": ["counterflow", "parallel", "crossflow-unmixed"] }
         }
       }
+    },
+    "modules": {
+      "type": "array",
+      "description": "Parametric subgraph templates. Instances stamp N copies; Newton sees the expanded graph.",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "params"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "kind": { "enum": ["u-manifold-pack"] },
+          "params": {
+            "type": "object",
+            "required": ["nChannels", "headerD", "branchD", "branchL", "pitch", "eps"],
+            "additionalProperties": false,
+            "properties": {
+              "nChannels": { "type": "integer", "minimum": 2 },
+              "headerD": { "type": "number" },
+              "branchD": { "type": "number" },
+              "branchL": { "type": "number" },
+              "pitch": { "type": "number" },
+              "eps": { "type": "number" },
+              "tees": { "type": "boolean" },
+              "correlation": { "enum": ["idelchik", "gardel"] }
+            }
+          }
+        }
+      }
+    },
+    "instances": {
+      "type": "array",
+      "description": "N copies of a module sharing params, wired to host nodes via ports.",
+      "items": {
+        "type": "object",
+        "required": ["id", "module", "count", "ports", "x", "y", "fluid"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "module": { "type": "string" },
+          "count": { "type": "integer", "minimum": 1 },
+          "ports": {
+            "type": "object",
+            "required": ["inlet", "outlet"],
+            "additionalProperties": false,
+            "properties": {
+              "inlet": { "type": "string" },
+              "outlet": { "type": "string" }
+            }
+          },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "fluid": { "type": "string" }
+        }
+      }
     }
   }
 }

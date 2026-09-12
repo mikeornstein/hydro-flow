@@ -187,6 +187,42 @@ export interface HexCoupling {
   arrangement: HexArrangement;
 }
 
+export type ModuleKind = "u-manifold-pack";
+
+export interface ChannelPackParams {
+  nChannels: number;
+  headerD: number;
+  branchD: number;
+  branchL: number;
+  pitch: number;
+  eps: number;
+  tees?: boolean;
+  correlation?: TeeCorrelation;
+}
+
+export interface ModuleDef {
+  id: string;
+  name?: string;
+  kind: ModuleKind;
+  params: ChannelPackParams;
+}
+
+export interface InstancePorts {
+  inlet: string;
+  outlet: string;
+}
+
+export interface InstanceDef {
+  id: string;
+  name?: string;
+  module: string;
+  count: number;
+  ports: InstancePorts;
+  x: number;
+  y: number;
+  fluid: string;
+}
+
 export interface Project {
   version: "0.1.0";
   meta: ProjectMeta;
@@ -196,6 +232,8 @@ export interface Project {
   nodes: NodeDef[];
   links: LinkDef[];
   couplings: HexCoupling[];
+  modules?: ModuleDef[];
+  instances?: InstanceDef[];
 }
 
 export type SolveStatus =

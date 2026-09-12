@@ -6,6 +6,8 @@ export * from "./constitutive";
 export * from "./solve";
 export * from "./verify";
 export * from "./units";
+export * from "./moduleNetwork";
+export * from "./examples/instancedColdPlates";
 export * from "./examples/dlcPumpedCooling";
 export * from "./examples/mf03ColdPlateHeader";
 export * from "./examples/mf09HeatSinkBypass";
