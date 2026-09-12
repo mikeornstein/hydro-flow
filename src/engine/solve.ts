@@ -442,10 +442,15 @@ function solveEnergy(
 
   let energyResidual = 0;
   if (nF > 0) {
-    const x = solveLinear(A, b);
-    for (let fi = 0; fi < nF; fi++) T[free[fi]] = x[fi];
-    const Ax = A.map((row) => row.reduce((s, a, j) => s + a * x[j], 0));
-    energyResidual = Ax.reduce((m, v, i) => Math.max(m, Math.abs(v - b[i])), 0);
+    try {
+      const x = solveLinear(A, b);
+      for (let fi = 0; fi < nF; fi++) T[free[fi]] = x[fi];
+      const Ax = A.map((row) => row.reduce((s, a, j) => s + a * x[j], 0));
+      energyResidual = Ax.reduce((m, v, i) => Math.max(m, Math.abs(v - b[i])), 0);
+    } catch (err) {
+      if (!(err instanceof Error) || err.message !== "singular") throw err;
+      energyResidual = Number.POSITIVE_INFINITY;
+    }
   }
 
   for (const c of net.project.couplings) {
@@ -513,6 +518,9 @@ export function solveSteady(project: Project): SolveResult {
   if (hyd.status === "max-iter") warnings.push("Hydraulics hit max iterations.");
 
   const energy = solveEnergy(net, hyd.Q);
+  if (!Number.isFinite(energy.energyResidual)) {
+    warnings.push("Energy Jacobian was singular.");
+  }
 
   const nodes: Record<string, NodeResult> = {};
   for (let i = 0; i < net.nodes.length; i++) {
