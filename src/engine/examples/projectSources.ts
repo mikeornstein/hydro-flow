@@ -12,6 +12,7 @@ import { mf09HeatSinkBypass } from "./mf09HeatSinkBypass";
 import { mf11ExpandedBlock, mf11LcmAtPublishedPoint } from "./mf11Composite";
 import { mf13CardCabinet } from "./mf13CardCabinet";
 import { mf14Enclosure } from "./mf14Enclosure";
+import { HrsRadiatorPath } from "./hrsRadiatorPath";
 import { IssAtcs } from "./issAtcs";
 import { pumpedRadiatorLoopDiagram } from "./pumpedRadiatorLoop";
 
@@ -131,5 +132,9 @@ export const PROJECT_EXAMPLE_SOURCES: readonly ProjectExampleSource[] = [
   {
     file: IssAtcs.FILE,
     build: () => IssAtcs.project(),
+  },
+  {
+    file: HrsRadiatorPath.FILE,
+    build: () => HrsRadiatorPath.project(),
   },
 ];

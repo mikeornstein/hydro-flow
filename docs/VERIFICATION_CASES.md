@@ -256,7 +256,30 @@ Two closed loops, no `tFixed`. Heat enters a cold plate on the hot loop, a count
 
 ### I12. ISS Active Thermal Control System demo
 
-`examples/iss-atcs.hydroflow.json`: Lab Low and Moderate Temperature water loops, two External Active Thermal Control System ammonia loops, water–ammonia interface heat exchangers, and one pumped radiator wing per ammonia loop (`parallelCount: 3`). Cold-plate packs are two instances of one `u-manifold-pack` module. No `tFixed`. Radiators are the only ambient sink (I11). Each wing rejects the 35 kW nameplate within 2 %. Ammonia mass flow is within 15 % of 8200 / 8900 lb/h. Supply temperatures sit in the published bands (Low 3.3–5.5 °C, Moderate 16.1–18.3 °C, ammonia 2.8 °C ± 2 °F). Pump inlets are 300 psia. The 28.7 kW Marshall Simulator figure is not a load. Pump curves and UA are model sizing, not ISS catalog data. Sources: NASA ATCS overview; NASA/TM—2007–214964 Table 1; NTRS 20150004079 (alternate 2.62 MPa / 275 K, not averaged). Tests: `tests/issAtcsExample.test.ts`.
+`examples/iss-atcs.hydroflow.json`: Lab Low and Moderate Temperature water loops, two External Active Thermal Control System ammonia loops, water–ammonia interface heat exchangers, and one pumped radiator wing per ammonia loop (`parallelCount: 3`). Cold-plate packs are two instances of one `u-manifold-pack` module. No `tFixed`. Radiators are the only ambient sink (I11). Each wing rejects the 35 kW nameplate within 2 %. Ammonia mass flow is within 15 % of 8200 / 8900 lb/h. Supply temperatures sit in the published bands (Low 3.3–5.5 °C, Moderate 16.1–18.3 °C, ammonia 2.8 °C ± 2 °F). Pump inlets are 300 psia. The 28.7 kW Marshall Simulator figure is not a load. Pump curves and UA are model sizing, not ISS catalog data. Sources: NASA ATCS overview; NASA/TM—2007–214964 Table 1; NTRS 20150004079 (alternate 2.62 MPa / 275 K, not averaged). Tests: `tests/issAtcsExample.test.ts`. Part-level radiator plumbing is I13. Do not treat I12 wing ΔP as a Heat Rejection Subsystem flight number.
+
+### I13. Heat Rejection Subsystem radiator path (one Orbital Replaceable Unit)
+
+`examples/iss-hrs-oru-path.hydroflow.json`: one ammonia path through one Heat Rejection Subsystem radiator Orbital Replaceable Unit. Radiator Beam Valve Module inlet port, eight series panels (each a `u-manifold-pack` of eleven parallel Inconel flow tubes between edge manifolds), seven flex hoses, Radiator Beam Valve Module outlet port. Thermal Radiator Rotary Joint Flex Hose Rotary Coupler is out of this slice. Hydraulic only (`energy: false`). Path flow is published Loop A 8200 lb/h shared over six paths (three Orbital Replaceable Units times two paths, zero bypass). Return is the published 300 psia pump-module inlet.
+
+Diameters, lengths, and K are assumption set `hrs-path-baseline-v1`, tagged **NOT flight-published**. They are not International Space Station flight geometry. They are not the AIAA A35030 prototype 5 mm / 12 mm. Tube length and manifold pitch sit inside the published panel envelope ~3.33 m × 2.64 m; orientation is not published. Segment ΔP is a solve output of that set, never a cited flight drop.
+
+After `ModuleNetwork.expand`: 8 panels, 88 tubes, 7 flex hoses, 2 valve-module ports. Station arithmetic (not expanded here): 2 wings × 3 Orbital Replaceable Units = 6 units → 48 panels → 12 paths → 1056 panel tubes.
+
+Canvas instance glyphs stay cold-plate (`u-manifold-pack`). Solve uses the pin. Canvas recompile drops the mass source and still converges.
+
+#### Consistency vs I12 (`iss-atcs`)
+
+| Topic | I12 lumped (`a-rad` / `a-pump`) | I13 part-level | Root cause |
+|---|---|---|---|
+| Parallel paths per loop | `parallelCount: 3` | 6 (3 Orbital Replaceable Units × 2 paths) | lumped vs part-level |
+| Panels on one path | 1 wing link | 8 series panels | lumped vs part-level |
+| Tubes on one path | 0 | 88 | lumped vs part-level |
+| Path flow | `|a-pump.mdot| / 3` (model pump sits above 8200 lb/h) | 8200 lb/h / 6 | lumped vs part-level; model pump sizing |
+| Path ΔP | ~0.48 kPa at L 8 m, D 20 mm, K 8 | ~9 kPa at baseline 8 mm tubes | assumed hydraulics on both sides; neither is flight |
+| Heat rejection | 35 kW | 0 | out of slice (this deck is hydraulic only) |
+
+Tube-inside-diameter sensitivity (6 / 8 / 10 mm) is labeled not a citation: path ΔP falls as D grows. Tests: `tests/hrsRadiatorPath.test.ts`.
 
 ---
 
