@@ -156,6 +156,8 @@ $$
 
 In the energy matrix $U = \varepsilon C$ multiplies $(T_\mathrm{in} - T_\mathrm{sink})$ and $T_\mathrm{sink}$ sits on the right-hand side as a constant. `LinkResult.q` is heat into the fluid, so a rejecting radiator reports $q = -q_\mathrm{rej}$. $UA$ does not change during a solve. For a panel that radiates to space or to a cold wall, pre-evaluate $UA \approx \varepsilon_\mathrm{ir}\, \sigma\, A\, (\bar T + T_\mathrm{sink})(\bar T^{2} + T_\mathrm{sink}^{2})$ at a mean panel temperature $\bar T$ and enter that number. The engine does no $T^{4}$ iteration.
 
+Whole-project energy-global counts HEX q as an ambient sink only when the cold stream's fluid has a `tFixed` node (open air stream). A water–ammonia interface heat exchanger between two closed loops is internal; only radiators are the sink.
+
 ### 3.2 Conservation and solver contract
 
 From MF01 / MF03 / MF13:
