@@ -27,6 +27,7 @@ npm run dev
 - Do not invent a native MacroFlow file format. Validate `.hydroflow.json` files against the schema.
 - Store SI internally.
 - Runtime model: `version`, `fluids` map, per-node/per-link `fluid`, polynomial pump/fan `coeffs`, emitter `Q = k ΔP^x` via `component.emitter`, HEX `couplings`, Churchill Darcy friction, hydrostatic from node `z` with `pFixed` as absolute pressure (Patm on free surfaces).
+- A radiator is a link law, not a coupling. `type: "radiator"` carries `component.radiator = { ua, tSink }` and rejects Cr = 0 ε-NTU heat to a fixed sink with no air stream.
 - P0 acceptance is `tests/fixtures/goldens.json` within 1% on flow, enforced by `tests/goldens.test.ts`.
 
 ## Layout

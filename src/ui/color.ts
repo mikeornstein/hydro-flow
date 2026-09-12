@@ -18,7 +18,7 @@ export function fluidColor(fluid: string): string {
 }
 
 export function domainOf(kind: string, fluid: string): "air" | "liquid" | "heat" {
-  if (kind === "coldPlate" || kind === "heatExchanger") return "heat";
+  if (kind === "coldPlate" || kind === "radiator" || kind === "heatExchanger") return "heat";
   if (fluid.includes("air") || kind === "fan") return "air";
   return "liquid";
 }

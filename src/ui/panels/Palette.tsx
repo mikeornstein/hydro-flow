@@ -9,6 +9,7 @@ const ITEMS: { kind: EquipmentKind; label: string; domain: string }[] = [
   { kind: "orifice", label: "Orifice", domain: "liquid" },
   { kind: "junction", label: "Junction", domain: "liquid" },
   { kind: "coldPlate", label: "Cold plate", domain: "heat" },
+  { kind: "radiator", label: "Radiator", domain: "heat" },
   { kind: "heatExchanger", label: "Air–liquid HEX", domain: "heat" },
   { kind: "fan", label: "Fan", domain: "air" },
   { kind: "boundary", label: "Boundary", domain: "air" },

@@ -1,4 +1,4 @@
-import type { Fluid, LossModel } from "../engine/types";
+import type { Fluid, LossModel, RadiatorLaw } from "../engine/types";
 
 export type EquipmentKind =
   | "junction"
@@ -10,6 +10,7 @@ export type EquipmentKind =
   | "filter"
   | "orifice"
   | "coldPlate"
+  | "radiator"
   | "heatExchanger";
 
 export type PortId =
@@ -49,6 +50,8 @@ export interface EquipmentParams {
   lossModel?: LossModel;
   pump?: PumpParams;
   fan?: FanParams;
+  /** Radiator panels only. Crosses into `LinkComponent.radiator` unchanged. */
+  radiator?: RadiatorLaw;
   ua?: number;
   arrangement?: "counterflow" | "parallel" | "crossflow-unmixed";
   liquidK?: number;

@@ -2,6 +2,7 @@ import { solveLinear } from "./linalg";
 import { dDp_dQ, linkDeltaP } from "./constitutive";
 import { hexHeat, epsilonNtu } from "./thermo";
 import { areaFromD } from "./friction";
+import { Radiator } from "./radiator";
 import { teeLegDrops, type TeeCorrelation, type TeeLegFlow } from "./tee";
 import { ModuleNetwork } from "./moduleNetwork";
 import type {
@@ -369,6 +370,7 @@ function solveEnergy(
     hexByLink.set(hot.id, { role: "hot", coupling: c, U });
     hexByLink.set(cold.id, { role: "cold", coupling: c, U });
   }
+  const radiators = Radiator.index(net.project, Q);
 
   const free: number[] = [];
   net.nodes.forEach((n, i) => {
@@ -403,6 +405,7 @@ function solveEnergy(
       const mCp = absM * fluid.cp;
       const upi = net.nodeIndex.get(upstream(link, Q[k]))!;
       const hex = hexByLink.get(link.id);
+      const rad = radiators.get(k);
       add(fi, ni, mCp);
       if (hex) {
         const hot = net.links.find((l) => l.id === hex.coupling.hotLinkId)!;
@@ -420,6 +423,10 @@ function solveEnergy(
           add(fi, iH, -hex.U);
           add(fi, iC, hex.U);
         }
+      } else if (rad) {
+        // HEX hot row with the cold inlet replaced by the constant sink temperature.
+        add(fi, upi, -mCp + rad.U);
+        b[fi] += rad.U * rad.law.tSink;
       } else {
         add(fi, upi, -mCp);
         b[fi] += link.component.q ?? 0;
@@ -448,6 +455,11 @@ function solveEnergy(
     const ci = net.links.findIndex((l) => l.id === c.coldLinkId);
     linkQheat[hi] = -hx.q;
     linkQheat[ci] = hx.q;
+  }
+  for (const [k, term] of radiators) {
+    const link = net.links[k];
+    const T_in = T[net.nodeIndex.get(upstream(link, Q[k]))!];
+    linkQheat[k] = -Radiator.evaluate(term.law, term.C, T_in).q;
   }
 
   return { T, linkQheat, couplings, energyResidual, energyIterations: 1 };
@@ -546,18 +558,12 @@ export function solveSteady(project: Project): SolveResult {
     };
   }
 
-  // Closed-loop energy check
   if (flat.analysis.energy) {
-    let qIn = 0;
-    let qHex = 0;
-    for (const l of flat.links) {
-      if ((l.component.q ?? 0) !== 0) qIn += l.component.q ?? 0;
-    }
-    for (const c of Object.values(energy.couplings)) qHex += c.q;
-    const mismatch = Math.abs(qIn - qHex);
-    if (qIn !== 0 && mismatch / Math.abs(qIn) > 1e-3) {
+    const bal = energyBalance(flat, links, energy.couplings);
+    if (bal.sources !== 0 && bal.mismatch / Math.abs(bal.sources) > 1e-3) {
       warnings.push(
-        `Energy mismatch: sources ${qIn.toFixed(2)} W vs HEX ${qHex.toFixed(2)} W`,
+        `Energy mismatch: sources ${bal.sources.toFixed(2)} W vs sinks ${bal.sinks.toFixed(2)} W` +
+          ` (HEX ${bal.hex.toFixed(2)} W, radiators ${bal.radiators.toFixed(2)} W)`,
       );
     }
   }
@@ -575,6 +581,37 @@ export function solveSteady(project: Project): SolveResult {
     warnings,
     elapsedMs: t1 - t0,
   };
+}
+
+export interface EnergyBalance {
+  /** Σ link.component.q: heat into the fluid at cold plates and heaters, W. */
+  sources: number;
+  /** Σ coupling.q, W. */
+  hex: number;
+  /** Σ over radiator links of −LinkResult.q, W. */
+  radiators: number;
+  /** hex + radiators, W. */
+  sinks: number;
+  /** |sources − sinks|, W. */
+  mismatch: number;
+}
+
+/** Whole-project heat sources vs sinks at a solved state. */
+export function energyBalance(
+  project: Project,
+  links: Record<string, LinkResult>,
+  couplings: Record<string, CouplingResult>,
+): EnergyBalance {
+  let sources = 0;
+  let radiators = 0;
+  for (const l of project.links) {
+    sources += l.component.q ?? 0;
+    if (Radiator.lawOf(l)) radiators -= links[l.id].q ?? 0;
+  }
+  let hex = 0;
+  for (const c of Object.values(couplings)) hex += c.q;
+  const sinks = hex + radiators;
+  return { sources, hex, radiators, sinks, mismatch: Math.abs(sources - sinks) };
 }
 
 export function massImbalance(

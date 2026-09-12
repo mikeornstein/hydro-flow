@@ -138,6 +138,24 @@ q = h A (T_s - T_b)
 R_\mathrm{th}(Q) = (T_s - T_\mathrm{in}) / \dot{Q}_\mathrm{heat}
 $$
 
+Radiator (pumped panel to a fixed-temperature sink). The hydraulic drop is the Darcy + K form above on the panel's fluid path, with $V = Q/A$ when `geometry.A` gives the tube-bundle area. The energy law is $C_r = 0$ ε-NTU with a constant, linearized $UA$:
+
+$$
+C = |\dot m|\, c_p
+\qquad
+\mathrm{NTU} = \frac{UA}{C}
+\qquad
+\varepsilon = 1 - e^{-\mathrm{NTU}}
+$$
+
+$$
+q_\mathrm{rej} = \varepsilon\, C\, (T_\mathrm{in} - T_\mathrm{sink})
+\qquad
+T_\mathrm{out} = (1 - \varepsilon)\, T_\mathrm{in} + \varepsilon\, T_\mathrm{sink}
+$$
+
+In the energy matrix $U = \varepsilon C$ multiplies $(T_\mathrm{in} - T_\mathrm{sink})$ and $T_\mathrm{sink}$ sits on the right-hand side as a constant. `LinkResult.q` is heat into the fluid, so a rejecting radiator reports $q = -q_\mathrm{rej}$. $UA$ does not change during a solve. For a panel that radiates to space or to a cold wall, pre-evaluate $UA \approx \varepsilon_\mathrm{ir}\, \sigma\, A\, (\bar T + T_\mathrm{sink})(\bar T^{2} + T_\mathrm{sink}^{2})$ at a mean panel temperature $\bar T$ and enter that number. The engine does no $T^{4}$ iteration.
+
 ### 3.2 Conservation and solver contract
 
 From MF01 / MF03 / MF13:

@@ -101,6 +101,19 @@ function defaults(kind: EquipmentKind): Pick<DiagramNode, "name" | "fluid" | "pa
         fluid: liquid,
         params: { L: 0.2, D: 0.006, K: 4, q: 400, rTh: 0.05 },
       };
+    case "radiator":
+      return {
+        name: "Radiator panel",
+        fluid: liquid,
+        params: {
+          L: 4,
+          D: 0.008,
+          A: 4.02e-4,
+          eps: 1.5e-6,
+          K: 3,
+          radiator: { ua: 180, tSink: 298.15 },
+        },
+      };
     case "heatExchanger":
       return {
         name: "Air–liquid HEX",

@@ -16,6 +16,7 @@ export type LinkType =
   | "generic-resistance"
   | "cold-plate"
   | "hex-stream"
+  | "radiator"
   | "emitter"
   | "logical";
 
@@ -136,6 +137,18 @@ export interface EmitterLaw {
   x: number;
 }
 
+/**
+ * Cr = 0 ε-NTU rejection from the link's fluid to a fixed-temperature sink.
+ * Linearized, so `ua` is constant over the solve. No arrangement field because
+ * at Cr = 0 every arrangement reduces to ε = 1 − exp(−NTU).
+ */
+export interface RadiatorLaw {
+  /** Fluid-to-sink conductance UA, W/K. > 0. */
+  ua: number;
+  /** Sink temperature, K. > 0. */
+  tSink: number;
+}
+
 export interface LinkComponent {
   type: LinkType;
   lossModel: LossModel;
@@ -159,6 +172,8 @@ export interface LinkComponent {
   pump?: PumpCurve;
   fan?: FanCurve;
   emitter?: EmitterLaw;
+  /** Present iff `type === "radiator"`. Heat leaves the fluid to `tSink`. */
+  radiator?: RadiatorLaw;
   /** Heat into the fluid, W (cold plates, heaters). */
   q?: number;
   /** Case-to-coolant thermal resistance, K/W. */

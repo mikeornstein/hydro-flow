@@ -94,6 +94,26 @@ function NodeForm({ node }: { node: DiagramNode }) {
           <Field label="K" value={p.K ?? 0} onChange={(K) => set({ K })} />
         </>
       )}
+      {node.kind === "radiator" && (
+        <>
+          <Field
+            label="UA to sink (W/K)"
+            value={p.radiator?.ua ?? 0}
+            onChange={(ua) => set({ radiator: { ua, tSink: p.radiator?.tSink ?? 298.15 } })}
+            step={10}
+          />
+          <Field
+            label="Sink T (K)"
+            value={p.radiator?.tSink ?? 298.15}
+            onChange={(tSink) => set({ radiator: { ua: p.radiator?.ua ?? 0, tSink } })}
+            step={0.1}
+          />
+          <Field label="Tube length (m)" value={p.L ?? 0} onChange={(L) => set({ L })} step={0.1} />
+          <Field label="Dh (m)" value={p.D ?? 0} onChange={(D) => set({ D })} step={0.001} />
+          <Field label="Flow area A (m²)" value={p.A ?? 0} onChange={(A) => set({ A })} step={1e-5} />
+          <Field label="K" value={p.K ?? 0} onChange={(K) => set({ K })} />
+        </>
+      )}
       {node.kind === "heatExchanger" && (
         <>
           <Field label="UA (W/K)" value={p.ua ?? 0} onChange={(ua) => set({ ua })} step={10} />
