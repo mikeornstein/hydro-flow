@@ -250,6 +250,10 @@ Clone a solved project, change one `D` or one `K`, re-solve. Both result sets re
 
 `examples/pumped-radiator-loop.hydroflow.json`: tank → pump → cold plate → radiator panel → tank. One fluid, no air stream, no `tFixed` on any node. The solve converges with no energy-mismatch warning, `energy-global` passes with the radiator counted as the sink, `−q` at the panel equals the cold-plate load within 0.2 %, and the loop ΔT equals `load / (ṁ cp)`. The radiator inlet floats to `tSink + load / (ε ṁ cp)`. Tests: `tests/pumpedRadiatorExample.test.ts`.
 
+### I11. Closed-loop HEX plus radiator
+
+Two closed loops, no `tFixed`. Heat enters a cold plate on the hot loop, a counterflow HEX moves it into the cold loop, and a radiator rejects it. `energy-global` treats HEX q as an ambient sink only when the cold stream's fluid has a `tFixed` node (DLC air inlet). Otherwise HEX is internal and only the radiator counts as the sink. Tests: `tests/closedLoopHexRadiator.test.ts`. DLC still counts HEX q because ambient air is `tFixed`.
+
 ---
 
 ## 5. Essential end-to-end tests (product)

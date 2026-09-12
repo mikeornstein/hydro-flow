@@ -586,7 +586,11 @@ export function solveSteady(project: Project): SolveResult {
 export interface EnergyBalance {
   /** Σ link.component.q: heat into the fluid at cold plates and heaters, W. */
   sources: number;
-  /** Σ coupling.q, W. */
+  /**
+   * Σ coupling.q for HEX units whose cold stream is thermally grounded
+   * (a node of that fluid has tFixed). Closed-loop IFHX is internal and
+   * contributes 0 here so radiators are not double-counted.
+   */
   hex: number;
   /** Σ over radiator links of −LinkResult.q, W. */
   radiators: number;
@@ -594,6 +598,13 @@ export interface EnergyBalance {
   sinks: number;
   /** |sources − sinks|, W. */
   mismatch: number;
+}
+
+/** True when HEX q leaves the model (open / tFixed cold stream), not another closed loop. */
+export function hexCouplingIsAmbientSink(project: Project, coupling: HexCoupling): boolean {
+  const cold = project.links.find((l) => l.id === coupling.coldLinkId);
+  if (!cold) return false;
+  return project.nodes.some((n) => n.fluid === cold.fluid && n.tFixed !== undefined);
 }
 
 /** Whole-project heat sources vs sinks at a solved state. */
@@ -609,7 +620,10 @@ export function energyBalance(
     if (Radiator.lawOf(l)) radiators -= links[l.id].q ?? 0;
   }
   let hex = 0;
-  for (const c of Object.values(couplings)) hex += c.q;
+  for (const c of project.couplings) {
+    if (!hexCouplingIsAmbientSink(project, c)) continue;
+    hex += couplings[c.id]?.q ?? 0;
+  }
   const sinks = hex + radiators;
   return { sources, hex, radiators, sinks, mismatch: Math.abs(sources - sinks) };
 }
