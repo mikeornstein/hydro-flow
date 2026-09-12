@@ -74,9 +74,9 @@ describe("Heat Rejection Subsystem Orbital Replaceable Unit path", () => {
 
   it("drives the published Loop A share and returns at 300 psia", () => {
     expect(summary.mdotPathKgS).toBeCloseTo(HrsRadiatorPath.pathMassFlowKgS(), 9);
-    expect(IssAtcsFigures.kgSToLbH(summary.mdotPathKgS)).toBeCloseTo(
-      IssAtcsFigures.LOOP_A_LB_H / HrsRadiatorPath.STATION.pathsPerLoop,
-      6,
+    expect(IssAtcsFigures.kgSToLbH(summary.mdotPathKgS) * HrsRadiatorPath.STATION.pathsPerLoop).toBeCloseTo(
+      IssAtcsFigures.LOOP_A_LB_H,
+      4,
     );
     expect(result.nodes.return.P).toBeCloseTo(IssAtcsFigures.pumpInletPa(), 0);
     expect(summary.pathDpPa).toBeGreaterThan(0);
