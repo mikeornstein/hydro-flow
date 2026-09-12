@@ -254,6 +254,10 @@ Clone a solved project, change one `D` or one `K`, re-solve. Both result sets re
 
 Two closed loops, no `tFixed`. Heat enters a cold plate on the hot loop, a counterflow HEX moves it into the cold loop, and a radiator rejects it. `energy-global` treats HEX q as an ambient sink only when the cold stream's fluid has a `tFixed` node (DLC air inlet). Otherwise HEX is internal and only the radiator counts as the sink. Tests: `tests/closedLoopHexRadiator.test.ts`. DLC still counts HEX q because ambient air is `tFixed`.
 
+### I12. ISS Active Thermal Control System demo
+
+`examples/iss-atcs.hydroflow.json`: Lab Low and Moderate Temperature water loops, two External Active Thermal Control System ammonia loops, water–ammonia interface heat exchangers, and one pumped radiator wing per ammonia loop (`parallelCount: 3`). Cold-plate packs are two instances of one `u-manifold-pack` module. No `tFixed`. Radiators are the only ambient sink (I11). Each wing rejects the 35 kW nameplate within 2 %. Ammonia mass flow is within 15 % of 8200 / 8900 lb/h. Supply temperatures sit in the published bands (Low 3.3–5.5 °C, Moderate 16.1–18.3 °C, ammonia 2.8 °C ± 2 °F). Pump inlets are 300 psia. The 28.7 kW Marshall Simulator figure is not a load. Pump curves and UA are model sizing, not ISS catalog data. Sources: NASA ATCS overview; NASA/TM—2007–214964 Table 1; NTRS 20150004079 (alternate 2.62 MPa / 275 K, not averaged). Tests: `tests/issAtcsExample.test.ts`.
+
 ---
 
 ## 5. Essential end-to-end tests (product)

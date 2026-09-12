@@ -11,6 +11,7 @@ export * from "./moduleNetwork";
 export * from "./examples/instancedColdPlates";
 export * from "./examples/dlcPumpedCooling";
 export * from "./examples/pumpedRadiatorLoop";
+export * from "./examples/issAtcs";
 export * from "./examples/mf03ColdPlateHeader";
 export * from "./examples/mf09HeatSinkBypass";
 export * from "./examples/mf08BypassBalance";

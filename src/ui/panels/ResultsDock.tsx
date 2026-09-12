@@ -7,6 +7,7 @@ import {
   m3s_to_Lmin,
 } from "../../engine/units";
 import { DLC_PUMP_COEFFS, DLC_TOTAL_HEAT_W } from "../../engine/examples/dlcPumpedCooling";
+import { IssAtcsFigures } from "../../engine/examples/issAtcs";
 import { WATER_30C } from "../../engine/fluids";
 import { G } from "../../engine/types";
 
@@ -103,6 +104,12 @@ export function ResultsDock() {
   const fan = result?.links["fan.core"];
   const gpu = result?.links["gpu0.core"];
   const isDlc = exampleId === "dlc-pumped-cooling" && hx && pump && fan;
+  const isAtcs =
+    exampleId === "iss-atcs" &&
+    !!result?.links["a-rad"] &&
+    !!result?.links["b-rad"] &&
+    !!result?.links["a-pump"] &&
+    !!result?.links["b-pump"];
 
   const linkCount = project?.links.length ?? 0;
   const maxQ = result
@@ -138,7 +145,51 @@ export function ResultsDock() {
             <Kpi label="GPU case" value={gpu?.T_surface ? formatTempC(gpu.T_surface) : "—"} hint="case-to-coolant Rth" />
           </div>
         )}
-        {tab === "summary" && result && !isDlc && (
+        {tab === "summary" && result && isAtcs && (
+          <div className="kpi-grid">
+            <Kpi
+              label="Heat rejected"
+              value={`${formatPower(-result.links["a-rad"].q!)} + ${formatPower(-result.links["b-rad"].q!)}`}
+              hint={`published ${formatPower(IssAtcsFigures.EATCS_LOOP_W * IssAtcsFigures.EATCS_LOOPS)} External Active Thermal Control System`}
+            />
+            <Kpi
+              label="Low Temperature water"
+              value={formatTempC(result.nodes["lt-tank"].T)}
+              hint={`published ${IssAtcsFigures.LTL_BAND_C[0]}–${IssAtcsFigures.LTL_BAND_C[1]} °C`}
+            />
+            <Kpi
+              label="Moderate Temperature water"
+              value={formatTempC(result.nodes["mt-tank"].T)}
+              hint={`published ${IssAtcsFigures.MTL_BAND_C[0]}–${IssAtcsFigures.MTL_BAND_C[1]} °C`}
+            />
+            <Kpi
+              label="Ammonia supply"
+              value={`${formatTempC(result.nodes["a-tank"].T)} / ${formatTempC(result.nodes["b-tank"].T)}`}
+              hint="published 2.8 °C (37 °F ± 2 °F)"
+            />
+            <Kpi
+              label="Loop A ammonia flow"
+              value={`${IssAtcsFigures.kgSToLbH(Math.abs(result.links["a-pump"].mdot)).toFixed(0)} lb/h`}
+              hint={`published ${IssAtcsFigures.LOOP_A_LB_H} lb/h`}
+            />
+            <Kpi
+              label="Loop B ammonia flow"
+              value={`${IssAtcsFigures.kgSToLbH(Math.abs(result.links["b-pump"].mdot)).toFixed(0)} lb/h`}
+              hint={`published ${IssAtcsFigures.LOOP_B_LB_H} lb/h`}
+            />
+            <Kpi
+              label="Ammonia pump inlet"
+              value={`${(result.nodes["a-tank"].P / IssAtcsFigures.PSI).toFixed(0)} psia`}
+              hint="published 300 psia; alternate 380 psia not averaged"
+            />
+            <Kpi
+              label="Loop A pump rise"
+              value={`${(result.links["a-pump"].rise / IssAtcsFigures.PSI).toFixed(1)} psi`}
+              hint="model head, not a published ISS catalog curve"
+            />
+          </div>
+        )}
+        {tab === "summary" && result && !isDlc && !isAtcs && (
           <div className="kpi-grid">
             <Kpi label="Status" value={result.status} hint={`${result.iterations} iterations`} />
             <Kpi label="Links" value={String(linkCount)} hint="solved branches" />
