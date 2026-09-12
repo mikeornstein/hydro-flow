@@ -104,11 +104,6 @@ export interface HrsAuditFinding {
   readonly note: string;
 }
 
-/**
- * One ammonia path through one Heat Rejection Subsystem radiator Orbital
- * Replaceable Unit. Panels are series-chained `u-manifold-pack` instances.
- * Laterals are pipes. Energy is off. Diameters are a named assumption set.
- */
 export class HrsRadiatorPath {
   static readonly ID = "iss-hrs-oru-path";
   static readonly FILE = "iss-hrs-oru-path.hydroflow.json";
