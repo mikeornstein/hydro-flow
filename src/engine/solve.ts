@@ -442,10 +442,15 @@ function solveEnergy(
 
   let energyResidual = 0;
   if (nF > 0) {
-    const x = solveLinear(A, b);
-    for (let fi = 0; fi < nF; fi++) T[free[fi]] = x[fi];
-    const Ax = A.map((row) => row.reduce((s, a, j) => s + a * x[j], 0));
-    energyResidual = Ax.reduce((m, v, i) => Math.max(m, Math.abs(v - b[i])), 0);
+    try {
+      const x = solveLinear(A, b);
+      for (let fi = 0; fi < nF; fi++) T[free[fi]] = x[fi];
+      const Ax = A.map((row) => row.reduce((s, a, j) => s + a * x[j], 0));
+      energyResidual = Ax.reduce((m, v, i) => Math.max(m, Math.abs(v - b[i])), 0);
+    } catch (err) {
+      if (!(err instanceof Error) || err.message !== "singular") throw err;
+      energyResidual = Number.POSITIVE_INFINITY;
+    }
   }
 
   for (const c of net.project.couplings) {
@@ -513,6 +518,9 @@ export function solveSteady(project: Project): SolveResult {
   if (hyd.status === "max-iter") warnings.push("Hydraulics hit max iterations.");
 
   const energy = solveEnergy(net, hyd.Q);
+  if (!Number.isFinite(energy.energyResidual)) {
+    warnings.push("Energy Jacobian was singular.");
+  }
 
   const nodes: Record<string, NodeResult> = {};
   for (let i = 0; i < net.nodes.length; i++) {
@@ -586,7 +594,11 @@ export function solveSteady(project: Project): SolveResult {
 export interface EnergyBalance {
   /** Σ link.component.q: heat into the fluid at cold plates and heaters, W. */
   sources: number;
-  /** Σ coupling.q, W. */
+  /**
+   * Σ coupling.q for HEX units whose cold stream is thermally grounded
+   * (a node of that fluid has tFixed). Closed-loop IFHX is internal and
+   * contributes 0 here so radiators are not double-counted.
+   */
   hex: number;
   /** Σ over radiator links of −LinkResult.q, W. */
   radiators: number;
@@ -594,6 +606,13 @@ export interface EnergyBalance {
   sinks: number;
   /** |sources − sinks|, W. */
   mismatch: number;
+}
+
+/** True when HEX q leaves the model (open / tFixed cold stream), not another closed loop. */
+export function hexCouplingIsAmbientSink(project: Project, coupling: HexCoupling): boolean {
+  const cold = project.links.find((l) => l.id === coupling.coldLinkId);
+  if (!cold) return false;
+  return project.nodes.some((n) => n.fluid === cold.fluid && n.tFixed !== undefined);
 }
 
 /** Whole-project heat sources vs sinks at a solved state. */
@@ -609,7 +628,10 @@ export function energyBalance(
     if (Radiator.lawOf(l)) radiators -= links[l.id].q ?? 0;
   }
   let hex = 0;
-  for (const c of Object.values(couplings)) hex += c.q;
+  for (const c of project.couplings) {
+    if (!hexCouplingIsAmbientSink(project, c)) continue;
+    hex += couplings[c.id]?.q ?? 0;
+  }
   const sinks = hex + radiators;
   return { sources, hex, radiators, sinks, mismatch: Math.abs(sources - sinks) };
 }

@@ -1,0 +1,515 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "ISS Active Thermal Control System",
+    "description": "United States Orbital Segment class schematic: Lab Low and Moderate Temperature water loops, two External Active Thermal Control System ammonia loops, interface heat exchangers, and pumped radiator wings. Russian modules out of scope. 70 kW is the External Active Thermal Control System nameplate (35 kW × 2). The 28.7 kW figure is the Marshall Internal Active Thermal Control System Simulator, not on-orbit nameplate.",
+    "createdAt": "2026-09-12T00:00:00Z",
+    "updatedAt": "2026-09-12T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "kPa",
+    "flow": "L/min",
+    "temperature": "C",
+    "power": "kW"
+  },
+  "fluids": {
+    "iatcs-lt": {
+      "id": "iatcs-lt",
+      "name": "IATCS low-temperature water (4 °C)",
+      "phase": "liquid",
+      "rho": 1000.1,
+      "mu": 0.0015667,
+      "cp": 4206,
+      "k": 0.56571,
+      "beta": 0.000001,
+      "Tref": 277.15
+    },
+    "iatcs-mt": {
+      "id": "iatcs-mt",
+      "name": "IATCS moderate-temperature water (17 °C)",
+      "phase": "liquid",
+      "rho": 998.94,
+      "mu": 0.0010797,
+      "cp": 4185.3,
+      "k": 0.59279,
+      "beta": 0.00017,
+      "Tref": 290.15
+    },
+    "eatcs-nh3": {
+      "id": "eatcs-nh3",
+      "name": "EATCS anhydrous ammonia (2.8 °C, 300 psia)",
+      "phase": "liquid",
+      "rho": 635.97,
+      "mu": 0.00016134,
+      "cp": 4612.6,
+      "k": 0.52005,
+      "beta": 0.0022,
+      "Tref": 275.95
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": true,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 200,
+      "relaxationP": 0.8,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "lt-tank",
+      "name": "Lab Low Temperature accumulator (~63 L, ~4 °C)",
+      "x": 0,
+      "y": 80,
+      "z": 0,
+      "fluid": "iatcs-lt",
+      "kind": "tank",
+      "pFixed": 448159.22405591997
+    },
+    {
+      "id": "lt-supply",
+      "name": "Low Temperature supply header",
+      "x": 160,
+      "y": 80,
+      "z": 0,
+      "fluid": "iatcs-lt",
+      "kind": "junction"
+    },
+    {
+      "id": "lt-return",
+      "name": "Low Temperature return header",
+      "x": 400,
+      "y": 80,
+      "z": 0,
+      "fluid": "iatcs-lt",
+      "kind": "junction"
+    },
+    {
+      "id": "lt-ifhx-in",
+      "name": "Low Temperature interface heat exchanger water inlet",
+      "x": 480,
+      "y": 80,
+      "z": 0,
+      "fluid": "iatcs-lt",
+      "kind": "junction"
+    },
+    {
+      "id": "mt-tank",
+      "name": "Lab Moderate Temperature accumulator (~200 L, ~17 °C)",
+      "x": 0,
+      "y": 320,
+      "z": 0,
+      "fluid": "iatcs-mt",
+      "kind": "tank",
+      "pFixed": 448159.22405591997
+    },
+    {
+      "id": "mt-supply",
+      "name": "Moderate Temperature supply header",
+      "x": 160,
+      "y": 320,
+      "z": 0,
+      "fluid": "iatcs-mt",
+      "kind": "junction"
+    },
+    {
+      "id": "mt-return",
+      "name": "Moderate Temperature return header",
+      "x": 400,
+      "y": 320,
+      "z": 0,
+      "fluid": "iatcs-mt",
+      "kind": "junction"
+    },
+    {
+      "id": "mt-ifhx-in",
+      "name": "Moderate Temperature interface heat exchanger water inlet",
+      "x": 480,
+      "y": 320,
+      "z": 0,
+      "fluid": "iatcs-mt",
+      "kind": "junction"
+    },
+    {
+      "id": "a-tank",
+      "name": "Loop A pump module inlet (300 psia published)",
+      "x": 0,
+      "y": 160,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "kind": "tank",
+      "pFixed": 2068427.1879504
+    },
+    {
+      "id": "a-ifhx-in",
+      "name": "Loop A interface heat exchanger ammonia inlet",
+      "x": 240,
+      "y": 160,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "kind": "junction"
+    },
+    {
+      "id": "a-rad-in",
+      "name": "Loop A radiator wing inlet",
+      "x": 480,
+      "y": 160,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "kind": "junction"
+    },
+    {
+      "id": "b-tank",
+      "name": "Loop B pump module inlet (300 psia published)",
+      "x": 0,
+      "y": 400,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "kind": "tank",
+      "pFixed": 2068427.1879504
+    },
+    {
+      "id": "b-ifhx-in",
+      "name": "Loop B interface heat exchanger ammonia inlet",
+      "x": 240,
+      "y": 400,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "kind": "junction"
+    },
+    {
+      "id": "b-rad-in",
+      "name": "Loop B radiator wing inlet",
+      "x": 480,
+      "y": 400,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "kind": "junction"
+    }
+  ],
+  "links": [
+    {
+      "id": "lt-pump",
+      "name": "Low Temperature water pump",
+      "from": "lt-tank",
+      "to": "lt-supply",
+      "fluid": "iatcs-lt",
+      "component": {
+        "type": "pump",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.04,
+          "eps": 0.0000015
+        },
+        "K": 1.2,
+        "pump": {
+          "coeffs": [
+            70.09615384615377,
+            0,
+            -41733440.170940116
+          ],
+          "hMin": 0
+        }
+      }
+    },
+    {
+      "id": "lt-load",
+      "name": "Low Temperature lab and module loads (35 kW EATCS nameplate)",
+      "from": "lt-return",
+      "to": "lt-ifhx-in",
+      "fluid": "iatcs-lt",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.4,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 4,
+        "q": 35000,
+        "rTh": 0.0002
+      }
+    },
+    {
+      "id": "lt-ifhx",
+      "name": "Interface heat exchanger (water to ammonia), Low Temperature water stream",
+      "from": "lt-ifhx-in",
+      "to": "lt-tank",
+      "fluid": "iatcs-lt",
+      "component": {
+        "type": "hex-stream",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 6
+      }
+    },
+    {
+      "id": "mt-pump",
+      "name": "Moderate Temperature water pump",
+      "from": "mt-tank",
+      "to": "mt-supply",
+      "fluid": "iatcs-mt",
+      "component": {
+        "type": "pump",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.04,
+          "eps": 0.0000015
+        },
+        "K": 1.2,
+        "pump": {
+          "coeffs": [
+            70.09615384615377,
+            0,
+            -41733440.170940116
+          ],
+          "hMin": 0
+        }
+      }
+    },
+    {
+      "id": "mt-load",
+      "name": "Moderate Temperature lab and module loads (35 kW EATCS nameplate)",
+      "from": "mt-return",
+      "to": "mt-ifhx-in",
+      "fluid": "iatcs-mt",
+      "component": {
+        "type": "cold-plate",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.4,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 4,
+        "q": 35000,
+        "rTh": 0.0002
+      }
+    },
+    {
+      "id": "mt-ifhx",
+      "name": "Interface heat exchanger (water to ammonia), Moderate Temperature water stream",
+      "from": "mt-ifhx-in",
+      "to": "mt-tank",
+      "fluid": "iatcs-mt",
+      "component": {
+        "type": "hex-stream",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.02,
+          "eps": 0.0000015
+        },
+        "K": 6
+      }
+    },
+    {
+      "id": "a-pump",
+      "name": "Loop A pump module (nominal 8200 lb/h)",
+      "from": "a-tank",
+      "to": "a-ifhx-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pump",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.05,
+          "eps": 0.0000015
+        },
+        "K": 1.2,
+        "pump": {
+          "coeffs": [
+            84.11538461538466,
+            0,
+            -27324171.27176398
+          ],
+          "hMin": 0
+        }
+      }
+    },
+    {
+      "id": "a-ifhx",
+      "name": "Interface heat exchanger (water to ammonia), Loop A ammonia stream",
+      "from": "a-ifhx-in",
+      "to": "a-rad-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "hex-stream",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1.2,
+          "D": 0.03,
+          "eps": 0.0000015
+        },
+        "K": 6
+      }
+    },
+    {
+      "id": "a-rad",
+      "name": "Loop A heat-rejection radiator wing (three parallel panels)",
+      "from": "a-rad-in",
+      "to": "a-tank",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "radiator",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 8,
+          "D": 0.02,
+          "A": 0.002,
+          "eps": 0.0000015
+        },
+        "K": 8,
+        "parallelCount": 3,
+        "radiator": {
+          "ua": 760,
+          "tSink": 233.14999999999998
+        }
+      }
+    },
+    {
+      "id": "b-pump",
+      "name": "Loop B pump module (nominal 8900 lb/h)",
+      "from": "b-tank",
+      "to": "b-ifhx-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pump",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0,
+          "D": 0.05,
+          "eps": 0.0000015
+        },
+        "K": 1.2,
+        "pump": {
+          "coeffs": [
+            84.11538461538451,
+            0,
+            -23195016.74426722
+          ],
+          "hMin": 0
+        }
+      }
+    },
+    {
+      "id": "b-ifhx",
+      "name": "Interface heat exchanger (water to ammonia), Loop B ammonia stream",
+      "from": "b-ifhx-in",
+      "to": "b-rad-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "hex-stream",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1.2,
+          "D": 0.03,
+          "eps": 0.0000015
+        },
+        "K": 6
+      }
+    },
+    {
+      "id": "b-rad",
+      "name": "Loop B heat-rejection radiator wing (three parallel panels)",
+      "from": "b-rad-in",
+      "to": "b-tank",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "radiator",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 8,
+          "D": 0.02,
+          "A": 0.002,
+          "eps": 0.0000015
+        },
+        "K": 8,
+        "parallelCount": 3,
+        "radiator": {
+          "ua": 760,
+          "tSink": 233.14999999999998
+        }
+      }
+    }
+  ],
+  "couplings": [
+    {
+      "id": "ifhx-lt",
+      "name": "Lab Low Temperature interface heat exchanger (water to ammonia)",
+      "type": "hex",
+      "hotLinkId": "lt-ifhx",
+      "coldLinkId": "a-ifhx",
+      "ua": 20000,
+      "arrangement": "counterflow"
+    },
+    {
+      "id": "ifhx-mt",
+      "name": "Lab Moderate Temperature interface heat exchanger (water to ammonia)",
+      "type": "hex",
+      "hotLinkId": "mt-ifhx",
+      "coldLinkId": "b-ifhx",
+      "ua": 2300,
+      "arrangement": "counterflow"
+    }
+  ],
+  "modules": [
+    {
+      "id": "cold-plate-pack",
+      "name": "Cold-plate channel pack",
+      "kind": "u-manifold-pack",
+      "params": {
+        "nChannels": 3,
+        "headerD": 0.028,
+        "branchD": 0.012,
+        "branchL": 0.4,
+        "pitch": 0.08,
+        "eps": 0.0000015,
+        "tees": false
+      }
+    }
+  ],
+  "instances": [
+    {
+      "id": "lt-packs",
+      "name": "Low Temperature cold-plate pack",
+      "module": "cold-plate-pack",
+      "count": 2,
+      "ports": {
+        "inlet": "lt-supply",
+        "outlet": "lt-return"
+      },
+      "x": 280,
+      "y": 0,
+      "fluid": "iatcs-lt"
+    },
+    {
+      "id": "mt-packs",
+      "name": "Moderate Temperature cold-plate pack",
+      "module": "cold-plate-pack",
+      "count": 2,
+      "ports": {
+        "inlet": "mt-supply",
+        "outlet": "mt-return"
+      },
+      "x": 280,
+      "y": 280,
+      "fluid": "iatcs-mt"
+    }
+  ]
+}

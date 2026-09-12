@@ -8,7 +8,8 @@ export type ExampleGroup =
   | "Getting started"
   | "Liquid cooling"
   | "Air cooling"
-  | "Manifolds & cabinets";
+  | "Manifolds & cabinets"
+  | "Spacecraft thermal";
 
 /**
  * A catalog entry is backed either by a pinned project file under examples/
@@ -29,6 +30,7 @@ const GROUP_ORDER: ExampleGroup[] = [
   "Liquid cooling",
   "Air cooling",
   "Manifolds & cabinets",
+  "Spacecraft thermal",
 ];
 
 /** Curated picker list — titles assume no MacroFlow paper context. */
@@ -76,6 +78,14 @@ export const EXAMPLE_CATALOG: ExampleEntry[] = [
     group: "Liquid cooling",
     file: null,
     diagram: pumpedRadiatorLoopDiagram,
+  },
+  {
+    id: "iss-atcs",
+    title: "ISS Active Thermal Control System",
+    description:
+      "United States Orbital Segment class schematic: Lab Low and Moderate Temperature water loops, two External Active Thermal Control System ammonia loops, interface heat exchangers, and pumped radiator wings. Russian modules out of scope. 70 kW is the External Active Thermal Control System nameplate (35 kW × 2). The 28.7 kW figure is the Marshall Internal Active Thermal Control System Simulator, not on-orbit nameplate.",
+    group: "Spacecraft thermal",
+    file: "iss-atcs.hydroflow.json",
   },
   {
     id: "mf03-orifice-balance-tuned",
