@@ -7,6 +7,7 @@ import {
   m3s_to_Lmin,
 } from "../../engine/units";
 import { DLC_PUMP_COEFFS, DLC_TOTAL_HEAT_W } from "../../engine/examples/dlcPumpedCooling";
+import { HrsRadiatorPath } from "../../engine/examples/hrsRadiatorPath";
 import { IssAtcsFigures } from "../../engine/examples/issAtcs";
 import { WATER_30C } from "../../engine/fluids";
 import { G } from "../../engine/types";
@@ -110,6 +111,10 @@ export function ResultsDock() {
     !!result?.links["b-rad"] &&
     !!result?.links["a-pump"] &&
     !!result?.links["b-pump"];
+  const hrs =
+    exampleId === HrsRadiatorPath.ID && result && project && result.links["rbvm-inlet-port"]
+      ? HrsRadiatorPath.summarize(project, result)
+      : null;
 
   const linkCount = project?.links.length ?? 0;
   const maxQ = result
@@ -189,7 +194,41 @@ export function ResultsDock() {
             />
           </div>
         )}
-        {tab === "summary" && result && !isDlc && !isAtcs && (
+        {tab === "summary" && result && hrs && (
+          <div className="kpi-grid">
+            <Kpi
+              label="Path flow"
+              value={`${IssAtcsFigures.kgSToLbH(hrs.mdotPathKgS).toFixed(0)} lb/h`}
+              hint={`published Loop A ${IssAtcsFigures.LOOP_A_LB_H} lb/h shared over ${HrsRadiatorPath.STATION.pathsPerLoop} paths, zero bypass`}
+            />
+            <Kpi
+              label="Path pressure drop"
+              value={`${(hrs.pathDpPa / 1000).toFixed(2)} kPa`}
+              hint={`assumption set ${HrsRadiatorPath.ASSUMPTIONS.name}, ${HrsRadiatorPath.ASSUMPTIONS.tag}`}
+            />
+            <Kpi
+              label="Per-panel drop"
+              value={`${(Math.min(...hrs.panelDpPa) / 1000).toFixed(2)}–${(Math.max(...hrs.panelDpPa) / 1000).toFixed(2)} kPa`}
+              hint="eight panels in series"
+            />
+            <Kpi
+              label="Tube flow spread"
+              value={`${(100 * hrs.tube.spreadFraction).toFixed(1)} %`}
+              hint="eleven parallel Inconel flow tubes per panel"
+            />
+            <Kpi
+              label="Topology"
+              value={`${hrs.counts.panels} panels · ${hrs.counts.tubes} tubes · ${hrs.counts.flexHoses} flex hoses`}
+              hint={`${hrs.counts.valveModulePorts} Radiator Beam Valve Module ports. Station ${HrsRadiatorPath.STATION.panelTubes} tubes is a count audit, not this deck.`}
+            />
+            <Kpi
+              label="Versus lumped wings"
+              value="Do not match"
+              hint="Lumped Active Thermal Control System wings are not this part-level path. Pressure drop is assumed hydraulics, not flight."
+            />
+          </div>
+        )}
+        {tab === "summary" && result && !isDlc && !isAtcs && !hrs && (
           <div className="kpi-grid">
             <Kpi label="Status" value={result.status} hint={`${result.iterations} iterations`} />
             <Kpi label="Links" value={String(linkCount)} hint="solved branches" />

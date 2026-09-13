@@ -2,6 +2,7 @@ import type { Diagram } from "../../diagram/types";
 import { projectToDiagram } from "../../diagram/projectToDiagram";
 import type { Project } from "../../engine/types";
 import { dlcPumpedCoolingDiagram } from "../../engine/examples/dlcPumpedCooling";
+import { HrsRadiatorPath } from "../../engine/examples/hrsRadiatorPath";
 import { pumpedRadiatorLoopDiagram } from "../../engine/examples/pumpedRadiatorLoop";
 
 export type ExampleGroup =
@@ -86,6 +87,9 @@ export const EXAMPLE_CATALOG: ExampleEntry[] = [
       "United States Orbital Segment class schematic: Lab Low and Moderate Temperature water loops, two External Active Thermal Control System ammonia loops, interface heat exchangers, and pumped radiator wings. Russian modules out of scope. 70 kW is the External Active Thermal Control System nameplate (35 kW × 2). The 28.7 kW figure is the Marshall Internal Active Thermal Control System Simulator, not on-orbit nameplate.",
     group: "Spacecraft thermal",
     file: "iss-atcs.hydroflow.json",
+  },
+  {
+    ...HrsRadiatorPath.catalogCopy(),
   },
   {
     id: "mf03-orifice-balance-tuned",

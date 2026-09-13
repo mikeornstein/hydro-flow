@@ -1,0 +1,489 @@
+{
+  "version": "0.1.0",
+  "meta": {
+    "name": "Heat Rejection Subsystem radiator: one ammonia path through one Orbital Replaceable Unit",
+    "description": "One ammonia path through one Heat Rejection Subsystem radiator Orbital Replaceable Unit: Radiator Beam Valve Module inlet port, eight panels in series (eleven parallel Inconel flow tubes and edge manifolds per panel), seven flex hoses, Radiator Beam Valve Module outlet port. Hydraulic only. Diameters, lengths, and loss coefficients are assumption set hrs-path-baseline-v1, tagged NOT flight-published. Not International Space Station flight geometry. Not the AIAA A35030 prototype. Path flow is published Loop A 8200 lb/h shared over six paths (three Orbital Replaceable Units times two paths, zero bypass). Return is the published 300 psia pump-module inlet. Do not expect flow or pressure drop to match Active Thermal Control System links a-rad / b-rad (lumped wings). Station scale 6 Orbital Replaceable Units, 48 panels, 12 paths, 1056 panel tubes is a count audit, not this deck. Thermal Radiator Rotary Joint Flex Hose Rotary Coupler is out of scope.",
+    "createdAt": "2026-09-12T00:00:00Z",
+    "updatedAt": "2026-09-12T00:00:00Z"
+  },
+  "units": {
+    "system": "SI",
+    "length": "m",
+    "pressure": "kPa",
+    "flow": "L/min",
+    "temperature": "C",
+    "power": "kW"
+  },
+  "fluids": {
+    "eatcs-nh3": {
+      "id": "eatcs-nh3",
+      "name": "EATCS anhydrous ammonia (2.8 °C, 300 psia)",
+      "phase": "liquid",
+      "rho": 635.97,
+      "mu": 0.00016134,
+      "cp": 4612.6,
+      "k": 0.52005,
+      "beta": 0.0022,
+      "Tref": 275.95
+    }
+  },
+  "analysis": {
+    "type": "steady",
+    "flowRegime": "incompressible",
+    "energy": false,
+    "gravity": false,
+    "convergence": {
+      "massResidual": 1e-10,
+      "energyResidual": 1e-8,
+      "maxIter": 80,
+      "relaxationP": 0.8,
+      "relaxationQ": 0.7
+    }
+  },
+  "nodes": [
+    {
+      "id": "supply",
+      "kind": "junction",
+      "name": "Path supply (Loop A 8200 lb/h shared over six paths, zero bypass)",
+      "x": 0,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "mdotSource": 0.17219710342592595
+    },
+    {
+      "id": "return",
+      "kind": "tank",
+      "name": "Path return (published 300 psia pump-module inlet)",
+      "x": 720,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3",
+      "pFixed": 2068427.1879504
+    },
+    {
+      "id": "p1-in",
+      "kind": "junction",
+      "name": "Panel 1 supply manifold",
+      "x": 80,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p1-out",
+      "kind": "junction",
+      "name": "Panel 1 return manifold",
+      "x": 160,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p2-in",
+      "kind": "junction",
+      "name": "Panel 2 supply manifold",
+      "x": 240,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p2-out",
+      "kind": "junction",
+      "name": "Panel 2 return manifold",
+      "x": 320,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p3-in",
+      "kind": "junction",
+      "name": "Panel 3 supply manifold",
+      "x": 400,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p3-out",
+      "kind": "junction",
+      "name": "Panel 3 return manifold",
+      "x": 480,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p4-in",
+      "kind": "junction",
+      "name": "Panel 4 supply manifold",
+      "x": 560,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p4-out",
+      "kind": "junction",
+      "name": "Panel 4 return manifold",
+      "x": 640,
+      "y": 80,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p5-in",
+      "kind": "junction",
+      "name": "Panel 5 supply manifold",
+      "x": 80,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p5-out",
+      "kind": "junction",
+      "name": "Panel 5 return manifold",
+      "x": 160,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p6-in",
+      "kind": "junction",
+      "name": "Panel 6 supply manifold",
+      "x": 240,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p6-out",
+      "kind": "junction",
+      "name": "Panel 6 return manifold",
+      "x": 320,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p7-in",
+      "kind": "junction",
+      "name": "Panel 7 supply manifold",
+      "x": 400,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p7-out",
+      "kind": "junction",
+      "name": "Panel 7 return manifold",
+      "x": 480,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p8-in",
+      "kind": "junction",
+      "name": "Panel 8 supply manifold",
+      "x": 560,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "p8-out",
+      "kind": "junction",
+      "name": "Panel 8 return manifold",
+      "x": 640,
+      "y": 320,
+      "z": 0,
+      "fluid": "eatcs-nh3"
+    }
+  ],
+  "links": [
+    {
+      "id": "rbvm-inlet-port",
+      "name": "Radiator Beam Valve Module inlet port",
+      "from": "supply",
+      "to": "p1-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "valve",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "opening": 1
+      }
+    },
+    {
+      "id": "flex-1",
+      "name": "Inter-panel flex hose 1",
+      "from": "p1-out",
+      "to": "p2-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "flex-2",
+      "name": "Inter-panel flex hose 2",
+      "from": "p2-out",
+      "to": "p3-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "flex-3",
+      "name": "Inter-panel flex hose 3",
+      "from": "p3-out",
+      "to": "p4-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "flex-4",
+      "name": "Inter-panel flex hose 4",
+      "from": "p4-out",
+      "to": "p5-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "flex-5",
+      "name": "Inter-panel flex hose 5",
+      "from": "p5-out",
+      "to": "p6-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "flex-6",
+      "name": "Inter-panel flex hose 6",
+      "from": "p6-out",
+      "to": "p7-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "flex-7",
+      "name": "Inter-panel flex hose 7",
+      "from": "p7-out",
+      "to": "p8-in",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "pipe",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 1,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 1
+      }
+    },
+    {
+      "id": "rbvm-outlet-port",
+      "name": "Radiator Beam Valve Module outlet port",
+      "from": "p8-out",
+      "to": "return",
+      "fluid": "eatcs-nh3",
+      "component": {
+        "type": "valve",
+        "lossModel": "darcy-weisbach",
+        "geometry": {
+          "L": 0.3,
+          "D": 0.025,
+          "eps": 0.0000015
+        },
+        "K": 2,
+        "opening": 1
+      }
+    }
+  ],
+  "couplings": [],
+  "modules": [
+    {
+      "id": "radiator-panel",
+      "name": "Radiator panel: eleven parallel Inconel flow tubes between edge manifolds",
+      "kind": "u-manifold-pack",
+      "params": {
+        "nChannels": 11,
+        "headerD": 0.025,
+        "branchD": 0.008,
+        "branchL": 2.64,
+        "pitch": 0.30272727272727273,
+        "eps": 0.0000015,
+        "tees": false
+      }
+    }
+  ],
+  "instances": [
+    {
+      "id": "panel-1",
+      "name": "Panel 1: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p1-in",
+        "outlet": "p1-out"
+      },
+      "x": 120,
+      "y": 120,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-2",
+      "name": "Panel 2: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p2-in",
+        "outlet": "p2-out"
+      },
+      "x": 280,
+      "y": 120,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-3",
+      "name": "Panel 3: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p3-in",
+        "outlet": "p3-out"
+      },
+      "x": 440,
+      "y": 120,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-4",
+      "name": "Panel 4: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p4-in",
+        "outlet": "p4-out"
+      },
+      "x": 600,
+      "y": 120,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-5",
+      "name": "Panel 5: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p5-in",
+        "outlet": "p5-out"
+      },
+      "x": 120,
+      "y": 360,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-6",
+      "name": "Panel 6: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p6-in",
+        "outlet": "p6-out"
+      },
+      "x": 280,
+      "y": 360,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-7",
+      "name": "Panel 7: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p7-in",
+        "outlet": "p7-out"
+      },
+      "x": 440,
+      "y": 360,
+      "fluid": "eatcs-nh3"
+    },
+    {
+      "id": "panel-8",
+      "name": "Panel 8: eleven parallel Inconel flow tubes between edge manifolds",
+      "module": "radiator-panel",
+      "count": 1,
+      "ports": {
+        "inlet": "p8-in",
+        "outlet": "p8-out"
+      },
+      "x": 600,
+      "y": 360,
+      "fluid": "eatcs-nh3"
+    }
+  ]
+}
